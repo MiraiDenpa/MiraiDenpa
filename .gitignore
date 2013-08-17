@@ -1,0 +1,37 @@
+# Others
+sql/
+
+# compile result
+*.min.js
+*.min.css
+
+# local runtime
+_runtime
+*.ini
+*.data
+*.cache.php
+
+# ide settings
+.idea
+
+#############
+## Windows detritus
+#############
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+.Trash-*
+
+# Mac crap
+.DS_Store
+
+# log
+*.log
+log
