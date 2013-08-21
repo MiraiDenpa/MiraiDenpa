@@ -15,9 +15,9 @@ define('RUNTIME_PATH', dirname(__DIR__) .'/_runtime/');
 
 define('APP_DEBUG', true);
 define('SHOW_TRACE', true);
-define('CORE_DEBUG', true);
-define('TRACE_DEBUG', true);
+define('TRACE_DEBUG', false);
 define('TMPL_DEBUG', true);
+define('MEMORY_DEBUG', true);
 
 define('APP_STATUS', 'debug');
 
