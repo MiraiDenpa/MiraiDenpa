@@ -1,9 +1,14 @@
 # Others
 sql/
 
+# junctions
+MyThink
+
 # compile result
 *.min.js
 *.min.css
+*/*.min.js
+*/*.min.css
 
 # local runtime
 _runtime

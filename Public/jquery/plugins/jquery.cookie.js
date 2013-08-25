@@ -7,7 +7,7 @@
  */
 (function (factory) {
 	if (typeof define === 'function' && define.amd) {
-		define(['jquery'], factory);
+		define(['.'], factory);
 	} else {
 		// Browser globals.
 		factory(jQuery);

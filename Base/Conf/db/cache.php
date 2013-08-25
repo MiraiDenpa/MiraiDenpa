@@ -7,7 +7,7 @@ return array(
 	'params'   => [
 		Memcached::OPT_SERIALIZER => Memcached::SERIALIZER_IGBINARY,
 		Memcached::OPT_HASH=>Memcached::HASH_MD5,
-		Memcached::OPT_BUFFER_WRITES => true,
+		Memcached::OPT_BUFFER_WRITES => false,
 		Memcached::OPT_BINARY_PROTOCOL => true,
 	], // 数据库类构造选项
 );

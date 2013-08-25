@@ -2,9 +2,21 @@
 <html>
 <head>
 	<title>{__TITLE__}</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<style>
+		body{opacity: 0;-webkit-transition: opacity 1s;}
+		body.loaded{opacity: 1;}
+	</style>
 	{__HEADER__}
+	<script>
+		var $body;
+		$(function(){
+			$body = $('body').addClass('loaded');
+		});
+	</script>
 </head>
 <body>
-{__CONTENT__}
+	{__CONTENT__}
 </body>
 </html>

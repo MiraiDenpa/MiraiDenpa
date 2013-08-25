@@ -1,0 +1,6 @@
+/**
+ * 
+ */
+function ready(){
+	return window;
+}
