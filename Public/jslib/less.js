@@ -89,7 +89,7 @@ less.Parser = function Parser(env) {
     }
 
     var imports = this.imports = {
-        paths: env.paths || [],  // Search paths, when importing
+        paths: less.paths || [],  // Search paths, when importing
         queue: [],               // Files which haven't been imported yet
         files: env.files,        // Holds the imported parse trees
         contents: env.contents,  // Holds the imported file contents

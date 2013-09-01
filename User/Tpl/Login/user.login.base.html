@@ -1,0 +1,55 @@
+<layout name="!mainStruct">
+	$title='未来电波 - 用户首页';
+</layout>
+<AddHeader BrowserLib="form-sign-in.less,viewpass.js,formhandler.js">
+	<script type="text/javascript" wrap="ready">
+		var baseurl = $('#btnRegister').click(function (){
+			window.location.href = baseurl + '?' + $('.form-signin').serialize();
+			return false;
+		}).attr('href');
+	</script>
+</AddHeader>
+<div class="container">
+	<h2 class="form-signin-heading">
+		<a href="{$app.mainurl}" target="_blank" style="text-decoration: none;">
+		<i class="glyphicon glyphicon-home"></i>
+		</a>
+		&nbsp;{$app.name}
+		<sub>~ {$app.subname}(v.{$app.version})</sub>
+	</h2>
+	<h4>{$app.description}</h4>
+	
+	<hr/>
+
+	<div class="row">
+		<div id="permShow" class="col-md-6">
+			该应用要求以下权限：
+			<ul>
+				<li>xxx</li>
+			</ul>
+		</div>
+		<div id="frmLogin" class="col-md-6">
+			<form class="form-signin" type="ajax" action="[%url method='act' suffix='html'/%]" method="post">
+				<legend>使用电波帐号登录</legend>
+
+				<label class="input">
+				<input type="email" id="email" name="email" class="form-control" placeholder="电子邮件" required="required" autofocus="true"/>
+				</label>
+				<label class="input">
+				<input type="password" id="passwd" name="passwd" class="form-control" placeholder="登录密码" required="required"/>
+				</label>
+				<label class="checkbox">
+				<input type="checkbox" name="remember" value="X"/>
+				记住登录
+				</label>
+				<input class="btn btn-lg btn-primary btn-block" type="submit" value="登入"/>
+				<div class="action" style="padding-top: 20px;">
+					<a href="[%url action='Register' method='vmail'/%]" class="btn" onclick="window.location.href=$(this).attr('href')+'?email='+$('#email').val();return false;">激活邮箱</a>
+					<a href="[%url action='Forget' method='index'/%]" class="btn">找回密码</a>
+					
+					<a id="btnRegister" href="[%url action='Register' method='index'/%]" class="btn btn-info pull-right">注册帐号</a>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

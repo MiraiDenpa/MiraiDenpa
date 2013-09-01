@@ -1,0 +1,146 @@
+<layout name="!mainStruct">
+	$title='未来电波 - 用户注册';
+</layout>
+<AddHeader browserlib="array.remove.js,jquery.validate.js,jquery.validate.zh.js,floatbox.js,jumpto.js,formhandler.js,jquery.transit.js">
+	<style type="text/css">
+		label {
+			font-weight: normal;
+		}
+
+		#error label {
+			display: block;
+		}
+
+		#frmRegister>.form-group> label {
+			opacity: 0;
+			transition: opacity, 0.6s;
+		}
+		
+		#frmRegister >.form-group.has-error>label {
+			color: red;
+			opacity: 1;
+		}
+		#frmRegister >.form-group>label.xshow {
+			opacity: 1;
+		}
+
+		#btnSubmit {
+			transition: 5s;
+		}
+	</style>
+	<script type="text/javascript" wrap="ready">
+		var $frm = $('#frmRegister');
+		$frm.validate({
+			"rules"            : {
+				"email"     : {
+					"required": true,
+					"remote"  : "<url method='check' suffix='json'/>"
+				},
+				"password"  : {
+					"required" : true,
+					"minlength": "6",
+					"maxlength": "32"
+				},
+				"repassword": {
+					"required": true,
+					"equalTo" : "#password"
+				},
+				"uid"      : {
+					"required" : true,
+					"regex" : /^[a-z0-9][a-z0-9\_\-]{2,11}$/i,
+					"maxlength": "12",
+					"remote"   : "<url method='check' suffix='json'/>"
+				},
+				"uname"      : {
+					"required" : true,
+					"maxlength": "12",
+					"remote"   : "<url method='check' suffix='json'/>"
+				},
+				"agree"     : {
+					"required": true
+				}
+			},
+			"messages"         : {
+				"email"     : {
+					"required": "电子邮件必填",
+					"remote"  : "电子邮件被使用"
+				},
+				"password"  : {
+					"required" : "密码必填",
+					"minlength": "密码至少6位",
+					"maxlength": "密码过长"
+				},
+				"repassword": {
+					"required": "请确认密码"
+				},
+				"uid":{
+					"regex": "最少三位，第一位必须是字母或数字，不能包含 全角字符 和 / \\ ' \" : . * | < > # ! ? ",
+					"remote"  : "UID已经被使用"
+				},
+				"uname"      : {
+					"required" : "请输入昵称",
+					"maxlength": "昵称最多12个字",
+					"remote"  : "昵称现在有人使用"
+				},
+				"agree"     : {
+					"required": "必须接受使用协议"
+				}
+			},
+			"debug"            : true,
+			errorLabelContainer: '#error',
+			onkeyup            : false,
+			highlight          : function (ele, lbl){
+				$(ele).parent().addClass('has-error');
+			},
+			unhighlight        : function (ele, lbl){
+				$(ele).parent().removeClass('has-error');
+			},
+			submitHandler:function(form){
+				$(form).ajaxSubmit();
+			}
+		});
+		$frm.find('.form-group>input').focus(function (){
+			$(this).next().addClass('xshow');
+		}).blur(function (){
+					$(this).next().removeClass('xshow');
+				});
+
+		//window.location.jumpto('/asda', 30, '某某', '注册成功')
+	</script>
+</AddHeader>
+<div class="container">
+	<h2 class="form-signin-heading">用户注册</h2>
+
+	<form id="frmRegister" action="[%url method='act'/%]" method="post">
+		<div class="form-group">
+			<input required="required" name="email" id="email" placeholder="电子邮件" class="form-control" type="email" value="{$preset.email}">
+			<label for="email" class="inline">输入邮箱，必须可以正常接收邮件。</label>
+		</div>
+		<div class="form-group">
+			<input required="required" name="uid" id="uid" placeholder="ID" class="form-control" type="text" value="">
+			<label for="uname">可以用来登录，显示在域名后缀，用于被@，无法修改！最少三位，第一位必须是字母或数字，不能包含 全角字符 和 / \ ' " : . * | &gt; &lt; # ! ? </label>
+		</div>
+		<div class="form-group">
+			<input required="required" name="password" id="password" placeholder="登录密码" class="form-control" type="password" value="">
+			<label for="password">输入密码</label>
+		</div>
+		<div class="form-group">
+			<input required="required" name="repassword" id="repassword" placeholder="重复密码" class="form-control" type="password" value="">
+			<label for="repassword">重新输入密码</label>
+		</div>
+		<div class="form-group">
+			<input required="required" name="uname" id="uname" placeholder="昵称" class="form-control" type="text" value="">
+			<label for="uname">可以随时修改</label>
+		</div>
+		<div class="checkbox">
+			<label for="agree">
+			<input required="required" name="agree" id="agree" type="checkbox" value="X">
+			我已接受并同意使用协议
+			</label>
+		</div>
+		<input id="btnSubmit" type="submit" value="注册" class="btn btn-primary">
+	</form>
+</div>
+<div id="error" class="alert alert-warning" style="display: none;"></div>
+
+

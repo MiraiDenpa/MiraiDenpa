@@ -3,24 +3,27 @@ $GLOBALS['_beginTime'] = microtime(TRUE);
 $GLOBALS['_startUseMems'] = memory_get_usage();
 require(RUNTIME_PATH.'functions.php');
 set_include_path(get_include_path() . PATH_SEPARATOR . VENDOR_PATH);
-alias_import(array (
+global $_think_import_alias;$_think_import_alias = array (
   'Action' => '/data/web/MyThink/Core/Lib/Action.class.php',
   'App' => '/data/web/MyThink/Core/Lib/App.class.php',
   'Behavior' => '/data/web/MyThink/Core/Lib/Behavior.class.php',
   'Cache' => '/data/web/MyThink/Core/Lib/Cache.class.php',
   'Db' => '/data/web/MyThink/Core/Lib/Db.class.php',
   'Dispatcher' => '/data/web/MyThink/Core/Lib/Dispatcher.class.php',
+  'Error' => '/data/web/MyThink/Core/Lib/Error.class.php',
   'Log' => '/data/web/MyThink/Core/Lib/Log.class.php',
   'Model' => '/data/web/MyThink/Core/Lib/Model.class.php',
   'OutputBuffer' => '/data/web/MyThink/Core/Lib/OutputBuffer.class.php',
   'Think' => '/data/web/MyThink/Core/Lib/Think.class.php',
   'ThinkException' => '/data/web/MyThink/Core/Lib/ThinkException.class.php',
   'ThinkInstance' => '/data/web/MyThink/Core/Lib/ThinkInstance.class.php',
+  'UrlHelper' => '/data/web/MyThink/Core/Lib/UrlHelper.class.php',
   'View' => '/data/web/MyThink/Core/Lib/View.class.php',
   'Widget' => '/data/web/MyThink/Core/Lib/Widget.class.php',
   'ThinkTemplate' => '/data/web/MyThink/Core/Lib/ThinkTemplate.class.php',
   'TagLib' => '/data/web/MyThink/Core/Lib/TagLib.class.php',
   'HTML' => '/data/web/MyThink/Core/Lib/HTML.class.php',
+  'InputStream' => '/data/web/MyThink/Core/Lib/InputStream.class.php',
   'ORG\\Crypt\\Rsa' => '/data/web/MyThink/Extend/Library/ORG/Crypt/Rsa.class.php',
   'ORG\\Crypt\\Xxtea' => '/data/web/MyThink/Extend/Library/ORG/Crypt/Xxtea.class.php',
   'ORG\\Crypt\\Crypt' => '/data/web/MyThink/Extend/Library/ORG/Crypt/Crypt.class.php',
@@ -46,11 +49,35 @@ alias_import(array (
   'ORG\\Util\\HtmlExtractor' => '/data/web/MyThink/Extend/Library/ORG/Util/HtmlExtractor.class.php',
   'ORG\\Util\\Page' => '/data/web/MyThink/Extend/Library/ORG/Util/Page.class.php',
   'COM\\MyThink\\Strings' => '/data/web/MyThink/Extend/Library/COM/MyThink/Strings.php',
-));
+);
 
-require CORE_PATH.'Think.class.php';
+require $_think_import_alias['Think'];
 G('loadTime');// 载入时间
 Think::Start();// 初始化
 ini_set('display_errors', 0);$GLOBALS['_initUseMems'] = memory_get_usage();
-App::run();// 启动应用
-SPT(false); // 页面Trace显示
+/* 启动应用 */
+
+/** @var Dispatcher $dispatcher */
+global $dispatcher;
+$dispatcher = new Dispatcher();
+// 项目初始化标签
+tag('app_init', $dispatcher);
+// 定义当前请求的系统常量
+define('REQUEST_METHOD', $_SERVER['REQUEST_METHOD']);
+// URL调度
+$error = $dispatcher->parse_path($_SERVER['PATH_INFO']);
+$dispatcher->setData($_GET);
+if($error){ // 調度出錯
+	Think::fail_error(ERR_NF_ACTION, $error);
+}
+define('ACTION_NAME', $dispatcher->action_name);
+define('METHOD_NAME', $dispatcher->method_name);
+define('EXTENSION_NAME', $dispatcher->extension_name);
+// 项目开始标签
+tag('app_begin');
+// 记录应用初始化时间
+G('initTime');
+$ret = $dispatcher->run();
+// 项目结束标签
+tag('app_end');
+ob_flush();

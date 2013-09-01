@@ -3,17 +3,16 @@
 <head>
 	<title>{__TITLE__}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	
 	<style>
-		body{opacity: 0;-webkit-transition: opacity 1s;}
+		body{opacity: 0;transition: opacity 1s;}
 		body.loaded{opacity: 1;}
 	</style>
-	{__HEADER__}
-	<script>
-		var $body;
-		$(function(){
-			$body = $('body').addClass('loaded');
-		});
+	{__STYLE__}
+	{__SCRIPT__}
+	<script type="text/javascript" wrap="ready" declare="$body">
+		$body = $('body').addClass('loaded');
 	</script>
 </head>
 <body>
