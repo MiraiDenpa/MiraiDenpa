@@ -1,0 +1,42 @@
+<layout name="!mainStruct">
+	$title='未来电波 - 用户注册';
+</layout>
+<BrowserLib>
+	jslib-gt/formhandler.js
+	jslib-gt/enhanced_link.js
+</BrowserLib>
+<AddHeader>
+	<script type="text/javascript" wrap="ready">
+	</script>
+	<style type="text/css">
+		h2 {
+			padding-top: 10%;
+		}
+	</style>
+</AddHeader>
+<div class="container">
+	<h2 class="form-signin-heading">发送验证邮件</h2>
+
+	<form id="frmRegister" action="[%url method='vmail_send'/%]" method="post" type="ajax" target="_blank">
+		<div class="form-group">
+			<label for="email" class="inline">注册使用的邮箱：</label>
+			<input required="required" name="email" id="email" placeholder="电子邮件" class="form-control" type="email" value="{$email}">
+		</div>
+		<label class="pull-right text-muted">点击发送后，必须在5分钟内验证，否则邮件失效。未验证的帐号保留2天。</label>
+		<input id="btnSend" type="submit" value="发送" class="btn btn-primary">
+	</form>
+
+	<h2 class="form-signin-heading">完成验证</h2>
+
+	<form id="frmRegister" action="[%url method='vmail_check'/%]" method="get" type="ajax" autocomplete="off">
+		<div class="form-group">
+			<label for="email" class="inline">邮箱中得到的code：</label>
+			<input required="required" name="code" id="code" class="form-control" type="text" value="">
+		</div>
+		<input id="btnVerify" type="submit" value="验证" class="btn btn-primary">
+	</form>
+
+	<h2 class="form-signin-heading">其他操作</h2>
+	<a class="btn btn-default btn-lg hlink" data-append="#email" href="[%url action='login' method='index'/%]">登录</a>
+	<a class="btn btn-default btn-lg hlink" data-append="#email" href="[%url action='register' method='index'/%]">注册</a>
+</div>

@@ -5,7 +5,7 @@
  * 
  */
 class LoginAction extends Action{
-	public function act(){
+	final public function act(){
 		$this->assign($_POST);
 		$this->error(ERR_NF_USER);
 	}
@@ -16,6 +16,7 @@ class LoginAction extends Action{
 			return $this->error(ERR_NF_APPLICATION, '/');
 		}
 		$this->assign('app', $app);
+		$this->assign('email', isset($_GET['email'])?$_GET['email']:'');
 		return $this->display('base');
 	}
 }

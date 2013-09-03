@@ -21,5 +21,8 @@ return array(
 	['INPUT_REQUIRE','缺少输入','请检查。'],
 	['INPUT_DENY','输入中包含不允许的字符','请重新输入。'],
 	
-	['FAIL_REGISTER','注册失败','请联系管理员解决。']
+	['FAIL_REGISTER','注册失败','请联系管理员解决。'],
+	
+	['TIMEOUT','操作超时','请重新请求。'],
+	
 );

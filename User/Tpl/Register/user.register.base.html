@@ -1,7 +1,13 @@
 <layout name="!mainStruct">
 	$title='未来电波 - 用户注册';
 </layout>
-<AddHeader browserlib="array.remove.js,jquery.validate.js,jquery.validate.zh.js,floatbox.js,jumpto.js,formhandler.js,jquery.transit.js">
+<BrowserLib>
+	Prototypes
+	validate
+	jslib-gt/formhandler.js
+	jslib-gt/enhanced_link.js
+</BrowserLib>
+<AddHeader>
 	<style type="text/css">
 		label {
 			font-weight: normal;
@@ -11,15 +17,20 @@
 			display: block;
 		}
 
+		.container {
+			padding-top: 10%;
+		}
+
 		#frmRegister>.form-group> label {
 			opacity: 0;
 			transition: opacity, 0.6s;
 		}
-		
+
 		#frmRegister >.form-group.has-error>label {
 			color: red;
 			opacity: 1;
 		}
+
 		#frmRegister >.form-group>label.xshow {
 			opacity: 1;
 		}
@@ -30,8 +41,9 @@
 	</style>
 	<script type="text/javascript" wrap="ready">
 		var $frm = $('#frmRegister');
+		var invalids = {};
 		$frm.validate({
-			"rules"            : {
+			"rules"       : {
 				"email"     : {
 					"required": true,
 					"remote"  : "<url method='check' suffix='json'/>"
@@ -45,13 +57,13 @@
 					"required": true,
 					"equalTo" : "#password"
 				},
-				"uid"      : {
+				"uid"       : {
 					"required" : true,
-					"regex" : /^[a-z0-9][a-z0-9\_\-]{2,11}$/i,
+					"regex"    : /^[a-z0-9][a-z0-9\_\-]{2,11}$/i,
 					"maxlength": "12",
 					"remote"   : "<url method='check' suffix='json'/>"
 				},
-				"uname"      : {
+				"uname"     : {
 					"required" : true,
 					"maxlength": "12",
 					"remote"   : "<url method='check' suffix='json'/>"
@@ -60,7 +72,7 @@
 					"required": true
 				}
 			},
-			"messages"         : {
+			"messages"    : {
 				"email"     : {
 					"required": "电子邮件必填",
 					"remote"  : "电子邮件被使用"
@@ -73,29 +85,63 @@
 				"repassword": {
 					"required": "请确认密码"
 				},
-				"uid":{
-					"regex": "最少三位，第一位必须是字母或数字，不能包含 全角字符 和 / \\ ' \" : . * | < > # ! ? ",
-					"remote"  : "UID已经被使用"
+				"uid"       : {
+					"regex" : "最少三位，第一位必须是字母或数字，不能包含 全角字符 和 / \\ ' \" : . * | < > # ! ? ",
+					"remote": "UID已经被使用"
 				},
-				"uname"      : {
+				"uname"     : {
 					"required" : "请输入昵称",
 					"maxlength": "昵称最多12个字",
-					"remote"  : "昵称现在有人使用"
+					"remote"   : "昵称现在有人使用"
 				},
 				"agree"     : {
 					"required": "必须接受使用协议"
 				}
 			},
-			"debug"            : true,
-			errorLabelContainer: '#error',
-			onkeyup            : false,
-			highlight          : function (ele, lbl){
+			"debug"       : true,
+			onkeyup       : false,
+			highlight     : function (ele, cls){
 				$(ele).parent().addClass('has-error');
+				if(this.errorMap[ele.id]){
+					invalids[ele.id] = this.errorMap[ele.id];
+				}
+				if(Object.size(invalids)){
+					var msg = '';
+					for(var i in invalids){
+						msg += invalids[i] + '<br/>';
+					}
+					var frm = $(this.currentForm);
+					if(!frm.data('notify')){
+						frm.data('notify', new SimpleNotify('form' + frm[0].id, ""));
+					}
+					frm.data('notify').error(msg, '表单有错误');
+				}
 			},
-			unhighlight        : function (ele, lbl){
+			unhighlight   : function (ele, cls){
 				$(ele).parent().removeClass('has-error');
+				if(invalids[ele.id]){
+					delete invalids[ele.id];
+				}
+				var frm = $(this.currentForm);
+				if(Object.size(invalids)){
+					var msg = '';
+					for(var i in invalids){
+						msg += invalids[i] + '<br/>';
+					}
+					if(!frm.data('notify')){
+						frm.data('notify', new SimpleNotify('form' + frm.get(0).id, ""));
+					}
+					frm.data('notify').error(msg, '表单有错误');
+				} else{
+					if(frm.data('notify')){
+						frm.data('notify').hide();
+					}
+				}
 			},
-			submitHandler:function(form){
+			errorPlacement: function (){
+
+			},
+			submitHandler : function (form){
 				$(form).ajaxSubmit();
 			}
 		});
@@ -118,7 +164,7 @@
 		</div>
 		<div class="form-group">
 			<input required="required" name="uid" id="uid" placeholder="ID" class="form-control" type="text" value="">
-			<label for="uname">可以用来登录，显示在域名后缀，用于被@，无法修改！最少三位，第一位必须是字母或数字，不能包含 全角字符 和 / \ ' " : . * | &gt; &lt; # ! ? </label>
+			<label for="uname">可以用来登录，显示在域名后缀，用于被@，无法修改！最少三位，第一位必须是字母或数字，不能包含 全角字符 和 / \ ' " : . * | &gt; &lt; # ! ?</label>
 		</div>
 		<div class="form-group">
 			<input required="required" name="password" id="password" placeholder="登录密码" class="form-control" type="password" value="">
@@ -139,8 +185,8 @@
 			</label>
 		</div>
 		<input id="btnSubmit" type="submit" value="注册" class="btn btn-primary">
+
+		<a id="btnLogin" href="[%url action='login' method='index'/%]" class="pull-right btn btn-default">登录已有帐号&gt;&gt;</a>
+		<a id="btnVmail" href="[%url method='vmail'/%]" class="pull-right btn btn-link">激活邮箱</a>
 	</form>
 </div>
-<div id="error" class="alert alert-warning" style="display: none;"></div>
-
-
