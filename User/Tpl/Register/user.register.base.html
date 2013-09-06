@@ -48,14 +48,14 @@
 					"required": true,
 					"remote"  : "<url method='check' suffix='json'/>"
 				},
-				"password"  : {
+				"passwd"  : {
 					"required" : true,
 					"minlength": "6",
 					"maxlength": "32"
 				},
-				"repassword": {
+				"repasswd": {
 					"required": true,
-					"equalTo" : "#password"
+					"equalTo" : "#passwd"
 				},
 				"uid"       : {
 					"required" : true,
@@ -77,12 +77,12 @@
 					"required": "电子邮件必填",
 					"remote"  : "电子邮件被使用"
 				},
-				"password"  : {
+				"passwd"  : {
 					"required" : "密码必填",
 					"minlength": "密码至少6位",
 					"maxlength": "密码过长"
 				},
-				"repassword": {
+				"repasswd": {
 					"required": "请确认密码"
 				},
 				"uid"       : {
@@ -167,12 +167,12 @@
 			<label for="uname">可以用来登录，显示在域名后缀，用于被@，无法修改！最少三位，第一位必须是字母或数字，不能包含 全角字符 和 / \ ' " : . * | &gt; &lt; # ! ?</label>
 		</div>
 		<div class="form-group">
-			<input required="required" name="password" id="password" placeholder="登录密码" class="form-control" type="password" value="">
-			<label for="password">输入密码</label>
+			<input required="required" name="passwd" id="passwd" placeholder="登录密码" class="form-control" type="password" value="">
+			<label for="passwd">输入密码</label>
 		</div>
 		<div class="form-group">
-			<input required="required" name="repassword" id="repassword" placeholder="重复密码" class="form-control" type="password" value="">
-			<label for="repassword">重新输入密码</label>
+			<input required="required" name="repasswd" id="repasswd" placeholder="重复密码" class="form-control" type="password" value="">
+			<label for="repasswd">重新输入密码</label>
 		</div>
 		<div class="form-group">
 			<input required="required" name="uname" id="uname" placeholder="昵称" class="form-control" type="text" value="">
@@ -180,7 +180,7 @@
 		</div>
 		<div class="checkbox">
 			<label for="agree">
-			<input required="required" name="agree" id="agree" type="checkbox" value="X">
+			<input required="required" name="agree" id="agree" type="checkbox">
 			我已接受并同意使用协议
 			</label>
 		</div>

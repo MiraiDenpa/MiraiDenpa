@@ -1,5 +1,5 @@
 <?php
-define('APP_NAME', 'user');
+define('APP_NAME', 'app');
 define('ROOT_PATH', __DIR__ . '/');
 define('APP_PATH', __DIR__ . '/');
 define('LIB_PATH', APP_PATH);

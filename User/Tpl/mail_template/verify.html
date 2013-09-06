@@ -1,0 +1,22 @@
+<p>
+	这是
+	<a href="dianbo.me">电波网</a>
+	的注册验证邮件，如果您没有注册，请不要理会。
+</p>
+
+<hr />
+
+<p>
+	我才不会告诉你点击这个连接就可以激活了呢！哼！<br/>
+	<a href="[%url method='vmail_check' param-vcode='{$vcode}'/%]" target="_blank">[%url method='vmail_check' param-vcode='{$vcode}'/%]</a>
+</p>
+
+<p>
+	也可以复制这个东西到激活页面完成激活：(Kira~ <br/>
+
+	<input value="{$vcode}" style="width: 100%;"/>
+</p>
+
+<p>
+	超时时间： <a>{:date('m-d H:i:s',$vtime)}</a>
+</p>

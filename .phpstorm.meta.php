@@ -8,7 +8,7 @@ namespace PHPSTORM_META {                                                 // we 
 			'UserList' instanceof \UserListModel,
 			'UserCheck' instanceof \UserCheckModel,
 			'UserRegister' instanceof \UserRegisterModel,
-			
+			'UserLogin' instanceof \UserLoginModel,
 		],
 		\ThinkInstance::InStream('') => [
 			'Post' instanceof \PostInputStream,

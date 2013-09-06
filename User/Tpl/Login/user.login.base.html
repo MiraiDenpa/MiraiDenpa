@@ -24,7 +24,7 @@
 		<sub>~ {$app.subname}(v.{$app.version})</sub>
 	</h2>
 	<h4>{$app.description}</h4>
-	
+
 	<hr/>
 
 	<div class="row">
@@ -36,23 +36,26 @@
 		</div>
 		<div id="frmLogin" class="col-md-6">
 			<form class="form-signin" type="ajax" action="[%url method='act' suffix='html'/%]" method="post">
+				<input type="hidden" name="app_auth" value="{$app.token}">
 				<legend>使用电波帐号登录</legend>
 
 				<label class="input">
-				<input type="email" id="email" name="email" class="form-control" placeholder="电子邮件" required="required" {$email?'':'autofocus="true"'} value="{$email}"/>
+				<input type="text" id="email" name="email" class="form-control" placeholder="电子邮件" required="required"
+				{$email?'':'autofocus="true"'} value="{$email}"/>
 				</label>
 				<label class="input">
-				<input type="password" id="passwd" name="passwd" class="form-control" placeholder="登录密码" required="required" {$email?'autofocus="true"':''}/>
+				<input type="password" id="passwd" name="passwd" class="form-control" placeholder="登录密码" required="required"
+				{$email?'autofocus="true"':''}/>
 				</label>
 				<label class="checkbox">
-				<input type="checkbox" name="remember" value="X"/>
+				<input type="checkbox" name="remember"/>
 				记住登录
 				</label>
 				<input class="btn btn-lg btn-primary btn-block" type="submit" value="登入"/>
 				<div class="action" style="padding-top: 20px;">
 					<a href="[%url action='Register' method='vmail'/%]" class="btn hlink" data-append="#email">激活邮箱</a>
 					<a href="[%url action='Forget' method='index'/%]" class="btn hlink" data-append-email="#email">找回密码</a>
-					
+
 					<a id="btnRegister" href="[%url action='Register' method='index'/%]" class="btn btn-info pull-right hlink" data-append-email="#email">注册帐号</a>
 				</div>
 			</form>

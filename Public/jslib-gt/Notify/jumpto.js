@@ -10,7 +10,7 @@
 		$label = $('<span/>').css({'position': 'inline-block', 'max-width': '240px'}).appendTo(line);
 		$ln = $('<a/>').appendTo(line);
 		line.append('……');
-		$('<small/>').text('取消跳转').addClass('text-muted').css({'cursor': 'pointer'}).appendTo(line).click(function (){
+		$('<small/>').text('取消').addClass('text-muted').css({'cursor': 'pointer'}).appendTo(line).click(function (){
 			$div.hide();
 			_timeout = -1;
 		});
@@ -25,6 +25,8 @@
 		if(_timeout-- > 0){
 			$counter.text(_timeout);
 			if(!_timeout){
+				$counter.html('');
+				$label.text('正在跳转…… ');
 				if(open_in_newwin){
 					window.open($ln.attr('href'));
 				} else{
