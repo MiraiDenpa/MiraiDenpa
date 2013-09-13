@@ -16,6 +16,5 @@ define('MEMORY_DEBUG', true);
 define('LESS_DEBUG', true);
 
 
-
-require dirname(__DIR__).'/defines.php';
+require dirname(__DIR__) . '/defines.php';
 include 'mytp_include.php';

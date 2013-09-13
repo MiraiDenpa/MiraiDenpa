@@ -1,9 +1,9 @@
 # Others
 sql/
-hosts
 
 # junctions
 MyThink
+hosts
 
 # compile result
 *.min.js
@@ -20,24 +20,12 @@ _runtime
 # ide settings
 .idea
 
-#############
-## Windows detritus
-#############
-
-# Windows image file caches
-Thumbs.db
-ehthumbs.db
-
-# Folder config file
-Desktop.ini
-
 # Recycle Bin used on file shares
-$RECYCLE.BIN/
 .Trash-*
-
-# Mac crap
-.DS_Store
 
 # log
 *.log
 log
+
+# host spec settings 
+defines.php
