@@ -1,4 +1,4 @@
-<layout name="!mainStruct">
+<layout name="!layouts/simple_page">
 	$title='未来电波 - 用户首页';
 </layout>
 <BrowserLib>
@@ -7,14 +7,6 @@
 	jslib-gt/formhandler.js
 	jslib-gt/enhanced_link.js
 </BrowserLib>
-<AddHeader>
-	<script type="text/javascript" wrap="ready">
-		var baseurl = $('#btnRegister').click(function (){
-			window.location.href = baseurl + '?' + $('.form-signin').serialize();
-			return false;
-		}).attr('href');
-	</script>
-</AddHeader>
 <div class="container">
 	<h2 class="form-signin-heading">
 		<a href="{$app.mainurl}" target="_blank" style="text-decoration: none;">
@@ -28,35 +20,31 @@
 	<hr/>
 
 	<div class="row">
-		<div id="permShow" class="col-md-6">
+		<div id="permShow" class="col-sm-6">
 			该应用要求以下权限：
 			<ul>
 				<li>xxx</li>
 			</ul>
 		</div>
-		<div id="frmLogin" class="col-md-6">
-			<form class="form-signin" type="ajax" action="[%url method='act' suffix='html'/%]" method="post">
-				<input type="hidden" name="app_auth" value="{$app.token}">
+		<div id="frmLogin" class="col-sm-6">
+			<form class="form-signin" type="ajax" action="[%url method='public_key_auth' suffix='html'/%]" method="post">
+				<input type="hidden" name="app_auth" value="{$app.public}">
 				<legend>使用电波帐号登录</legend>
 
 				<label class="input">
 				<input type="text" id="email" name="email" class="form-control" placeholder="电子邮件" required="required"
-				{$email?'':'autofocus="true"'} value="{$email}"/>
+				[%iif type="empty" name="email" then="autofocus=true" /%] value="{$email}"/>
 				</label>
 				<label class="input">
 				<input type="password" id="passwd" name="passwd" class="form-control" placeholder="登录密码" required="required"
-				{$email?'autofocus="true"':''}/>
-				</label>
-				<label class="checkbox">
-				<input type="checkbox" name="remember"/>
-				记住登录
+				[%iif type="empty" name="email" else="autofocus=true" /%] />
 				</label>
 				<input class="btn btn-lg btn-primary btn-block" type="submit" value="登入"/>
 				<div class="action" style="padding-top: 20px;">
 					<a href="[%url action='Register' method='vmail'/%]" class="btn hlink" data-append="#email">激活邮箱</a>
-					<a href="[%url action='Forget' method='index'/%]" class="btn hlink" data-append-email="#email">找回密码</a>
+					<a href="[%url action='Forget' method='index'/%]" class="btn hlink" data-append="#email">找回密码</a>
 
-					<a id="btnRegister" href="[%url action='Register' method='index'/%]" class="btn btn-info pull-right hlink" data-append-email="#email">注册帐号</a>
+					<a id="btnRegister" href="[%url action='Register' method='index'/%]" class="btn btn-info pull-right hlink" data-append="#email">注册帐号</a>
 				</div>
 			</form>
 		</div>

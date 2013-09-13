@@ -1,4 +1,4 @@
-<layout name="!mainStruct">
+<layout name="!layouts/simple_page">
 	$title='未来电波 - 用户注册';
 </layout>
 <BrowserLib>
@@ -39,7 +39,7 @@
 			transition: 5s;
 		}
 	</style>
-	<script type="text/javascript" wrap="ready">
+	<script type="text/javascript" wrap="ready" x="1">
 		var $frm = $('#frmRegister');
 		var invalids = {};
 		$frm.validate({
@@ -88,11 +88,6 @@
 				"uid"       : {
 					"regex" : "最少三位，第一位必须是字母或数字，不能包含 全角字符 和 / \\ ' \" : . * | < > # ! ? ",
 					"remote": "UID已经被使用"
-				},
-				"uname"     : {
-					"required" : "请输入昵称",
-					"maxlength": "昵称最多12个字",
-					"remote"   : "昵称现在有人使用"
 				},
 				"agree"     : {
 					"required": "必须接受使用协议"
@@ -173,10 +168,6 @@
 		<div class="form-group">
 			<input required="required" name="repasswd" id="repasswd" placeholder="重复密码" class="form-control" type="password" value="">
 			<label for="repasswd">重新输入密码</label>
-		</div>
-		<div class="form-group">
-			<input required="required" name="uname" id="uname" placeholder="昵称" class="form-control" type="text" value="">
-			<label for="uname">可以随时修改</label>
 		</div>
 		<div class="checkbox">
 			<label for="agree">

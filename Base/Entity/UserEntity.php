@@ -4,14 +4,39 @@ class UserEntity extends Entity{
 	public $uid;
 	public $passwd;
 	public $email;
-	public $uname;
 	public $regdate;
-	
-	public static function decrypt($data){
-		return mdecrypt($data, self::KEY);
+
+	/**
+	 * @param $name
+	 * @return UserPropertyHelper
+	 */
+	public function property($name){
+		require_once BASE_LIB_PATH . 'Helper/UserPropertyHelper.php';
+		static $c = [];
+		if(isset($c[$name])){
+			return $c[$name];
+		}
+		return $c[$name] = new UserPropertyHelper($this, $name);
+	}
+
+	/**
+	 * @param $name
+	 * @return UserSettingHelper
+	 */
+	public function setting($name){
+		require_once BASE_LIB_PATH . 'Helper/UserSettingHelper.php';
+		static $c = [];
+		if(isset($c[$name])){
+			return $c[$name];
+		}
+		return $c[$name] = new UserSettingHelper($this, $name);
 	}
 	
-	public static function encrypt($data){
-		return mencrypt($data, self::KEY);
+	public function decrypt(){
+		$this->passwd = mdecrypt($this->passwd, self::KEY);
+	}
+
+	public function encrypt(){
+		$this->passwd = mencrypt($this->passwd, self::KEY);
 	}
 }

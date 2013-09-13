@@ -34,6 +34,7 @@ $libraries = array_merge(array(
 							  'jquery'    => ['jquery/jquery.js',],
 							  'jqueryui'  => ['jquery-ui/jquery-ui.js', 'jquery-ui/jquery-ui.css'],
 							  'bootstrap' => ['bootstrap/bootstrap.js', 'bootstrap/bootstrap.css'],
+							  'debug' => ['styles/gray_background.css'],
 							  'artDialog' => [
 								  'artDialog/jquery.artDialog.js',
 								  'artDialog/artDialog.plugins.js',

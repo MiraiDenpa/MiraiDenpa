@@ -20,6 +20,7 @@ function SimpleNotify(id){
 		return this;
 	}
 
+	var _time;// 倒计时id
 	return $.extend(notify, {
 		info       : function (text, title){
 			change_content('info', text, title);
@@ -44,10 +45,9 @@ function SimpleNotify(id){
 		},
 		hideTimeout: function (timeout){
 			if(timeout){
-				var _time;
-
 				function cb(){
 					notify.hide();
+					_time = false;
 					notify.content.off('mouseenter').off('mouseleave');
 				}
 
@@ -56,6 +56,7 @@ function SimpleNotify(id){
 						opacity: 1
 					});
 					clearTimeout(_time);
+					_time = 0;
 					notify.content.on('mouseleave', o).off('mouseenter');
 				}
 
@@ -65,10 +66,13 @@ function SimpleNotify(id){
 					}).animate({
 								opacity: 0.1
 							}, timeout);
+					if(_time){
+						clearTimeout(_time);
+						notify.content.off('mouseenter');
+					}
 					_time = setTimeout(cb, timeout);
 					notify.content.off('mouseleave').on('mouseenter', i);
 				}
-
 				o();
 			} else{
 				this.hide();

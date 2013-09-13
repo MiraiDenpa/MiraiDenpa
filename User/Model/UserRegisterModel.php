@@ -1,4 +1,9 @@
 <?php
+/**
+ * 处理预注册逻辑
+ *
+ * @author ${USER}
+ */
 class UserRegisterModel extends UserListModel{
 	protected $tableName = 'verify';
 
@@ -6,13 +11,6 @@ class UserRegisterModel extends UserListModel{
 		return !$this
 				->cache('user.check.r.email' . $email, 60)
 				->where(array('email' => $email, 'etime' => ['GT', $_SERVER['REQUEST_TIME']]))
-				->count();
-	}
-
-	public function unameNotUse($uname){
-		return !$this
-				->cache('user.check.r.uname' . $uname, 60)
-				->where(array('uname' => $uname, 'etime' => ['GT', $_SERVER['REQUEST_TIME']]))
 				->count();
 	}
 

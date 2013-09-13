@@ -5,11 +5,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	
+	{__STYLE__}
 	<style>
-		body{opacity: 0;transition: opacity 1s;}
+		body{opacity: 0;transition: opacity 1s; background-color: #eee;}
 		body.loaded{opacity: 1;}
 	</style>
-	{__STYLE__}
 	{__SCRIPT__}
 	<script type="text/javascript" wrap="ready" declare="$body">
 		$body = $('body').addClass('loaded');

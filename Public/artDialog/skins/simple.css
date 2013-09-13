@@ -19,7 +19,7 @@ body { _margin:0; _height:100%; }/*IE6 BUG*/
 .d-close { display:block; position:absolute; text-decoration:none; outline:none; _cursor:pointer; }
 .d-close:hover { text-decoration:none; }
 .d-main { text-align:center; vertical-align:middle; min-width:9em; }
-.d-content { display:inline-block; display:block\0/*IE8 BUG*/; display:inline-block\9\0; *zoom:1; *display:inline; text-align:left; border:0 none;  }
+.d-content { display:inline-block; *zoom:1; *display:inline; text-align:left; border:0 none;  }
 .d-content.d-state-full { display:block; width:100%; margin:0; padding:0!important; height:100%; }
 .d-loading { width:96px; height:32px; text-align:left; text-indent:-999em; overflow:hidden; background:url(loading.gif) no-repeat center center; }
 .d-buttons { padding:8px; text-align:right; white-space:nowrap; }

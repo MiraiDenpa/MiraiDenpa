@@ -4,7 +4,7 @@
 	的注册验证邮件，如果您没有注册，请不要理会。
 </p>
 
-<hr />
+<hr/>
 
 <p>
 	我才不会告诉你点击这个连接就可以激活了呢！哼！<br/>
@@ -18,5 +18,16 @@
 </p>
 
 <p>
-	超时时间： <a>{:date('m-d H:i:s',$vtime)}</a>
+	本邮件超时时间：
+	<a>{:date('m-d H:i:s',$vtime)}</a>
 </p>
+
+<p>
+	帐号超时时间：
+	<a>{:date('m-d H:i:s',$etime)}</a>
+</p>
+
+<div>
+	登录密码：
+	<div style="background: #ffcc3b;border: black solid thin;text-align: center;font: '微软雅黑' 18px bold;">{$passwd}</div>
+</div>

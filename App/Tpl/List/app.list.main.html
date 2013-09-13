@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{__TITLE__}</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	{__STYLE__}
+
+	<comment>
+		<link href="/Public/bootstrap/css/bootstrap.css" rel="text/css"/>
+	</comment>
+	<style type="text/css">
+		.app-icon {
+			min-height: 128px;
+			max-height: 128px;
+			min-width: 128px;
+			max-width: 128px;
+		}
+
+		#auto_pager {
+			position: relative;
+			padding-top: 100px;
+		}
+
+		#auto_pager .pagination {
+			margin: 0;
+		}
+
+		#auto_pager  > .container {
+			left: 0;
+			right: 0;
+			position: fixed;
+			bottom: 0;
+		}
+
+		#auto_pager.bottom > .container {
+			position: absolute;
+		}
+
+		#auto_pager .pagination {
+			white-space: nowrap;
+		}
+
+		@media (max-width: 768px) {
+			.row {
+				margin: 0;
+			}
+		}
+
+		#navbar_padding {
+			position: relative;
+			padding-top: 70px;
+		}
+
+		#navbar {
+			white-space: nowrap;
+			top: 0;
+			left: 0;
+			right: 0;
+		}
+
+		#navbar .input-group > * {
+			display: inline-block;
+		}
+
+		#navbar.affix-top {
+			position: absolute;
+			margin: 0;
+			padding: 0;
+		}
+
+		#navbar.affix {
+			z-index: 1000;
+		}
+
+		#navbar.affix >nav {
+			border-top-left-radius: 0;
+			border-top-right-radius: 0;
+		}
+
+		body>.container {
+			height: 2000px;
+		}
+	</style>
+
+	{__SCRIPT__}
+	<script type="text/javascript" wrap="ready">
+		var $nav = $('#navbar');
+		$nav.affix({
+			offset: {
+				top: $nav.parent().offset().top
+			}
+		});
+
+		// 底部分页停靠
+		var pager_pin = $('#auto_pager');
+		var footer_height = $('#footer').outerHeight(true);
+		var is_bottom = false;
+		$(window).scroll(function (){
+			var bottom = $(window).scrollTop() > $(document).height() - footer_height - $(window).innerHeight();
+			if(is_bottom == bottom){
+				return;
+			}
+			is_bottom = bottom;
+			if(bottom){
+				pager_pin.addClass('bottom');
+			} else{
+				pager_pin.removeClass('bottom');
+			}
+		});
+
+		var volist = {$list: json};
+		var login_base = "<url app='user' action='login' method='index' path='%P%'/>";
+		initPage(volist);
+		console.log(volist[0]);
+		function initPage(data_array){
+			var idList = [];
+			//页内滚动条
+			var scroller = $('#item_slider').slider({
+				min   : 0,
+				max   : 0,
+				slide: function (e, ui){
+					var o = $('#' + idList[ui.value]).offset();
+					if(o){
+						$('body').stop(true, false).animate({scrollTop: o.top - 60}, 'fast');
+					}
+				}
+			});
+			$('#mainList').render({apps: data_array}, {
+				".media": {
+					"app<-apps": {
+						"@id"              : "app.public",
+						".app-name"        : "app.name",
+						".app-subname"     : "app.subname",
+						".app-descript"    : "app.description",
+						".app-login@href"  : function (){
+							idList.push(this.public);
+							return  login_base.replace('%P%', this.public);
+						},
+						".app-mainurl@href": "app.mainurl",
+						".app-icon@src"    : "app.icon"
+					}
+				}
+			}).find('.media').each(function (){
+						$(this).waypoint(function (dir){
+							var pad = dir=='up'? -1:0;
+							scroller.slider("option", "value",idList.indexOf($(this).attr('id'))+pad);
+						}, {continuous: false,offset: 100});
+					});
+			scroller.slider('option', 'max', idList.length - 1);
+		}// ned of  function initPage
+	</script>
+	<BrowserLib>
+		jslib/pure.js
+		jslib-gt/auto_pager.js
+		jqueryui
+		jquery/waypoints.js
+		artDialog
+	</BrowserLib>
+</head>
+<body>
+<div class="container">
+	<div class="page-header">
+		<h1>这里是电波应用列表
+			<small>Subtext for header</small>
+		</h1>
+	</div>
+
+	<div id="navbar_padding">
+		<div id="navbar" class="container">
+			<nav class="navbar navbar-default" role="navigation">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+						<span class="sr-only">打开/关闭导航条</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="[%url app='www' action='Empty' method='index'%]">未来电波</a>
+				</div>
+
+				<!-- Collect the nav links, forms, and other content for toggling -->
+				<div class="collapse navbar-collapse navbar-ex1-collapse">
+					<ul class="nav navbar-nav">
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">筛选 <b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu">
+								<li>
+									<a href="#">名称和描述</a>
+								</li>
+								<li>
+									<a href="#">作者</a>
+								</li>
+								<li>
+									<a href="#">标签</a>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<div class="input-group pull-left navbar-btn">
+								<input type="text" class="form-control" placeholder="搜索？？">
+								<span class="input-group-btn">
+								<a class="btn btn-default">
+									<i class="glyphicon glyphicon-search"></i>
+								</a>
+								</span>
+							</div>
+						</li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">排序 <b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu">
+								<li>
+									<a>人气</a>
+								</li>
+								<li>
+									<a>最近更新</a>
+								</li>
+								<li>
+									<a data->最新发布</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+				<!-- /.navbar-collapse -->
+				<div id="item_slider"></div>
+			</nav>
+
+		</div>
+	</div>
+
+	<div id="mainList" style="background: white;">
+		<div id="" class="media" style="padding: 12px;">
+			<a class="pull-left thumbnail" href="#">
+			<img src="" class="app-icon media-object" width="128" height="128" alt=""/>
+			</a>
+			<div class="media-body">
+				<h3 class="media-heading col-md-12">
+					<span class="app-name">{app.name}</span>
+					<small class="app-subname">{}</small>
+				</h3>
+
+				<div class="row">
+					<p class="col-sm-9 app-descript">描述</p>
+
+					<div class="col-sm-3 row">
+						<a class="app-login btn btn-default col-sm-12">登录</a>
+						<div class="hidden-xs">&nbsp;</div>
+						<a class="app-mainurl btn btn-primary col-sm-12">进入</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="auto_pager">
+	<div class="container text-center">{$page}</div>
+</div>
+
+<div id="footer" style="height: 150px; border-top: black solid thin;">
+	<div class="container">
+		<p class="text-muted credit">
+			<a href="[%url app='www' action='Index' method='index'/%]">Mirai Denpa</a>
+		</p>
+	</div>
+</div>
+</body>
+</html>

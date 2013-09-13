@@ -22,14 +22,11 @@ class RegisterAction extends Action{
 		->optionalAll([
 					  'email' => '',
 					  'uid'   => '',
-					  'uname' => '',
 					  ])
 		->filter('email', FILTER_VALIDATE_EMAIL)
 		->filter_callback('email', [$usrlist, 'emailNotUse'])
-		->filter_callback('uname', [$usrlist, 'unameNotUse'])
 		->filter_callback('uid', [$usrlist, 'uidNotUse'])
 		->filter_callback('email', [$register, 'emailNotUse'])
-		->filter_callback('uname', [$register, 'unameNotUse'])
 		->filter_callback('uid', [$register, 'uidNotUse']);
 		exit('true');
 	}
@@ -44,15 +41,12 @@ class RegisterAction extends Action{
 								 'uid',
 								 'passwd',
 								 'repasswd',
-								 'uname',
 								 'agree',
 								 ])
 					->filter('email', FILTER_VALIDATE_EMAIL)
 					->filter_callback('email', [$usrlist, 'emailNotUse'])
-					->filter_callback('uname', [$usrlist, 'unameNotUse'])
 					->filter_callback('uid', [$usrlist, 'uidNotUse'])
 					->filter_callback('email', [$register, 'emailNotUse'])
-					->filter_callback('uname', [$register, 'unameNotUse'])
 					->filter_callback('uid', [$register, 'uidNotUse'])
 					->getAll();
 		if($data['passwd'] !== $data['repasswd']){
