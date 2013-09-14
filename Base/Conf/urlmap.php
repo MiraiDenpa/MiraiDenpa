@@ -1,8 +1,8 @@
 <?php
 return array(
-	'user' => 'user.mirai',
-	'app' => 'app.mirai',
-	'info' => 'info.mirai',
-	'www' => 'www.mirai',
-	'weibo' => 't.mirai',
+	'user' => 'user.dianbo.me',
+	'app' => 'app.dianbo.me',
+	'info' => 'info.dianbo.me',
+	'www' => 'www.dianbo.me',
+	'weibo' => 't.dianbo.me',
 );
