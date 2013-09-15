@@ -7,8 +7,11 @@
 	
 	{__STYLE__}
 	<style>
-		body{opacity: 0;transition: opacity 1s; background-color: #eee;}
-		body.loaded{opacity: 1;}
+		body{background-color: #eee;}
+		body>#wraper{opacity: 0;transition: opacity 1s;}
+		body.loaded>#wraper{opacity: 1;}
+		body>#loading{display: block;}
+		body.loaded>#loading{display: none;}
 	</style>
 	{__SCRIPT__}
 	<script type="text/javascript" wrap="ready" declare="$body">
@@ -16,6 +19,9 @@
 	</script>
 </head>
 <body>
+<div id="wraper">
 	{__CONTENT__}
+</div>
+<div id="loading">页面正在载入～</div>
 </body>
 </html>
