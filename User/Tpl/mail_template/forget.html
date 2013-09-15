@@ -1,0 +1,21 @@
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+
+<p>
+	这是
+	<a href="[%url app='www' action='index' method=''/%]">电波网</a>
+	的密码重置验证邮件。
+</p><p>
+	如果您没有申请重置，可能密码已经被盗，请尽快更改。 </p>
+
+<hr/>
+
+<p>
+	这是验证码： <br/>
+
+	<input type="text" value="{$vcode}" disabled style="background: transparent;display: block;width: 100%;box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.42), 0 0 8px rgba(0, 41, 255, 0.6);border: none;"/>
+</p>
+
+<p>
+	本邮件超时时间：
+	<a>{:date('m-d H:i:s',$vtime)}</a>
+</p>

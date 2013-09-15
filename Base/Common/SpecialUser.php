@@ -1,11 +1,12 @@
 <?php
 class SpecialUser{
-	const TYPE_PUBLIC=1;
+	const TYPE_PUBLIC = 1;
 }
 
 function getPublicUser(){
 	return array(
 		'_id'        => 'public',
+		'type'       => SpecialUser::TYPE_PUBLIC,
 		'time'       => 0,
 		'ip'         => '0.0.0.0',
 		'user'       => '',

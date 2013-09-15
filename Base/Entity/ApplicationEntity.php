@@ -25,7 +25,7 @@ class ApplicationEntity extends Entity{
 
 	public function __construct($data){
 		foreach($data as $name => $value){
-			if(strpos($name, 'pm_')){
+			if(strpos($name, 'pm_')===0){
 				$this->_permissions[] = $name;
 			}
 		}

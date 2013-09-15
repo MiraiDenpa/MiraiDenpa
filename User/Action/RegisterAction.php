@@ -1,8 +1,8 @@
 <?php
 /**
- * User: GongT
- * Create On: 13-8-24 下午3:42
- *
+ * @default_method index
+ * @class          UserRegisterAction
+ * @author         GongT
  */
 class RegisterAction extends Action{
 	final public function index(){
@@ -16,18 +16,20 @@ class RegisterAction extends Action{
 		$usrlist  = ThinkInstance::D('UserCheck');
 		$register = ThinkInstance::D('UserRegister');
 		$get
-		->handel(function (){
-					exit('false');
-				})
-		->optionalAll([
-					  'email' => '',
-					  'uid'   => '',
-					  ])
-		->filter('email', FILTER_VALIDATE_EMAIL)
-		->filter_callback('email', [$usrlist, 'emailNotUse'])
-		->filter_callback('uid', [$usrlist, 'uidNotUse'])
-		->filter_callback('email', [$register, 'emailNotUse'])
-		->filter_callback('uid', [$register, 'uidNotUse']);
+				->handel(function (){
+						exit('false');
+					}
+				)
+				->optionalAll([
+							  'email' => '',
+							  'uid'   => '',
+							  ]
+				)
+				->filter('email', FILTER_VALIDATE_EMAIL)
+				->filter_callback('email', [$usrlist, 'emailNotUse'])
+				->filter_callback('uid', [$usrlist, 'uidNotUse'])
+				->filter_callback('email', [$register, 'emailNotUse'])
+				->filter_callback('uid', [$register, 'uidNotUse']);
 		exit('true');
 	}
 
@@ -36,22 +38,22 @@ class RegisterAction extends Action{
 		$usrlist  = ThinkInstance::D('UserCheck');
 		$register = ThinkInstance::D('UserRegister');
 		$data     = $post
-					->requireAll([
-								 'email',
-								 'uid',
-								 'passwd',
-								 'repasswd',
-								 'agree',
-								 ])
-					->filter('email', FILTER_VALIDATE_EMAIL)
-					->filter_callback('email', [$usrlist, 'emailNotUse'])
-					->filter_callback('uid', [$usrlist, 'uidNotUse'])
-					->filter_callback('email', [$register, 'emailNotUse'])
-					->filter_callback('uid', [$register, 'uidNotUse'])
-					->getAll();
-		if($data['passwd'] !== $data['repasswd']){
-			return $this->error(ERR_MISS_REPASSWORD);
-		}
+				->requireAll([
+							 'email',
+							 'uid',
+							 'passwd',
+							 'repasswd',
+							 'agree',
+							 ]
+				)
+				->filter('email', FILTER_VALIDATE_EMAIL)
+				->valid('passwd', 'length', [6,0], ERR_RANGE_PASSWORD)
+				->filter_callback('email', [$usrlist, 'emailNotUse'])
+				->filter_callback('uid', [$usrlist, 'uidNotUse'])
+				->filter_callback('email', [$register, 'emailNotUse'])
+				->filter_callback('uid', [$register, 'uidNotUse'])
+				->valid('passwd', 'is_same', 'repasswd', ERR_MISS_REPASSWORD)
+				->getAll();
 
 		if($register->register($data)){
 			return $this->success('注册成功', UI('vmail', ['email' => $data['email']]));
@@ -75,9 +77,9 @@ class RegisterAction extends Action{
 		$register = ThinkInstance::D('UserRegister');
 		$post     = ThinkInstance::InStream('Post');
 		$email    = $post
-					->required('email')
-					->filter('email', FILTER_VALIDATE_EMAIL)
-					->get('email');
+				->required('email')
+				->filter('email', FILTER_VALIDATE_EMAIL)
+				->get('email');
 
 		$code = $register->getCode($email);
 		if(!$code){
@@ -89,13 +91,14 @@ class RegisterAction extends Action{
 		$mail->IsHTML();
 		$mail->IsSMTP();
 		$mail->AddAddress($user['email'], $user['uname']);
-		$mail->SMTPAuth    = true;
-		$mail->Username    = '030@dianbo.me';
-		$mail->From        = '030@dianbo.me';
-		$mail->FromName    = '电波娘';
-		$mail->Password    = '3DiV66ggSND9';
-		$mail->Host        = 'smtp.exmail.qq.com:465';
-		$mail->SMTPSecure  = 'ssl';
+		$mail->SMTPAuth = true;
+
+		$mail->Username    = MAIL_USER;
+		$mail->Password    = MAIL_PASSWORD;
+		$mail->From        = MAIL_FROM;
+		$mail->FromName    = MAIL_FROM_NAME;
+		$mail->Host        = MAIL_HOST;
+		$mail->SMTPSecure  = MAIL_HOST_SECURE;
 		$mail->CharSet     = 'UTF-8';
 		$mail->ContentType = 'text/html';
 
@@ -123,7 +126,10 @@ class RegisterAction extends Action{
 		$user     = $register->getUserByCode($_GET['vcode']);
 
 		if(!$user){
-			return $this->error($register->getErrorCode(), $register->getError(), ['重发邮件', UI('vmail',[],false)]);
+			return $this->error($register->getErrorCode(),
+								$register->getError(),
+								['重发邮件', UI('vmail_send', [], false)]
+			);
 		}
 		$usrlist = ThinkInstance::D('UserLogin');
 
@@ -131,7 +137,7 @@ class RegisterAction extends Action{
 		if($succ){
 			$register->delete();
 			$this->success('帐号可以使用！', U('login', 'index'));
-		}else{
+		} else{
 			$this->error(ERR_SQL, '请联系管理员解决。');
 		}
 		return null;

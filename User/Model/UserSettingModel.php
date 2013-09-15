@@ -1,5 +1,6 @@
 <?php
-class UserSettingModel extends Mongoo{
-	protected $collectionName = 'setting';
-	protected $connection = 'mongo-user';
+class UserSettingModel extends Model{
+	protected $connection = 'user';
+	protected $tableName = 'setting';
+	protected $pk = 'uid';
 }

@@ -22,10 +22,12 @@ class UserRegisterModel extends UserListModel{
 	}
 
 	public function register($data){
-		$this
-		->where(array('etime' => ['LT', $_SERVER['REQUEST_TIME']]))
-		->delete();
-		$data['etime'] = $_SERVER['REQUEST_TIME'] + 60*60*24*2;
+		if(!isset($data['etime'])){
+			$this
+					->where(array('etime' => ['LT', $_SERVER['REQUEST_TIME']]))
+					->delete();
+			$data['etime'] = $_SERVER['REQUEST_TIME'] + 60*60*24*2; // 注册帐号超时时间，超时后会被删除，需要重新注册
+		}
 		return $this->add($data);
 	}
 
@@ -35,12 +37,12 @@ class UserRegisterModel extends UserListModel{
 				->find();
 		if(!$user){
 			$this->errorCode = ERR_NF_USER;
-			$this->error     = '可能没有注册或者已经验证。';
+			$this->error     = '试图验证的邮箱并没有提交过请求（没有注册？）。';
 			return null;
 		}
 		if($user['etime'] < $_SERVER['REQUEST_TIME']){
 			$this->errorCode = ERR_TIMEOUT;
-			$this->error     = '帐号验证超时，请重新注册。';
+			$this->error     = '帐号验证超时。';
 			$this->delete($user['uid']);
 			$this->clear();
 			return null;
@@ -52,7 +54,7 @@ class UserRegisterModel extends UserListModel{
 		}
 		$code                = sha1(rand() . serialize($user));
 		$this->data['vcode'] = $code;
-		$this->data['vtime'] = $_SERVER['REQUEST_TIME'] + 300;
+		$this->data['vtime'] = $_SERVER['REQUEST_TIME'] + 300; // 验证邮件有效期，同时是2个邮件之间的间隔
 
 		return $code;
 	}

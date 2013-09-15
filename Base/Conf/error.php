@@ -17,8 +17,10 @@ return array(
 	['NALLOW_HTTP_METHOD', '不允许的请求方式', '客户端错误。'],
 	['NALLOW_PATH', '不允许的请求路径', '客户端错误。'],
 	['NALLOW_EDIT_OTHER', '不能修改其他用户的信息', '都是年轻时犯下的错误。'],
-	
+	['NALLOW_MISS_PATH', 'url不全', '应为 \x\y 的形式。'],
+
 	['MISS_PASSWORD', '密码错误', '请重新输入。', ['找回密码' => _UC('user', 'forget', 'index')]],
+	['MISS_EMAIL', '邮箱地址错误', '请重新输入。'],
 	['MISS_REPASSWORD', '重复密码错误', '请确认两次密码输入相同。'],
 	
 	['INPUT_TYPE', '输入变量类型不符', '客户端程序问题。'],
@@ -40,6 +42,7 @@ return array(
 	['NO_SQL', '数据库错误', '请联系管理员解决。'],
 	
 	['RANGE_PAGE', '不是正确的页码', '页码最低为 1。'],
+	['RANGE_PASSWORD', '密码长度不够', '最少6位。'],
 	
 	['JSON_SERIALIZE', '序列化失败', '这是个严重错误。'],
 	

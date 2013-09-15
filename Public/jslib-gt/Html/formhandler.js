@@ -1,10 +1,21 @@
+"use strict";
+
 $(function (){
-	$('form[type=ajax]').each(function (){
+	var no_ajax_submit = false;
+	var frmCnt = $('form[type=ajax]').each(function (){
 		$(this).removeAttr('type').submit(function (e){
+			if(no_ajax_submit){
+				return true;
+			}
 			e.preventDefault();
 			$(this).ajaxSubmit();
 		});
-	});
+	}).length;
+	if(frmCnt){
+		window.disableAutoAjax = function (arg){
+			no_ajax_submit = arg !== false;
+		}
+	}
 });
 
 $.fn.ajaxSubmit = function (){
@@ -52,15 +63,15 @@ $.fn.ajaxSubmit = function (){
 				if(json.code){
 					if(json.jumpurl){
 						notify.hide();
-						window.location.jumpto(json.jumpurl, json.timeout, null, json.message, 'error', target);
+						window.location.jumpto(json.jumpurl, json.timeout, json.jumpname, json.message, 'error', target);
 						return;
 					} else{
 						notify.error(json.extra? json.extra : json.info, json.name + ': ' + json.message);
 					}
 				} else if(json.code === 0){
 					if(json.jumpurl){
-						notify.hide('slideUp',2000);
-						window.location.jumpto(json.jumpurl, json.timeout, null, json.message, 'success', target);
+						notify.hide('slideUp', 2000);
+						window.location.jumpto(json.jumpurl, json.timeout, json.jumpname, json.message, 'success', target);
 						return;
 					} else{
 						notify.success(json.extra? json.extra : json.info, json.message);

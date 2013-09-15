@@ -22,7 +22,9 @@ class UserLoginModel extends UserListModel{
 
 	protected function EncryptPassword(&$data, $opt){
 		if(isset($data['passwd']) && $data['passwd']){
-			$data['passwd'] = UserEntity::encrypt($data['passwd']);
+			$user = new UserEntity($data);
+			$user->encrypt();
+			$data['passwd'] = $user->passwd;
 		}
 	}
 

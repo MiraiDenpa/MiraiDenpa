@@ -20,23 +20,23 @@ class UserEntity extends Entity{
 	}
 
 	/**
-	 * @param $name
-	 * @return UserSettingHelper
+	 * @return UserSettingEntity
 	 */
-	public function setting($name){
-		require_once BASE_LIB_PATH . 'Helper/UserSettingHelper.php';
-		static $c = [];
-		if(isset($c[$name])){
-			return $c[$name];
+	public function settings(){
+		static $c = null;
+		if($c){
+			return $c;
 		}
-		return $c[$name] = new UserSettingHelper($this, $name);
+		return $c = new UserSettingEntity($this);
 	}
 	
 	public function decrypt(){
 		$this->passwd = mdecrypt($this->passwd, self::KEY);
+		return $this;
 	}
 
 	public function encrypt(){
 		$this->passwd = mencrypt($this->passwd, self::KEY);
+		return $this;
 	}
 }

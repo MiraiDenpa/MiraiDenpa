@@ -8,10 +8,10 @@ class UserPropertyHelper{
 	/** @var \UserEntity */
 	protected $ent;
 	protected $name;
+	protected $uid;
 
 	/** @var UserPropertyModel */
 	protected static $mdl;
-	protected static $change;
 
 	public function __construct(UserEntity &$ent, $pname){
 		$this->ent  = & $ent;

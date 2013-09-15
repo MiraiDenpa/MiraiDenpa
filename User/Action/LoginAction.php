@@ -1,8 +1,8 @@
 <?php
 /**
- * User: GongT
- * Create On: 13-8-24 下午3:42
- *
+ * @default_method index
+ * @class UserLoginAction
+ * @author GongT
  */
 class LoginAction extends Action{
 	final public function index($pubid = 'MiraiDenpaInfo'){
@@ -70,7 +70,7 @@ class LoginAction extends Action{
 		$saveData['app']        = $app->public;
 		
 		foreach($app->getPermissions() as $perm){
-			$saveData[$perm]    = parse_permission($perm);
+			$saveData[$perm]    = parse_permission((int)$app->$perm);
 		}
 
 		$token           = sha1(time() . $user->uid . $app->public);

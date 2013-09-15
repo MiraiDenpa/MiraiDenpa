@@ -1,4 +1,9 @@
 <?php
+/**
+ * @default_method index
+ * @class AppListAction
+ * @author GongT
+ */
 class ListAction extends Action{
 	const OrderPopular = 0;
 	const OrderUpdate  = 1;

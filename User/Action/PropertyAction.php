@@ -1,7 +1,11 @@
 <?php
+/**
+ * @default_method
+ * @class UserPropertyAction
+ * @author GongT
+ */
 class PropertyAction extends Action{
 	use UserAuthedAction;
-
 	protected $allow_public = true;
 
 	/**
@@ -21,7 +25,7 @@ class PropertyAction extends Action{
 		$permission = $this->user['pm_user'];
 
 		if($target == 'me'){
-			if($this->special == SpecialUser::TYPE_PUBLIC){
+			if($this->user['type'] == SpecialUser::TYPE_PUBLIC){
 				return $this->error(ERR_FAIL_AUTH, 'public not allow(at me)');
 			}
 			$user = $this->getUser();
