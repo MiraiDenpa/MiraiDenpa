@@ -6,7 +6,56 @@
 	jslib-gt/viewpass.js
 	jslib-gt/formhandler.js
 	jslib-gt/enhanced_link.js
+	jslib-gt/gravatar.js
+	pure
 </BrowserLib>
+<AddHeader>
+	<style type="text/css">
+		#fast_login ul{
+			margin: 0;
+		}
+		#fast_login li{
+			list-style: none;
+			padding-bottom: 5px;
+		}
+		#fast_login li:last-child{
+			padding-bottom: 0;
+		}
+		#fast_login input.sel{
+			margin: 4px;
+		}
+		#fast_login label{
+			display: block;
+			padding: 10px 10px;
+			cursor: pointer;
+		}
+		#fast_login label:hover{
+			background-color: #fff1be;
+		}
+	</style>
+	<script type="text/javascript">
+		function prepare_fast_login(data){
+			if(!data.list || !data.list.length){
+				return;
+			}
+			$(function (){
+				var container = $('#fast_login').removeClass('hide');
+				container.render({list:data.list}, {
+					'.panel-body>li': {
+						'itr<-list': {
+							'input@value'   : 'itr.1',
+							'span'   : 'itr.0',
+							'img@src': function(){
+								return $.gravatar(this[1],{size:32,default:'identicon'});
+							}
+						}
+					}
+				});
+			});
+		}
+	</script>
+	<script type="text/javascript" src="[%url method='get_session' suffix='jsonp'/%]?{:VAR_JSONP_HANDLER}=prepare_fast_login"></script>
+</AddHeader>
 <div class="container">
 	<h2 class="form-signin-heading">
 		<a href="{$app.mainurl}" target="_blank" style="text-decoration: none;">
@@ -23,7 +72,9 @@
 		<div id="permShow" class="col-sm-6">
 			该应用要求以下权限：
 			<ul>
-				<li>xxx</li>
+				<volist name=":ApplicationEntity::getPermissions()" id="name">
+					{:parse_permission_html($name, $app[$key], $key)}
+				</volist>
 			</ul>
 		</div>
 		<div id="frmLogin" class="col-sm-6">
@@ -39,6 +90,10 @@
 				<input type="password" id="passwd" name="passwd" class="form-control" placeholder="登录密码" required="required"
 				[%iif type="empty" name="email" else="autofocus=true" /%] />
 				</label>
+				<label class="checkbox" title="是否自动登录由应用决定。">
+				<input type="checkbox" id="add_fast_login" name="add_fast_login" value="on"/>
+				记住帐号，下次使用快速登录。
+				</label>
 				<input class="btn btn-lg btn-primary btn-block" type="submit" value="登入"/>
 				<div class="action" style="padding-top: 20px;">
 					<a href="[%url action='Register' method='vmail'/%]" class="btn hlink" data-append="#email">激活邮箱</a>
@@ -46,6 +101,24 @@
 					<a href="[%url app='app' action='List' method='index'/%]" class="btn">应用列表</a>
 
 					<a id="btnRegister" href="[%url action='Register' method='index'/%]" class="btn btn-info pull-right hlink" data-append="#email">注册帐号</a>
+				</div>
+			</form>
+			<div class="clearfix" style="padding: 20px"></div>
+			<form action="[%url method='fast_login'/%]" id="fast_login" class="hide panel panel-success" method="post">
+				<input type="hidden" name="app_auth" value="{$app.public}">
+				<div class="panel-heading">快速登录</div>
+				<ul class="panel-body">
+					<li>
+						<label>
+						<input name="fast_login" class="sel" value="" type="radio"/>
+						<img style="height: 32px;width: 32px;"/>
+						<span></span>
+						</label>
+					</li>
+				</ul>
+				<div class="panel-footer text-left">
+					<a href="[%url method='erase_fast_login'/%]" class="btn btn-link pull-right hlink" data-ask="清除当前保存的快速登录用户？">清除</a>
+					<input type="submit" class="btn btn-info" value="登录"/>
 				</div>
 			</form>
 		</div>

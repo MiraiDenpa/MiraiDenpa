@@ -12,10 +12,10 @@ if(is_file(dirname(__DIR__) . '/status.php')){
 	define('SHOW_TRACE', true);
 	define('TRACE_DEBUG', false);
 	define('TMPL_NO_CACHE', true);
-	define('TMPL_READABLE', false);
-	define('JS_DEBUG', false);
+	define('TMPL_READABLE', true);
+	define('JS_DEBUG', true);
 	define('STATIC_DEBUG', true);
-	define('MEMORY_DEBUG', false);
+	define('MEMORY_DEBUG', true);
 	define('LESS_DEBUG', true);
 }
 

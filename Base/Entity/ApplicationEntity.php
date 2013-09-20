@@ -20,19 +20,14 @@ class ApplicationEntity extends Entity{
 	public $pm_file;
 	public $pm_weibo;
 	public $pm_account;
-	
-	protected $_permissions = [];
+	public $pm_relation;
 
-	public function __construct($data){
-		foreach($data as $name => $value){
-			if(strpos($name, 'pm_')===0){
-				$this->_permissions[] = $name;
-			}
-		}
-		parent::__construct($data);
-	}
-	
-	public function getPermissions(){
-		return $this->_permissions;
+	public static function getPermissions(){
+		return ['pm_user'     => '用户资料',
+				'pm_file'     => '文件',
+				'pm_weibo'    => '分享内容',
+				'pm_account'  => '帐号',
+				'pm_relation' => '好友列表',
+		];
 	}
 }

@@ -1,8 +1,8 @@
 (function (){
 	"use strict";
 
-	$.fn.hlink = function (option){
-		option = $.extend({
+	$.fn.hlink = function (opt){
+		opt = $.extend({
 			href   : '',
 			preview: '',
 			append : [],
@@ -11,21 +11,18 @@
 			method : '',
 			path   : {},
 			ask    : ''
-		}, option);
-		this.each(function (){
+		}, opt);
+		this.addClass('hlink').each(function (){
+			var option = $.extend({}, opt);
 			var self = $(this);
-			var href, preview, ask;
 			var i, arr;
 
 			// 替换连接
 			if(self.data('href')){
-				href = self.data('href');
-			} else if(option.href){
-				href = option.href;
+				option.href = self.data('href');
 			} else{
-				href = self.attr('href');
+				option.href = self.attr('href');
 			}
-			delete option.href;
 
 			if(self.data('app')){
 				option.app = self.data('app');
@@ -99,48 +96,41 @@
 
 			// 跳转确认
 			if(self.data('ask')){
-				ask = self.data('ask');
-			} else if(option.ask){
-				ask = option.ask;
+				option.ask = self.data('ask');
 			}
+
 			// 鼠标指向，自动预览
 			if(self.data('preview')){
-				preview = self.data('preview');
-			} else if(option.preview){
-				preview = option.preview;
+				option.preview = self.data('preview');
 			} else if(self.hasClass('hlink-preview')){
-				preview = href;
+				option.preview = option.href;
 			}
 
-			self.click(function (e){
-				var cb = function (){
-					var _href = $.modifyUrl(href, option);
-					if(e.which == 2){
-						window.open(_href);
-					} else{
-						window.location.href = _href;
-					}
-				};
-				if(ask){
-					$.dialog.confirm(ask, cb, '取消').title('电波娘如此询问道：');
-				} else{
-					cb();
-				}
-				return false;
-			});
-
-			if(preview){
-				self.mouseenter(function (){
-
-				}).mouseleave(function (){
-
-						});
-			}
-
-			//window.location.href=$(this).attr('href')+'?email='+$('#email').val();
-			//return false;
+			self.data('hlink', option);
 		});
 	};
+
+	$(document).on('click', '.hlink', function (e){
+		var option = $(this).data('hlink');
+		if(!option && /^a|button$/i.test(this.tagName)){
+			$(this).hlink();
+			var option = $(this).data('hlink');
+		}
+		var cb = function (){
+			var _href = $.modifyUrl(option.href, option);
+			if(e.which == 2){
+				window.open(_href);
+			} else{
+				window.location.href = _href;
+			}
+		};
+		if(option.ask){
+			$.dialog.confirm(option.ask, cb, '取消').title('电波娘如此询问道：');
+		} else{
+			cb();
+		}
+		return false;
+	});
 })();
 $(function (){
 	$('a.hlink,button.hlink').hlink();
