@@ -186,7 +186,8 @@
 	(function (window){
 		// 持续处理动态内容
 		var url = $.modifyUrl('', {}, true);
-		url['path'] = $.parseJSON('{$filters|array_values|json_encode}');
+		url['path'] = ['{$filters.order}', '{$filters.desc}', '{$filters.search_for}', '{$filters.pattern}'];
+		path = null;
 		$('#mainpager').on('page', function (e, page){
 			url.path[4] = page;
 			title[1] = '(第' + page + '页)';
