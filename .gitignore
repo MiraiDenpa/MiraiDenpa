@@ -29,3 +29,5 @@ log
 
 # host spec settings 
 defines.php
+status.php
+
