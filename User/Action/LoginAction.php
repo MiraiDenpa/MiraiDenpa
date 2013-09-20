@@ -71,7 +71,7 @@ class LoginAction extends Action{
 		if($data['add_fast_login']){
 			session_start();
 			if(!$_SESSION['current_login'] || !in_array($user->email, $_SESSION['current_login'])){
-				$_SESSION['current_login'][] = [$user->uid, $ahash];
+				$_SESSION['current_login'][] = [$user->uid, md5(strtolower(trim($user->email)))];
 			}
 		}
 		$this->saveLoginState($user, $app);
@@ -146,7 +146,7 @@ class LoginAction extends Action{
 		$saveData['ip']    = get_client_ip();
 		$saveData['user']  = $user->uid;
 		$saveData['email'] = $user->email;
-		$saveData['ahash'] = $ahash = md5(strtolower(trim($user->email)));
+		$saveData['ahash'] = md5(strtolower(trim($user->email)));
 		$saveData['app']   = $app->public;
 
 		foreach(ApplicationEntity::getPermissions() as $perm => $name){

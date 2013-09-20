@@ -14,6 +14,5 @@ $.gravatar = function(hash,opt){
 	return 'http://www.gravatar.com/avatar/'+hash+param;
 };
 $.fn.gravatar = function(hash,opt){
-
-	hash
+	return hash;
 };
