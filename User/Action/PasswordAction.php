@@ -14,7 +14,7 @@ class PasswordAction extends Action{
 		if(!$user['pm_account'][PERM_UPDATE]){
 			return $this->error(ERR_FAIL_PERMISSION, PERM_UPDATE);
 		}
-		$this->assign('app_url', $this->getApp()->mainurl);
+		$this->assign('app_url', $this->currentApp()->mainurl);
 		return $this->display('index');
 	}
 
@@ -24,7 +24,7 @@ class PasswordAction extends Action{
 			return $this->error(ERR_FAIL_PERMISSION, PERM_UPDATE);
 		}
 		$user      = $this
-				->getUser()
+				->currentUser()
 				->decrypt();
 		$post      = ThinkInstance::InStream('Post');
 		$newpasswd = $post

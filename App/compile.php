@@ -4,15 +4,15 @@ define('APP_NAME', 'app');
 define('APP_PATH', __DIR__ . '/');
 define('LIB_PATH', APP_PATH);
 
-define('APP_DEBUG', false);
+define('APP_DEBUG', true);
 define('CORE_DEBUG', true);
-define('SHOW_TRACE', false);
+define('SHOW_TRACE', true);
 define('TRACE_DEBUG', false);
-define('TMPL_NO_CACHE', false);
-define('TMPL_READABLE', false);
-define('JS_DEBUG', false);
-define('STATIC_DEBUG', false);
-define('MEMORY_DEBUG', false);
+define('TMPL_NO_CACHE', true);
+define('TMPL_READABLE', true);
+define('JS_DEBUG', true);
+define('STATIC_DEBUG', true);
+define('MEMORY_DEBUG', true);
 define('LESS_DEBUG', true);
 
 

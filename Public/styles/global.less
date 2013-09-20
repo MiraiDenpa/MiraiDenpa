@@ -1,1 +1,17 @@
 @import '../basevar.less';
+
+.gt-switcher {
+	span {
+		display: none;
+		&:first-child {
+			display: inline;
+		}
+	}
+	&.loaded span {
+		display: none;
+	}
+}
+
+a {
+	cursor: pointer;
+}

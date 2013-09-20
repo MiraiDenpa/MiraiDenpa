@@ -1,12 +1,21 @@
 <?php
 trait UserAuthedAction{
+	use UserAction;
 	protected $token;
 	/** @var $uol UserOnlineModel */
 	protected $uol;
 	
 	protected $user;
 
-	public function __UserAuthedAction(){
+	/* cache */
+	private $current_user;
+	private $current_app;
+	
+	/**
+	 * @constructor
+	 * @return void
+	 */
+	protected function __UserAuthedAction(){
 		if(!isset($_GET['token'])){
 			Think::fail_error(ERR_INPUT_REQUIRE, 'token');
 		}
@@ -17,20 +26,17 @@ trait UserAuthedAction{
 	/**
 	 * @return ApplicationEntity
 	 */
-	public function getApp(){
-		static $us;
-		if($us) return $us;
+	protected function currentApp(){
+		if($this->current_app) return $this->current_app;
 		$mdl = ThinkInstance::D('AppList');
-		return $us = $mdl->where($this->user['app'])->getApp();
+		return $this->current_app = $mdl->where($this->user['app'])->getApp();
 	}
 
 	/**
 	 * @return UserEntity
 	 */
-	public function getUser(){
-		static $us;
-		if($us) return $us;
-		$mdl = ThinkInstance::D('UserLogin');
-		return $us = $mdl->where($this->user['user'])->getUser();
+	protected function currentUser(){
+		if($this->current_user) return $this->current_user;
+		return $this->current_user = $this->getUser($this->user['user']);
 	}
 }

@@ -1,30 +1,45 @@
 <?php
 /**
  * @default_method index
- * @class AppListAction
- * @author GongT
+ * @class          AppListAction
+ * @author         GongT
  */
 class ListAction extends Action{
+	// order
 	const OrderPopular = 0;
 	const OrderUpdate  = 1;
 	const OrderPublish = 2;
 
+	// search_for
 	const SearchContent = 0;
 	const SearchAuthor  = 1;
 	const SearchTag     = 2;
 
-	final public function index($search_for = null, $pattern = null, $order = self::OrderPopular, $desc = true){
+	final public function index($order = self::OrderPopular, $desc = true, $search_for = null, $pattern = null, $p = 0){
 		$list = ThinkInstance::D('AppList');
-
+		if(!isset($_GET['_PAGE_'])){
+			$_GET['_PAGE_'] = $p;
+		}
 		$data = $list
 				->field('key', true)
 				->where($this->parseCondition($search_for, $pattern))
 				->order($this->parseOrder($order, $desc))
-				->page()
+				->page('_PAGE_')
 				->select();
 		$page = $list->getPage();
+		$param = $this->dispatcher->param;
+		$param[4] = '__PAGE__';
+		$page->url = U(ACTION_NAME,METHOD_NAME,$param);
+		$this->assign('filters',
+					  [
+					  'order'      => $order,
+					  'desc'       => $desc? 'desc' : 'asc',
+					  'search_for' => $search_for,
+					  'pattern'    => $pattern,
+					  ]
+		);
 
-		$this->assign('page', $page);
+		$this->assign('page', $page->showArray());
 		$this->assign('list', $data);
 		$this->display('main');
 	}
@@ -46,19 +61,28 @@ class ListAction extends Action{
 		return $condition;
 	}
 
-	private function parseOrder($order, $desc){
+	private function parseOrder($order, &$desc){
 		switch($order){
 		case self::OrderPublish:
-			$ret= 'reg_date';
+			$ret = 'reg_date';
 			break;
 		case self::OrderUpdate:
-			$ret= 'date';
+			$ret = 'date';
 			break;
 		case self::OrderPopular:
 		default:
-			$ret= 'popular';
+			$ret = 'popular';
 			break;
 		}
-		return $ret.($desc?' desc':' asc');
+		if($desc == 'desc'){
+			$desc = true;
+		}elseif($desc == 'asc'){
+			$desc = false;
+		}elseif($desc == '1'){
+			$desc = true;
+		}elseif($desc == '0'){
+			$desc = false;
+		}
+		return $ret . ($desc? ' desc' : ' asc');
 	}
 }

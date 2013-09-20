@@ -28,7 +28,7 @@ class PropertyAction extends Action{
 			if($this->user['type'] == SpecialUser::TYPE_PUBLIC){
 				return $this->error(ERR_FAIL_AUTH, 'public not allow(at me)');
 			}
-			$user = $this->getUser();
+			$user = $this->currentUser();
 		} else{
 			if($this->dispatcher->request_method !== 'GET'){
 				return $this->error(ERR_NALLOW_EDIT_OTHER, $target);

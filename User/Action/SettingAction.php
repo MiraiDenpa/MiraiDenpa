@@ -13,7 +13,7 @@ class SettingAction extends Action{
 
 	final function __call($option_name, $args){
 		$permission = $this->user['pm_user'];
-		$user = $this->getUser();
+		$user = $this->currentUser();
 		$pp = $user->settings();
 		if(!isset($pp->$option_name)){
 			return $this->error(ERR_NALLOW_PATH, $option_name);
@@ -31,6 +31,9 @@ class SettingAction extends Action{
 			}
 			if(!is_scalar($_POST['value'])){
 				return $this->error(ERR_INPUT_DENY, 'value must scalar.');
+			}
+			if(!$permission[PERM_UPDATE]){
+				return $this->error(ERR_FAIL_PERMISSION, PERM_UPDATE);
 			}
 			$pp->$option_name = $_POST['value'];
 			if($pp->force_save()){

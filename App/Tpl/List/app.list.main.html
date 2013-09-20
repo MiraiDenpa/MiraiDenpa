@@ -1,92 +1,97 @@
-<?php $title="电波应用列表 - OwO";?>
-<!DOCTYPE html>
+<?php $title = "电波应用列表 - OwO"; ?><!DOCTYPE html>
 <html>
 <head>
-	<title>{__TITLE__}</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>{__TITLE__}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-	{__STYLE__}
+{__STYLE__}
 
-	<comment>
-		<link href="/Public/bootstrap/css/bootstrap.css" rel="text/css"/>
-	</comment>
-	<style type="text/css">
-		.app-icon {
-			min-height: 128px;
-			max-height: 128px;
-			min-width: 128px;
-			max-width: 128px;
-		}
+<comment>
+	<link href="/Public/bootstrap/css/bootstrap.css" rel="text/css"/>
+</comment>
+<style type="text/css">
+	.app-icon {
+		min-height: 128px;
+		max-height: 128px;
+		min-width: 128px;
+		max-width: 128px;
+	}
 
-		#auto_pager {
-			position: relative;
-			padding-top: 100px;
-		}
+	#auto_pager {
+		position: relative;
+		padding-top: 100px;
+	}
 
-		#auto_pager .pagination {
+	#auto_pager .pagination {
+		margin: 0;
+	}
+
+	#auto_pager  > .container {
+		left: 0;
+		right: 0;
+		position: fixed;
+		bottom: 0;
+	}
+
+	#auto_pager.bottom > .container {
+		position: absolute;
+	}
+
+	#auto_pager .pagination {
+		white-space: nowrap;
+	}
+
+	@media (max-width: 768px) {
+		.row {
 			margin: 0;
 		}
+	}
 
-		#auto_pager  > .container {
-			left: 0;
-			right: 0;
-			position: fixed;
-			bottom: 0;
-		}
+	#navbar_padding {
+		position: relative;
+		padding-top: 70px;
+	}
 
-		#auto_pager.bottom > .container {
-			position: absolute;
-		}
+	#navbar {
+		white-space: nowrap;
+		top: 0;
+		left: 0;
+		right: 0;
+	}
 
-		#auto_pager .pagination {
-			white-space: nowrap;
-		}
+	#navbar .input-group > * {
+		display: inline-block;
+	}
 
-		@media (max-width: 768px) {
-			.row {
-				margin: 0;
-			}
-		}
+	#navbar.affix-top {
+		position: absolute;
+		margin: 0;
+		padding: 0;
+	}
 
-		#navbar_padding {
-			position: relative;
-			padding-top: 70px;
-		}
+	#navbar.affix {
+		z-index: 1000;
+	}
 
-		#navbar {
-			white-space: nowrap;
-			top: 0;
-			left: 0;
-			right: 0;
-		}
+	#navbar.affix >nav {
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
 
-		#navbar .input-group > * {
-			display: inline-block;
-		}
+	.media:hover {
+		background-color: #ffeabb;
+	}
 
-		#navbar.affix-top {
-			position: absolute;
-			margin: 0;
-			padding: 0;
-		}
+	.media.focus {
+		background-color: #ffeabb;
+	}
+</style>
 
-		#navbar.affix {
-			z-index: 1000;
-		}
-
-		#navbar.affix >nav {
-			border-top-left-radius: 0;
-			border-top-right-radius: 0;
-		}
-
-		body>.container {
-			height: 2000px;
-		}
-	</style>
-
-	{__SCRIPT__}
-	<script type="text/javascript" wrap="ready">
+{__SCRIPT__}
+<script type="text/javascript" wrap="ready">
+	(function (window){
+		// 初始化页面
 		var $nav = $('#navbar');
 		$nav.affix({
 			offset: {
@@ -111,55 +116,161 @@
 			}
 		});
 
-		var volist = {$list: json};
 		var login_base = "<url app='user' action='login' method='index' path='%P%'/>";
-		initPage(volist);
-		console.log(volist[0]);
-		function initPage(data_array){
-			var idList = [];
-			//页内滚动条
-			var scroller = $('#item_slider').slider({
-				min   : 0,
-				max   : 0,
-				slide: function (e, ui){
-					var o = $('#' + idList[ui.value]).offset();
-					if(o){
-						$('body').stop(true, false).animate({scrollTop: o.top - 60}, 'fast');
-					}
+		var idList = [];// [ public1, public2, ... ] 
+
+		//页内滚动条
+		var scroll_prev, lock_reflect = false;
+		var scroller = $('#item_slider').slider({
+			min  : 0,
+			max  : 0,
+			slide: function (e, ui){
+				if(scroll_prev){
+					scroll_prev.removeClass('focus');
 				}
-			});
-			$('#mainList').render({apps: data_array}, {
-				".media": {
-					"app<-apps": {
-						"@id"              : "app.public",
-						".app-name"        : "app.name",
-						".app-subname"     : "app.subname",
-						".app-descript"    : "app.description",
-						".app-login@href"  : function (){
-							idList.push(this.public);
-							return  login_base.replace('%P%', this.public);
-						},
-						".app-mainurl@href": "app.mainurl",
-						".app-icon@src"    : "app.icon"
-					}
-				}
-			}).find('.media').each(function (){
-						$(this).waypoint(function (dir){
-							var pad = dir=='up'? -1:0;
-							scroller.slider("option", "value",idList.indexOf($(this).attr('id'))+pad);
-						}, {continuous: false,offset: 100});
+				scroll_prev = $('#' + idList[ui.value]).addClass('focus');
+				var o = scroll_prev.offset();
+				if(o){
+					lock_reflect = true;
+					$('body').stop(true, false).animate({scrollTop: o.top - 70}, 'easeInOutQuad', function (){
+						lock_reflect = false;
 					});
+				}
+			}
+		});
+
+		//到达顶端，取消页面中的高亮
+		$('#navbar_padding').waypoint(function (dir){
+			if(dir == 'up' && scroll_prev){
+				scroll_prev.removeClass('focus');
+				scroll_prev = null;
+			}
+		});
+
+		function initPage(json){
+			// 生成页面
+			idList = [];
+			$('#mainList').render({apps: json['list']}, TEMPLATE).find('.media').each(function (){
+				$(this).waypoint(function (dir){
+					if(lock_reflect){
+						return;
+					}
+					var pad = dir == 'up'? -1 : 0;
+					scroller.slider("option", "value", idList.indexOf($(this).attr('id')) + pad);
+				}, {continuous: false, offset: 100});
+			});
+			$('#mainpager').pager(json['page']);
+
 			scroller.slider('option', 'max', idList.length - 1);
 		}// ned of  function initPage
-	</script>
-	<BrowserLib>
-		jslib/pure.js
-		jslib-gt/auto_pager.js
-		jqueryui
-		jquery/waypoints.js
-		artDialog
-		styles/gray_background.css
-	</BrowserLib>
+
+		//渲染列表
+		var TEMPLATE = $('#mainList').compile({
+			".media": {
+				"app<-apps": {
+					"@id"              : "app.public",
+					".app-name"        : "app.name",
+					".app-subname"     : "app.subname",
+					".app-descript"    : "app.description",
+					".app-login@href"  : function (){
+						idList.push(this.public);
+						return  login_base.replace('%P%', this.public);
+					},
+					".app-mainurl@href": "app.mainurl",
+					".app-icon@src"    : "app.icon"
+				}
+			}
+		});
+		window.initPage = initPage;
+	})(window);
+	(function (window){
+		// 持续处理动态内容
+		var url = $.modifyUrl('', {}, true);
+		url['path'] = $.parseJSON('{$filters|array_values|json_encode}');
+		$('#mainpager').on('page', function (e, page){
+			url.path[4] = page;
+			title[1] = '(第' + page + '页)';
+			push('翻页');
+		});
+		$('.orders').on('change', function (e, parent, value){
+			var path = intval(parent.data('path'));
+			if(url.path[path] == value){
+				return;
+			}
+			url.path[path] = value;
+			push('排序改变');
+		});
+		$('#search_for').on('change', function (e, parent, value){
+			var path = intval(parent.data('path'));
+			if(url.path[path] == value){
+				return;
+			}
+			if(!url.path[3] || url.path[3] == 'null'){
+				return;
+			}
+			url.path[path] = value;
+			push('筛选条件改变');
+		});
+		var title = ['OwO'];
+		$('#partten').submit(function (){
+			var value = $(this).find('input').val();
+			if(value){
+				title[0] = '搜索：' + value;
+				value = encodeURIComponent(value);
+			} else{
+				title[0] = 'OwO';
+				value = 'null';
+			}
+			if(url.path[3] == value){
+				return false;
+			}
+			url.path[3] = value;
+			push('表单提交');
+			return false;
+		});
+		var pushUrl = '';
+
+		function push(log){
+			console.log(log);
+			url.extension = '.json';
+			ajaxInitPage(url.toString());
+			url.extension = '';
+			pushUrl = url.toString();
+		}
+
+		History.Adapter.bind(window, 'statechange', function (){ // Note: We are using statechange instead of popstate
+			var State = History.getState(); // Note: We are using History.getState() instead of event.state
+			console.log(State);
+			initPage(State.data);
+		});
+		function ajaxInitPage(url){
+			$.ajax({
+				url     : url,
+				dataType: 'json'
+			}).done(function (data){
+						History.pushState(data, "电波应用列表 - " + title.join(' '), pushUrl);
+						initPage(data);
+					})
+		}
+	})(window);
+
+	initPage({
+		"list": {$list: json},
+		"page": {$page: json}
+	});
+</script>
+<BrowserLib>
+	phpjs
+	jslib/pure.js
+	jslib-gt/auto_pager.js
+	jslib-gt/enhanced_link.js
+	jslib-gt/bs-dropdown.js
+	jslib-gt/gt-switcher.js
+	jqueryui
+	jquery/waypoints.js
+	artDialog
+	styles/gray_background.css
+</BrowserLib>
 </head>
 <body>
 <div class="container">
@@ -186,46 +297,62 @@
 				<div class="collapse navbar-collapse navbar-ex1-collapse">
 					<ul class="nav navbar-nav">
 						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown">筛选 <b class="caret"></b>
+							<a id="search_for" class="dropdown-toggle bs-dropdown" data-path="2" value="{$filters.search_for}" data-toggle="dropdown" style="cursor: pointer;">
+							<span class="title">筛选</span>
+							<b class="caret"></b>
 							</a>
-							<ul class="dropdown-menu">
+							<ul class="dropdown-menu" role="menu">
 								<li>
-									<a href="#">名称和描述</a>
+									<a value="{:ListAction::SearchContent}" title="名称和描述">名称和描述</a>
 								</li>
 								<li>
-									<a href="#">作者</a>
+									<a value="{:ListAction::SearchAuthor}" title="作者">作者</a>
 								</li>
 								<li>
-									<a href="#">标签</a>
+									<a value="{:ListAction::SearchTag}" title="标签">标签</a>
 								</li>
 							</ul>
 						</li>
 						<li>
-							<div class="input-group pull-left navbar-btn">
-								<input type="text" class="form-control" placeholder="搜索？？">
+							<form id="partten" class="input-group pull-left navbar-btn">
+								<input value="{$filters.pattern}" placeholder="搜索..." class="form-control" type="text">
 								<span class="input-group-btn">
-								<a class="btn btn-default">
+								<button class="btn btn-default">
 									<i class="glyphicon glyphicon-search"></i>
-								</a>
+								</button>
 								</span>
-							</div>
+							</form>
 						</li>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown">排序 <b class="caret"></b>
+							<a class="orders dropdown-toggle bs-dropdown" data-path="0" value="{$filters.order}" data-toggle="dropdown" style="cursor: pointer;">
+							<span class="title">排序</span>
+							<b class="caret"></b>
 							</a>
-							<ul class="dropdown-menu">
+							<ul class="dropdown-menu" role="menu">
 								<li>
-									<a>人气</a>
+									<a value="{:ListAction::OrderPopular}" title="人气">人气</a>
 								</li>
 								<li>
-									<a>最近更新</a>
+									<a value="{:ListAction::OrderUpdate}" title="最近更新">最近更新</a>
 								</li>
 								<li>
-									<a data->最新发布</a>
+									<a value="{:ListAction::OrderPublish}" title="最新发布">最新发布</a>
 								</li>
 							</ul>
+						</li>
+						<li>
+							<a class="orders gt-switcher" data-path="1" value="{$filters.desc}" style="cursor: pointer;">
+							<span value="desc">
+							<i class="glyphicon glyphicon-sort-by-order"></i>
+							&nbsp;降
+							</span>
+							<span value="asc">
+							<i class="glyphicon glyphicon-sort-by-order-alt"></i>
+							&nbsp;升
+							</span>
+							</a>
 						</li>
 					</ul>
 				</div>
@@ -261,8 +388,12 @@
 	</div>
 </div>
 
+{$page|var_dump}
+
 <div id="auto_pager">
-	<div class="container text-center">{$page}</div>
+	<div class="container text-center">
+		<include file="!items/page" id="mainpager"/>
+	</div>
 </div>
 
 <div id="footer" style="height: 150px; border-top: black solid thin;">

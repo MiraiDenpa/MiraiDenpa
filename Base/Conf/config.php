@@ -4,4 +4,5 @@ return array(
 	'PERM_READ'   => 'read',
 	'PERM_UPDATE' => 'update',
 	'PERM_DELETE' => 'delete',
+	'VAR_PAGE'    => 'p',
 );

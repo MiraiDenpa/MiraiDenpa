@@ -6,30 +6,36 @@ class UserEntity extends Entity{
 	public $email;
 	public $regdate;
 
+	private $_cache_property = [];
+	private $_cache_settings;
+
 	/**
 	 * @param $name
+	 *
 	 * @return UserPropertyHelper
 	 */
 	public function property($name){
 		require_once BASE_LIB_PATH . 'Helper/UserPropertyHelper.php';
-		static $c = [];
-		if(isset($c[$name])){
-			return $c[$name];
+		if(isset($this->_cache_property[$name])){
+			return $this->_cache_property[$name];
 		}
-		return $c[$name] = new UserPropertyHelper($this, $name);
+		return $this->_cache_property[$name] = new UserPropertyHelper($this, $name);
 	}
 
 	/**
 	 * @return UserSettingEntity
 	 */
 	public function settings(){
-		static $c = null;
-		if($c){
-			return $c;
+		if($this->_cache_settings){
+			return $this->_cache_settings;
 		}
-		return $c = new UserSettingEntity($this);
+		return $this->_cache_settings = new UserSettingEntity($this);
 	}
-	
+
+	public function relationWith($other_user_id){
+		
+	}
+
 	public function decrypt(){
 		$this->passwd = mdecrypt($this->passwd, self::KEY);
 		return $this;
