@@ -1,6 +1,6 @@
 _*
 get*
-basevar.*
+basevar.less
 phpjs.js
 BrowserLib.components.php
 recompile.bash

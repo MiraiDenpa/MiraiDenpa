@@ -6,6 +6,7 @@ class ApplicationEntity extends Entity{
 	public $icon;
 	public $callback;
 	public $authtype;
+	public $bind_ip;
 	public $name;
 	public $description;
 	public $author;

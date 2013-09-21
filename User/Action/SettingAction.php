@@ -6,15 +6,16 @@
  */
 class SettingAction extends Action{
 	use UserAuthedAction;
-	
-	public static $setting_dir =[
-		
-	];
 
 	final function __call($option_name, $args){
-		$permission = $this->user['pm_user'];
 		$user = $this->currentUser();
 		$pp = $user->settings();
+		
+		if($option_name == '*'  && $this->dispatcher->request_method=='GET'){
+			$this->assign('settings', $pp->getAll());
+			return $this->success('OK');
+		}
+		
 		if(!isset($pp->$option_name)){
 			return $this->error(ERR_NALLOW_PATH, $option_name);
 		}
@@ -32,7 +33,7 @@ class SettingAction extends Action{
 			if(!is_scalar($_POST['value'])){
 				return $this->error(ERR_INPUT_DENY, 'value must scalar.');
 			}
-			if(!$permission[PERM_UPDATE]){
+			if(!$this->user['pm_user'][PERM_UPDATE]){
 				return $this->error(ERR_FAIL_PERMISSION, PERM_UPDATE);
 			}
 			$pp->$option_name = $_POST['value'];

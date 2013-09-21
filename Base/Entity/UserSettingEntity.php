@@ -65,6 +65,10 @@ class UserSettingEntity extends Entity{
 					->save();
 		}
 	}
+	
+	public function getAll(){
+		return $this->data;
+	}
 
 	public function force_save(){
 		if(empty($self->change)){

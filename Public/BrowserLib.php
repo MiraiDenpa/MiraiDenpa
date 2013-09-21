@@ -8,7 +8,7 @@ $requirements = array(
 	'bootstrap/bootstrap.js'    => ['jquery'],
 	'jslib-gt/enhanced_link.js' => ['artDialog', 'jquery/purl.js', 'jslib-gt/murl.js'],
 	'jslib-gt/floatbox.js'      => ['jslib-gt/array.remove.js'],
-	'jslib/settings.js'         => ['jslib-gt/murl.js'],
+	'jslib-gt/settings.js'         => ['jslib-gt/login.js', 'jslib-gt/murl.js'],
 	'jslib-gt/murl.js'          => ['jquery/purl.js'],
 );
 
@@ -33,9 +33,9 @@ while($file = $d->read()){
 
 // 定义“库”
 $libraries = array_merge(array(
-							  'global'    => ['basevar.less', 'basevar.js', 'styles/global.less'],
+							  'global'    => ['basevar.less', 'jslib/basevar.js', 'styles/global.less', 'jslib/debug.js'],
 							  'validate'  => ['jquery/jquery.validate.js',],
-							  'login'     => ['Notify', 'jslib-gt/login.js',],
+							  'login'     => ['Notify', 'jslib-gt/settings.js',],
 							  'jquery'    => ['jquery/jquery.js',],
 							  'jqueryui'  => ['jquery-ui/jquery-ui.js', 'jquery-ui/jquery-ui.css'],
 							  'bootstrap' => ['bootstrap/bootstrap.js', 'bootstrap/bootstrap.css'],
@@ -51,10 +51,10 @@ $libraries = array_merge(array(
 
 // 定义“全局包含”
 $globals = array(
+	'phpjs',
 	'jquery',
 	'bootstrap',
 	'global',
-	'jslib/settings.js',
 	'login',
 );
 

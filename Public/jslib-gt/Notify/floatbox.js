@@ -76,10 +76,11 @@
 		if(fn){
 			$li.click(fn);
 		}
-		return cache_tray_icon[id] = {
+		return cache_tray_icon[id] = $.extend(this, {
 			id      : id,
 			icon    : function (newone){ // 替换图标icon
 				$icon.removeClass().addClass('glyphicon glyphicon-' + newone);
+				return this;
 			},
 			remove  : function (){ // 删除图标
 				$li.remove();
@@ -88,16 +89,23 @@
 			},
 			show    : function (){ // 显示图标
 				$li.show();
+				return this;
 			},
 			hide    : function (){ // 隐藏图标
 				$li.hide();
+				return this;
 			},
 			title   : function (newone){ // 修改title属性
 				$li.attr('title', newone);
-			}, click: function (fn){ // 添加一个新的回调方法
+				return this;
+			}, 
+			click: function (fn){ // 添加一个新的回调方法
 				$li.click(fn);
-			}, css  : function (arg1, arg2){ // 修改css
+				return this;
+			}, 
+			css  : function (arg1, arg2){ // 修改css
 				$li.css(arg1, arg2);
+				return this;
 			},
 			alert   : function (type){ // 高亮图标
 				$li.removeClasses('text\\-.*');
@@ -106,8 +114,9 @@
 				} else if(type){
 					$li.addClass('text-' + type);
 				}
+				return this;
 			}
-		};
+		});
 	};
 
 	/**
@@ -157,10 +166,10 @@
 
 		$.extend(this, contents[id]);
 		this.hide = function (hide, time){
-			if(undefined===hide){
+			if(undefined === hide){
 				hide = 'fadeOut';
 			}
-			if(undefined===time){
+			if(undefined === time){
 				time = 800;
 			}
 			visable_contents.remove(id);
@@ -174,10 +183,10 @@
 			}
 		};
 		this.show = function (show, time){
-			if(undefined===show){
+			if(undefined === show){
 				show = 'fadeIn';
 			}
-			if(undefined===time){
+			if(undefined === time){
 				time = 1000;
 			}
 			visable_contents.push(id);

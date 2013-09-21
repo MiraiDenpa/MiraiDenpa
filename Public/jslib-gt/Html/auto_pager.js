@@ -32,10 +32,10 @@ $.fn.pager = function (page){
 			$this.__defineSetter__(li.data('pager'), function (page){
 				// 确定按钮可用性
 				if(page <= 0 || page > totalPage){
-					console.log(li.data('pager') + ' -> ' + page + '   [disabled]');
+					//console.log(li.data('pager') + ' -> ' + page + '   [disabled]');
 					li.addClass('disabled');
 				} else{
-					console.log(li.data('pager') + ' -> ' + page + '   [enabled]');
+					//console.log(li.data('pager') + ' -> ' + page + '   [enabled]');
 					li.removeClass('disabled');
 				}
 				li.value(page);

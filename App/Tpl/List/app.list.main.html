@@ -231,7 +231,7 @@
 		var pushUrl = '';
 
 		function push(log){
-			console.log(log);
+			//console.log(log);
 			url.extension = '.json';
 			ajaxInitPage(url.toString());
 			url.extension = '';
@@ -240,7 +240,7 @@
 
 		History.Adapter.bind(window, 'statechange', function (){ // Note: We are using statechange instead of popstate
 			var State = History.getState(); // Note: We are using History.getState() instead of event.state
-			console.log(State);
+			//console.log(State);
 			initPage(State.data);
 		});
 		function ajaxInitPage(url){

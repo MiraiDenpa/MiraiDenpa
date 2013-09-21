@@ -34,6 +34,10 @@
 		}
 	</style>
 	<script type="text/javascript">
+		$(function(){
+			var script = '<script type="text/javascript" src="[%url method="get_session" suffix="jsonp"/%]?{:VAR_JSONP_HANDLER}=prepare_fast_login"></'+'script>';
+			$(script).appendTo($('head'));
+		});
 		function prepare_fast_login(data){
 			if(!data.list || !data.list.length){
 				return;
@@ -54,7 +58,6 @@
 			});
 		}
 	</script>
-	<script type="text/javascript" src="[%url method='get_session' suffix='jsonp'/%]?{:VAR_JSONP_HANDLER}=prepare_fast_login"></script>
 </AddHeader>
 <div class="container">
 	<h2 class="form-signin-heading">
@@ -92,7 +95,7 @@
 				</label>
 				<label class="checkbox" title="是否自动登录由应用决定。">
 				<input type="checkbox" id="add_fast_login" name="add_fast_login" value="on"/>
-				记住帐号，下次使用快速登录。
+				记住帐号，下次使用快速登录(保存7天)。
 				</label>
 				<input class="btn btn-lg btn-primary btn-block" type="submit" value="登入"/>
 				<div class="action" style="padding-top: 20px;">

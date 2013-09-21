@@ -89,7 +89,7 @@ class PropertyAction extends Action{
 
 	private function getValue(UserPropertyHelper &$pp){
 		$ret = $pp->get();
-		$this->assign('value', $ret);
+		$this->assign('property', $ret);
 		$this->assign('code', 0);
 		return $ret !== null;
 	}

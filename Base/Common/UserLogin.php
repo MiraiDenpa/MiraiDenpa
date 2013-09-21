@@ -9,10 +9,13 @@ function UserLogin($token, $allow_public){
 		break;
 	default:
 		$uol        = ThinkInstance::D('UserOnline');
-		$user = $uol->findOne(['_id' => $_GET['token']]);
+		$user = $uol->findOne(['_id' => $token]);
 
 		if(!$user){
 			Think::fail_error(ERR_FAIL_AUTH, 'token error');
+		}
+		if(!in_array(get_client_ip(), $user['ip'])){
+			Think::fail_error(ERR_NALLOW_IP, 'deny access');
 		}
 		break;
 	}

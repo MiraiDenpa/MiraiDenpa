@@ -7,18 +7,18 @@ class CallbackAction extends Action{
 		$auth  = $_GET['token'];
 		$token = md5(INFOSITE_APP_KEY . $auth);
 
-		$uol  = ThinkInstance::D('UserOnline');
-		$user = $uol->findOne(['_id' => $token]);
-
-		if(!$user){
-			return $this->error(ERR_FAIL_AUTH, 'token');
+		$ret = SimpleCURL::POST(map_url('u-user-login-token') . URL_PATHINFO_DEPR . $token . '.php',
+								['ip' => get_client_ip()]
+		);
+		if(!$ret || !($data = unserialize($ret))){
+			return $this->error(ERR_FAIL_AUTH, '数据库无法连接。这是一个严重的错误，请联系管理员。');
 		}
-		
-		$user['token'] = $user['_id'];
-		unset($user['_id']);
-		
-		session('login', $user);
-		var_dump($_SESSION);exit;
+		if($data['code']){
+			return $this->error($data['code'], $data['message']);
+		}
+
+		cookie('token', $token, 31190400, '/'); // 记录一年
+
 		redirect(U('Index', 'index'));
 	}
 }

@@ -78,7 +78,7 @@ class LoginAction extends Action{
 	}
 
 	final public function get_session(){
-		header('Access-Control-Allow-Origin: ' . map_domain('user'));
+		header('Access-Control-Allow-Origin: ' . map_url('user'));
 		session_start();
 		$this->assign('list', $_SESSION['current_login']);
 		$this->display('!data');
@@ -143,7 +143,7 @@ class LoginAction extends Action{
 		$uol               = ThinkInstance::D('UserOnline');
 		$saveData          = [];
 		$saveData['time']  = time();
-		$saveData['ip']    = get_client_ip();
+		$saveData['ip']    = explode(',', $app->bind_ip);
 		$saveData['user']  = $user->uid;
 		$saveData['email'] = $user->email;
 		$saveData['ahash'] = md5(strtolower(trim($user->email)));

@@ -16,6 +16,7 @@ return array(
 	
 	['NALLOW_HTTP_METHOD', '不允许的请求方式', '客户端错误。'],
 	['NALLOW_PATH', '不允许的请求路径', '客户端错误。'],
+	['NALLOW_IP', 'IP不符', '当前IP与登录时不同。'],
 	['NALLOW_EDIT_OTHER', '不能修改其他用户的信息', '都是年轻时犯下的错误。'],
 	['NALLOW_MISS_PATH', 'url不全', '应为 \x\y 的形式。'],
 
