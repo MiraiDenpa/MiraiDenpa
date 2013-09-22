@@ -1,11 +1,11 @@
 <?php
 /**
  * @default_method index
- * @class AppEmptyAction
+ * @class InfoIndexAction
  * @author GongT
  */
-class EmptyAction extends Action{
+class InfoIndexAction extends Action{
 	final public function index(){
-		redirect(U('List','index',''));
+		$this->display('index');
 	}
 }

@@ -1,11 +1,11 @@
 <?php
 /**
  * @default_method index
- * @class UserEmptyAction
+ * @class HomeEmptyAction
  * @author GongT
  */
 class EmptyAction extends Action {
     final public function index(){
-		$this->display();
+		
 	}
 }

@@ -8,61 +8,15 @@
 	{__STYLE__}
 	{__SCRIPT__}
 	<BrowserLib>
-		jquery.transit.js
-		transition_queue.js
+		login
 	</BrowserLib>
 	<script type="text/javascript" wrap="ready">
-		window.xxx = function(){
-			console.log('按钮点击');
-		}
-		var M = $('#M');
-		var N = $('#N');
-		var O = $('#O');
-		var P = $('#P');
-		window.ani1 = new Anime(M, {rotateX: 90}, 1000, 'ease');
-		window.ani2 = new Anime(N, {"backgroundColor": "#0F0"}, 1000, 'ease');
-		window.ani3 = new Anime(O, {"top": "200px"}, 1000, 'ease');
-		window.ani4 = new Anime(P, {"rotate": "80deg"}, 1000, 'ease');
-
-		window.ani_1 = new Anime(M, {rotateX: 0}, 1000, 'ease');
-		window.ani_2 = new Anime(N, {"backgroundColor": "#000"}, 1000, 'ease');
-		window.ani_3 = new Anime(O, {"top": "300px"}, 1000, 'ease');
-		window.ani_4 = new Anime(P, {"rotate": "0deg"}, 1000, 'ease');
-
-		function testajax(){
-			console.log('发送一个ajax请求！！');
-			var dfd = $.Deferred();
-			setTimeout(function (){
-				console.log('请求完成了！！');
-				dfd.resolve();
-			}, 1500);
-			return dfd.promise();
-		}
 		
-		var anime_queueA = new Anime.Queue();
-		//window.ccc = q.runByCall();
-		anime_queueA.play(ani1).play(ani3);
-		var anime_queueB = anime_queueA.fork().play(ani4).delay(200).play(ani_3);
-		anime_queueA.play(ani2)
-				.play(ani_1)
-				.merge(anime_queueB).callByDone(testajax);
-		var bgQueue = anime_queueA.fork();
-		window.xxx = bgQueue.runByCall(xxx);
-		bgQueue.play(new Anime($('body'), { zoom: 0.7}));
-		anime_queueA.play(ani_4)
-				.pump();
-
-		/*window.a = new Anime.Queue();
-		 a.play(ani3).play(ani1).pump();*/
 	</script>
 </head>
 <body>
 
-<div id="M" style="position: absolute;background: red;height: 20px;width: 20px;top: 300px;left:300px;">&nbsp;</div>
-<div id="N" style="position: absolute;background: #000;height: 40px;width: 20px;top: 200px;left:300px;">&nbsp;</div>
-<div id="O" style="position: absolute;background: blue;height: 20px;width: 40px;top: 300px;left:200px;">&nbsp;</div>
-<div id="P" style="position: absolute;background: black;height: 40px;width: 40px;top: 400px;left:400px;">&nbsp;</div>
-<button onclick="xxx();">啪！</button>
+(user.mirai)
 
 </body>
 </html>

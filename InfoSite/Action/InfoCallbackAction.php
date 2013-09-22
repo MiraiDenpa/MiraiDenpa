@@ -1,5 +1,10 @@
 <?php
-class CallbackAction extends Action{
+/**
+ * @default_method index
+ * @class InfoCallbackAction
+ * @author GongT
+ */
+class InfoCallbackAction extends Action{
 	final public function index(){
 		if(!isset($_GET['token']) || !$_GET['token']){
 			return $this->error(ERR_INPUT_REQUIRE, 'token');

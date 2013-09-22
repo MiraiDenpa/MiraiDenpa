@@ -4,7 +4,7 @@
  * @class          UserRegisterAction
  * @author         GongT
  */
-class RegisterAction extends Action{
+class UserRegisterAction extends Action{
 	final public function index(){
 		$this->assign('preset', $_GET);
 

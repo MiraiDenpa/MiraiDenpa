@@ -4,7 +4,7 @@
  * @class          UserLoginAction
  * @author         GongT
  */
-class LoginAction extends Action{
+class UserLoginAction extends Action{
 	final public function index($pubid = 'MiraiDenpaInfo'){
 		if(REQUEST_METHOD == 'POST'){
 			return $this->public_key_auth();
@@ -21,6 +21,66 @@ class LoginAction extends Action{
 	}
 
 	final public function public_key_auth(){
+		$post = ThinkInstance::InStream('Post');
+		if(strpos($_SERVER['HTTP_REFERER'], map_url('user'))===false){
+			return $this->error(ERR_DENY_REFERER, 'only user.mirai allow access');
+		}
+
+		/** @var UserEntity $user */
+		$user = null;
+		/** @var ApplicationEntity $app */
+		$app  = null;
+		$data = $post
+				->optional('add_fast_login')
+				->requireAll(['email', 'passwd', 'app_auth'])
+				->valid('add_fast_login', FILTER_VALIDATE_BOOLEAN)
+				->filter_callback('email',
+					function ($email) use (&$user){
+						$usrlist = ThinkInstance::D('UserLogin');
+						$user    = $usrlist
+								->where(['email|uid' => $email])
+								->getUser();
+						if(!$user){
+							$this->modelError($usrlist);
+							exit;
+						} else{
+							return true;
+						}
+					}
+				)
+				->filter_callback('app_auth',
+					function ($public) use (&$app){
+						$applist = ThinkInstance::D('App');
+						$app     = $applist
+								->where($public)
+								->getApp();
+						if(!$app){
+							$this->modelError($applist);
+							exit;
+						} else{
+							return true;
+						}
+					}
+				)
+				->getAll();
+
+		$user->decrypt();
+		if($user->passwd !== $data['passwd']){
+			return $this->error(ERR_MISS_PASSWORD);
+		}
+
+		// 允许登录
+
+		if($data['add_fast_login']){
+			session_start();
+			if(!$_SESSION['current_login'] || !in_array($user->email, $_SESSION['current_login'])){
+				$_SESSION['current_login'][] = [$user->uid, md5(strtolower(trim($user->email)))];
+			}
+		}
+		$this->saveLoginState($user, $app);
+	}
+
+	final public function password_auth(){
 		$post = ThinkInstance::InStream('Post');
 
 		/** @var UserEntity $user */
@@ -55,6 +115,10 @@ class LoginAction extends Action{
 							$this->modelError($applist);
 							exit;
 						} else{
+							if($app->authtype !== 'request'){
+								$this->error(ERR_NALLOW_AUTHTYPE, 'request');
+								exit;
+							}
 							return true;
 						}
 					}

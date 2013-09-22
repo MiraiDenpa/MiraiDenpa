@@ -4,7 +4,7 @@
  * @class UserSettingAction
  * @author GongT
  */
-class SettingAction extends Action{
+class UserSettingAction extends Action{
 	use UserAuthedAction;
 
 	final function __call($option_name, $args){

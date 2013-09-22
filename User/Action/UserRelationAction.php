@@ -4,7 +4,7 @@
  * @class          UserRelationAction
  * @author         GongT
  */
-class RelationAction extends Action{
+class UserRelationAction extends Action{
 	use UserAuthedAction;
 
 	protected $allow_public = false;

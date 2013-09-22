@@ -1,3 +1,11 @@
+/**
+ * $(document).on('mirai.login'); 每次登录信息改变都会触发
+ * $(document).on('mirai.logout'); 登出的时候触发（然后就刷新了）页面打开的时候没有登录也会触发一次
+ * 
+ * window.onlogin; 根mirai.login事件一样，不过每个回调之后会自动清除
+ * window.onlogout; 同上
+ * 
+ */
 (function (window){
 	"use strict";
 	window.token = $.cookie('token');
@@ -28,14 +36,14 @@
 	var onLogin = $.Callbacks();
 	var onLogout = $.Callbacks();
 	var property = {};
-	window.login = function (fn){
+	window.onlogin = function (fn){
 		if(is_login === true){
 			fn(property);
 		} else{
 			onLogin.add(fn);
 		}
 	};
-	window.nologin = function (fn){
+	window.onlogout = function (fn){
 		if(is_login === false){
 			fn();
 		} else{
@@ -71,19 +79,34 @@
 			is_login = true;
 			onLogin.fire(prop);
 			loginIcon.icon('off').alert('success').title(prop.nick);
+			$(document).trigger('mirai.login', prop);
 		}
 
 		function notLogin(){
 			is_login = false;
 			onLogout.fire();
 			loginIcon.icon('off').alert('error').title('未登录');
+			$(document).trigger('mirai.login');
 			if(JS_DEBUG){
 				console.log('未登录');
 			}
+			$(document).trigger('mirai.logout');
 		}
 
 		function login_action(){
-			console.log('login_action clicked');
+			var wnd = loginWindow();
+			
 		}
 	});
+	
+	function loginWindow(){
+		if(loginWindow.$div){
+			return loginWindow.$div;
+		}
+		var $div = $('<div/>');
+		
+		
+		
+		return loginWindow.$div = $div;
+	}
 })(window);

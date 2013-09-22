@@ -19,6 +19,7 @@ return array(
 	['NALLOW_IP', 'IP不符', '当前IP与登录时不同。'],
 	['NALLOW_EDIT_OTHER', '不能修改其他用户的信息', '都是年轻时犯下的错误。'],
 	['NALLOW_MISS_PATH', 'url不全', '应为 \x\y 的形式。'],
+	['NALLOW_AUTHTYPE', '禁止认证', '没有达到指定的权限级别。'],
 
 	['MISS_PASSWORD', '密码错误', '请重新输入。', ['找回密码' => _UC('user', 'forget', 'index')]],
 	['MISS_EMAIL', '邮箱地址错误', '请重新输入。'],

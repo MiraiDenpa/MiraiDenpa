@@ -4,7 +4,7 @@
  * @class          UserPasswordAction
  * @author         GongT
  */
-class PasswordAction extends Action{
+class UserPasswordAction extends Action{
 	use UserAuthedAction;
 
 	protected $allow_public = false;

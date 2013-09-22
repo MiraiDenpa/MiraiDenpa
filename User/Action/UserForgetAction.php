@@ -4,7 +4,7 @@
  * @class          UserForgetAction
  * @author         GongT
  */
-class ForgetAction extends Action{
+class UserForgetAction extends Action{
 	final public function index(){
 		/*if(isset($_GET['token'])){
 			$user = UserLogin($_GET['token'], true);

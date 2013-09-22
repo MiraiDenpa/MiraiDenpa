@@ -4,7 +4,7 @@
  * @class          AppListAction
  * @author         GongT
  */
-class ListAction extends Action{
+class AppListAction extends Action{
 	// order
 	const OrderPopular = 0;
 	const OrderUpdate  = 1;

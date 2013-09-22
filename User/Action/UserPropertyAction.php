@@ -4,7 +4,7 @@
  * @class UserPropertyAction
  * @author GongT
  */
-class PropertyAction extends Action{
+class UserPropertyAction extends Action{
 	use UserAuthedAction;
 	protected $allow_public = true;
 
