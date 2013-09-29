@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<comment>
+		<link href="/Public/bootstrap/css/bootstrap.css" rel="text/css"/>
+	</comment>
 	<title>{__TITLE__}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,8 +11,172 @@
 	{__STYLE__}
 	{__SCRIPT__}
 	<include file="!items/login"/>
+	<BrowserLib>
+		styles/infosite.global.less
+		pure
+	</BrowserLib>
+	<AddHeader>
+		<style type="text/css">
+			#infosite_frame_nav .nav-item .toggle-hide,
+			#infosite_frame_nav .nav-item .toggle-show {
+				transition: 0.3s;
+			}
+		</style>
+		<script type="text/javascript" wrap="ready">
+			var $items = $('.nav-item:not(:last)'),
+					$drop = $('.nav-item:last'),
+					$hidden_items = $drop.find('.hlist>li'),
+					$full = $('#infosite_frame_head');
+			var items = [], hidden_items = [],
+					count = $items.length, current_show = $items.length;
+
+			var dropper_width = $drop.width() + 19;
+			var each_width = $items.width();
+
+			$items.each(function (i, e){
+				items[i] = $(e);
+			});
+
+			$hidden_items.each(function (i, e){
+				hidden_items[i] = $(e);
+			});
+
+			$(window).resize(function (e){
+				var total = $full.width() - dropper_width;
+				if(count*each_width <= total){
+					while(current_show < count){
+						items[current_show].show();
+						hidden_items[current_show].hide();
+						current_show++;
+					}
+					$drop.hide();
+					return;
+				}
+				if(current_show == count){
+					$drop.show();
+				}
+				var allow = Math.floor(total/each_width);
+				if(allow < 0){
+					allow = 0;
+				}
+				if(current_show == allow){
+					return;
+				}
+				while(current_show < allow){
+					items[current_show].show();
+					hidden_items[current_show].hide();
+					current_show++;
+				}
+				while(current_show > allow){
+					current_show--;
+					items[current_show].hide();
+					hidden_items[current_show].show();
+				}
+			}).resize();
+		</script>
+	</AddHeader>
 </head>
 <body>
+<div id="infosite_title_bar">
+	<div class="container">
+		<div class="oneline">
+			<img src="" id="infosite_title_logo">
+
+			aa
+		</div>
+	</div>
+</div>
+<div id="infosite_frame_head" class="container">
+	<div id="background">
+		<div class="backimg visible-lg">
+
+		</div>
+		<div class="backimg visible-md">
+
+		</div>
+		<div class="backimg visible-sm">
+
+		</div>
+		<div class="backimg visible-xs">
+
+		</div>
+	</div>
+	<form id="search" class="navbar-form navbar-right" role="search">
+		<div class="input-group input-group-sm">
+			<input type="search" class="form-control"/>
+			<span class="input-group-btn">
+			<button class="btn btn-default" type="button">
+				<i class="glyphicon glyphicon-search"></i>
+			</button>
+			</span>
+		</div>
+	</form>
+</div>
+<nav id="infosite_frame_nav" class="navbar navbar-default navbar-static-top" role="navigation">
+	<div class="container" style="padding-right: 0;">
+		<ul class="nav navbar-nav">
+			<oncelist source="primary-nav" id="item">
+				<li class="nav-item">
+					<a href="{$item.href}" class="toggle-show">
+					<h3>{$item.name}</h3>
+
+					<div class="text-muted">{$item.english}</div>
+					</a>
+					<a class="navbar-brand toggle-hide">
+					<i class="glyphicon glyphicon-{$item.icon} "></i>
+					</a>
+				</li>
+			</oncelist>
+
+			<li class="nav-item dropdown" style="width: 160px;">
+				<a href="#" class="show dropdown-toggle" data-toggle="dropdown">
+				<h3>其他&nbsp;&nbsp;<b class="caret"></b></h3>
+
+				<div>Another</div>
+				</a>
+				<ul class="hlist dropdown-menu">
+					<oncelist source="primary-nav" id="item">
+						<li style="display:none;">
+							<a href="{$item.href}">
+							<i class="glyphicon glyphicon-{$item.icon}"></i>
+							&nbsp;{$item.name}
+							</a>
+						</li>
+					</oncelist>
+				</ul>
+			</li>
+		</ul>
+	</div>
+</nav>
 {__CONTENT__}
+
+<div id="infosite_frame_foot">
+	<div class="container">
+		<div class="row" style="position: relative;">
+			<div class="col-sm-6 denpa_intro">
+				电波网版权所有&nbsp;
+				ISP000000
+				<div>这里有一幅图，看不见是笨蛋</div>
+			</div>
+			<dl class="col-sm-3">
+				<dt>关于我们
+					<sub class="text-muted" style="font-weight:normal;">お問い合わせ</sub></dt>
+				<dd>关于电波</dd>
+				<dd>使用协议</dd>
+				<dd>版权声明</dd>
+				<dd>请求帮助</dd>
+			</dl>
+			<dl class="col-sm-3">
+				<dt>其他
+					<sub class="text-muted" style="font-weight:normal;">その他</sub>
+				</dt>
+				<dd>链接我们</dd>
+				<dd><a href="[%url app='lafi' action='index' method='' suffix=''/%]">LAFI问答</a></dd>
+				<dd></dd>
+				<dd>客户端/应用</dd>
+			</dl>
+		</div>
+	</div>
+</div>
 </body>
 </html>

@@ -24,7 +24,7 @@
 		console.log("有效性验证： ", intval(data.timestamp) + '<' + time() + ' = 过期: ' + (intval(data.timestamp) < time()));
 	}
 	if(intval(data.timestamp) < time()){
-		login(function (){
+		window.onlogin(function (){
 			$.ajax({
 				url     : window.Think.URL_MAP['u-user-login-settings'],
 				dataType: 'json',

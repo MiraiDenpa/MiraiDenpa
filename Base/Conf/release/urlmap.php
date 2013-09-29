@@ -7,6 +7,7 @@ $GLOBALS['URL_MAP'] = array(
 	'info'  => 'info.dianbo.me',
 	'www'   => 'www.dianbo.me',
 	'weibo' => 't.dianbo.me',
+	'lafi'  => 'lafi.dianbo.me',
 );
 
 require dirname(__DIR__).'/urls.php';

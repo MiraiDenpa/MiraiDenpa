@@ -9,6 +9,10 @@
 (function (window){
 	"use strict";
 	window.token = $.cookie('token');
+	if(JS_DEBUG){
+		console.log('当前TOKEN为：' + window.token);
+	}
+	
 	var token_domain = new RegExp('' + preg_quote(window.Think.URL_MAP['user']) + '', 'i');
 	var exist = /\btoken\b=/;
 	var loginIcon;
@@ -27,10 +31,6 @@
 			settings.url += 'token=' + window.token
 		}
 	});
-
-	if(JS_DEBUG){
-		console.log('当前TOKEN为：' + window.token);
-	}
 
 	var is_login;
 	var onLogin = $.Callbacks();
@@ -78,7 +78,7 @@
 			property = prop;
 			is_login = true;
 			onLogin.fire(prop);
-			loginIcon.icon('off').alert('success').title(prop.nick);
+			loginIcon.icon('off').alert('success').title('欢迎，'+prop.nick+'！');
 			$(document).trigger('mirai.login', prop);
 		}
 

@@ -5,6 +5,7 @@ $GLOBALS['URL_MAP'] = array(
 	'app'  => 'app.mirai.localdomain',
 	'info' => 'info.mirai.localdomain',
 	'www'  => 'www.mirai.localdomain',
+	'lafi'  => 'lafi.mirai.localdomain',
 );
 
 require dirname(__DIR__).'/urls.php';

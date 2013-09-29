@@ -1,5 +1,11 @@
 function SimpleNotify(id){
-	var $div = $('<div/>').css({'display': 'inline-block', 'margin': 'auto', 'paddingLeft': '40px', 'paddingRight': '40px','position':'relative'}).addClass('alert');
+	if(!SimpleNotify.cache_notify){
+		SimpleNotify.cache_notify = {}
+	}
+	if(SimpleNotify.cache_notify[id]){
+		return SimpleNotify.cache_notify[id];
+	}
+	var $div = $('<div/>').css({'display': 'inline-block', 'margin': 'auto', 'paddingLeft': '40px', 'paddingRight': '40px', 'position': 'relative'}).addClass('alert');
 	var $title_container = $('<div class="clearfix"/>').appendTo($div);
 	var $title = $('<h4/>').css({'position': 'inline-block', 'max-width': '440px', 'overflow': 'hidden', 'white-space': 'nowrap', 'text-align': 'center', 'margin': 'auto'}).appendTo($title_container);
 	var $closer = $('<a class="text-muted" style="vertical-align:middle;line-height:26px;position:absolute;right:10px;top:5px;"/>').html('<i class="glyphicon glyphicon-remove"></i>').appendTo($title_container);
@@ -33,7 +39,7 @@ function SimpleNotify(id){
 	});
 
 	var _time;// 倒计时id
-	return $.extend(notify, {
+	return SimpleNotify.cache_notify[id] = $.extend(notify, {
 		info       : function (text, title){
 			change_content('info', text, title);
 			return this;
@@ -114,7 +120,7 @@ function CheckStandardReturn(ret, title){
 			msg += '<div style="padding-top:24px;"></div><div style="position:absolute;right:10px;bottom:0px;">';
 			for(var i in ret.redirect){
 				if(ret.redirect.hasOwnProperty(i)){
-					msg += '<a class="btn btn-link" href="'+ret.redirect[i]+'">'+i+'</a>';
+					msg += '<a class="btn btn-link" href="' + ret.redirect[i] + '">' + i + '</a>';
 				}
 			}
 			msg += '</div>';

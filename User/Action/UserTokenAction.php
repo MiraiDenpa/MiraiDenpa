@@ -4,7 +4,7 @@
  * @class          UserLoginAction
  * @author         GongT
  */
-class UserLoginAction extends Action{
+class UserTokenAction extends Action{
 
 	final public function addip($token){
 		$user = UserLogin($token, false);

@@ -50,7 +50,7 @@
 							'input@value'   : 'itr.1',
 							'span'   : 'itr.0',
 							'img@src': function(){
-								return $.gravatar(this[1],{size:32,default:'identicon'});
+								return $.build.Gravatar.href(this[1],{size:32,default:'identicon'});
 							}
 						}
 					}

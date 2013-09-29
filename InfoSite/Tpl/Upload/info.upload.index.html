@@ -1,0 +1,103 @@
+<comment>
+	<link href="/Public/bootstrap/css/bootstrap.css" rel="text/css"/>
+</comment>
+<layout name=":InfoSiteFrame">
+	$title='添加条目～';
+</layout>
+<BrowserLib>
+	UI
+	scripts/upload-inputgen.js
+	bootstrap/bootstrap-datepicker.js
+</BrowserLib>
+<AddHeader>
+	<style type="text/css">
+		#PropertyTable {
+			width: 100%;
+		}
+		#PropertyTable td{
+			white-space: nowrap;
+		}
+		.container{
+			min-width: 700px!important;
+		}
+
+		#field_collect .disabled {
+			color: #ccc;
+		}
+	</style>
+	<script type="text/javascript" wrap="ready">
+		var field_define = {__ITEM_FIELDS__};
+		var field_has = [];
+
+		console.log(field_define);
+		var $collect = $('#field_collect');
+		var $PropertyTable = $('#PropertyTable').find('tbody');
+
+		for(var id in field_define){
+			var a = $('<a/>').text(field_define[id]['name']);
+			if(field_has.indexOf(id) !== -1){
+				a.addClass('disabled');
+			}
+			var li = $('<li/>').attr('id', 'field_' + id).data(field_define[id]).appendTo($collect).append(a);
+		}
+
+		$collect.on('click', 'a:not(.disabled)', function (){
+			var $this = $(this);//.addClass('disabled');
+			var data = $this.parent().data();
+			var fn = type_widget(data.type);
+			var $obj = fn(data['id'],data['subtype'],data['value'],data['text']);
+			$PropertyTable.append(form_item(data.name, $obj));
+			console.clear();
+		});
+
+	</script>
+</AddHeader>
+<div id="MainContainer" class="container">
+	<div class="row">
+		<h2 class="col-sm-6">编辑条目
+			<small>谁都会编辑的动漫百科</small>
+		</h2>
+	</div>
+	<div class="row">
+		<div class="col-xs-3">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					字段们
+				</div>
+				<div class="panel-body">
+					<ul id="field_collect">
+
+					</ul>
+				</div>
+			</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					编辑须知
+				</div>
+				<div class="panel-body">
+					请确认xxx！<br/>
+					详情参考
+					<a>链接</a>
+					<br/>
+					返回条目
+				</div>
+			</div>
+		</div>
+		<div id="property" class="col-xs-9">
+			<form id="PropertyForm" class="form-horizontal">
+				<div class="panel panel-primary">
+					<div class="panel-heading">基本信息</div>
+						<table id="PropertyTable" class="table table-hover panel-body">
+							<tbody>
+
+							</tbody>
+						</table>
+					<div class="panel-footer">
+						<a class="btn-primary btn" onclick="console.log($('#PropertyForm').serialize())">提交</a>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="row"></div>
+</div>

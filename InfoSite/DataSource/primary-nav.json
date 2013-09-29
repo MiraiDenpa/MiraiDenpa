@@ -1,0 +1,45 @@
+[
+	{
+		"name": "首页",
+		"href": "###",
+		"english": "Home",
+		"icon": "home"
+	},
+	{
+		"name": "动画",
+		"href": "###",
+		"english": "Anime",
+		"icon": ""
+	},
+	{
+		"name": "漫画",
+		"href": "###",
+		"english": "Manga",
+		"icon": ""
+	},
+	{
+		"name": "游戏",
+		"href": "###",
+		"english": "Game",
+		"icon": ""
+	},
+	{
+		"name": "小说",
+		"href": "###",
+		"english": "Novel",
+		"icon": ""
+	},
+	{
+		"name": "漫展",
+		"href": "###",
+		"english": "Market",
+		"icon": ""
+	},
+	{
+		"name": "线上",
+		"href": "###",
+		"english": "Online",
+		"icon": ""
+	}
+]
+

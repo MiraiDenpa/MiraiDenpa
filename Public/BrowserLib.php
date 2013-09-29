@@ -8,8 +8,9 @@ $requirements = array(
 	'bootstrap/bootstrap.js'    => ['jquery'],
 	'jslib-gt/enhanced_link.js' => ['artDialog', 'jquery/purl.js', 'jslib-gt/murl.js'],
 	'jslib-gt/floatbox.js'      => ['jslib-gt/array.remove.js'],
-	'jslib-gt/settings.js'         => ['jslib-gt/login.js', 'jslib-gt/murl.js'],
+	'jslib-gt/settings.js'      => ['jslib-gt/login.js', 'jslib-gt/murl.js'],
 	'jslib-gt/murl.js'          => ['jquery/purl.js'],
+	'UI'                        => ['jquery/jquery.mousewheel.js'],
 );
 
 //定义后引入组件
@@ -21,19 +22,17 @@ $component = array(
 		'jquery/json3.js',
 		'jquery/jquery.history.js',
 	],
+	'bootstrap/bootstrap-datepicker.js'          => ['bootstrap/datepicker.css'],
 );
-
-$d = dir(__DIR__ . '/jquery/plugins');
-while($file = $d->read()){
-	if($file == '.' || $file == '..'){
-		continue;
-	}
-	$requirements['jquery/' . $file][] = 'jquery/jquery.js';
-}
 
 // 定义“库”
 $libraries = array_merge(array(
-							  'global'    => ['basevar.less', 'jslib/basevar.js', 'styles/global.less', 'jslib/debug.js'],
+							  'global'    => [
+								  'basevar.less',
+								  'jslib/basevar.js',
+								  'styles/global.less',
+								  'jslib/debug.js'
+							  ],
 							  'validate'  => ['jquery/jquery.validate.js',],
 							  'login'     => ['Notify', 'jslib-gt/settings.js',],
 							  'jquery'    => ['jquery/jquery.js',],
@@ -49,13 +48,17 @@ $libraries = array_merge(array(
 						 (array)$libraries
 );
 
+// UI组件
+foreach(glob(__DIR__ . '/UI/*') as $file){
+	$libraries['UI'][] = 'UI/'.basename($file);
+}
+
 // 定义“全局包含”
 $globals = array(
 	'phpjs',
 	'jquery',
 	'bootstrap',
 	'global',
-	'login',
 );
 
 if(LESS_DEBUG){
