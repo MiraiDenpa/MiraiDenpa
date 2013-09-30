@@ -12,10 +12,12 @@ function create_date(id, sub, value, text){
 	var container = $('<div class="row"/>');
 	var $from = (new $bui.FormControl()).addClass('col-xs-6').attr('name', id + '[start]').appendTo(container);
 	$from.append($bui.Icon('calendar'));
-	$from.centerWidget().val(value).datepicker({format: sub});
+
+	$from.centerWidget().datepicker({format: sub}).datepicker('setValue', 1000* value['start']);
 	var $to = (new $bui.FormControl()).addClass('col-xs-6').attr('name', id + '[end]').appendTo(container);
 	$to.append($bui.Icon('calendar'));
-	$to.centerWidget().val(value).datepicker({format: sub});
+	console.log(value['end']);
+	$to.centerWidget().datepicker({format: sub}).datepicker('setValue', 1000*value['end']);
 	return container;
 }
 
@@ -28,10 +30,10 @@ function create_number(id, sub, value, text){
 
 function create_oneof(id, sub, value, text){
 	var $ret = new $bui.OneOf();
-	for( var i in sub ){
+	for(var i in sub){
 		var data = sub[i];
 		var fn = type_widget(data.type);
-		var $obj = fn(i,data['subtype'],data['value'],data['text']);
+		var $obj = fn(i, data['subtype'], data['value'], data['text']);
 		$ret.addItem($obj);
 	}
 	console.log(id, sub, value, text);
@@ -51,15 +53,19 @@ function create_select(id, sub, value, text){
 
 function create_static(id, sub, value, text){
 	var field = new $bui.FormControl();
-	var input = $('<input class="disabled"/>').attr({'type': 'hidden', 'name': id,'title': text}).val(sub);
+	var input = $('<input class="disabled"/>').attr({'type': 'hidden', 'name': id, 'title': text}).val(sub);
 	field.centerWidget(input);
 	return field;
 }
 function create_input(id, sub, value, text){
-	return $('<input class="form-control"/>').attr({'type': sub, 'name': id});
+	return $('<input class="form-control"/>').attr({'type': sub, 'name': id, 'title': text}).val(value);
 }
 function create_inputlist(id, sub, value, text){
-	console.log(id, sub, value, text);
+	var $center = $('<input/>').attr('type', sub);
+	var ret = new $bui.InputList();
+	ret.addClass('inline').attr('name', id).centerWidget($center);
+	ret.val(value);
+	return ret;
 }
 
 var delete_btn = $('<a/>').append($('<i class="glyphicon glyphicon-trash"/>'));

@@ -6,6 +6,8 @@
 </layout>
 <BrowserLib>
 	UI
+	jslib-gt/enhanced_link.js
+	jslib-gt/formhandler.js
 	scripts/upload-inputgen.js
 	bootstrap/bootstrap-datepicker.js
 </BrowserLib>
@@ -14,11 +16,13 @@
 		#PropertyTable {
 			width: 100%;
 		}
-		#PropertyTable td{
+
+		#PropertyTable td {
 			white-space: nowrap;
 		}
-		.container{
-			min-width: 700px!important;
+
+		.container {
+			min-width: 700px !important;
 		}
 
 		#field_collect .disabled {
@@ -27,9 +31,10 @@
 	</style>
 	<script type="text/javascript" wrap="ready">
 		var field_define = {__ITEM_FIELDS__};
+		var this_doc = {$data: json};
 		var field_has = [];
 
-		console.log(field_define);
+		var frmMain = $('#PropertyForm');
 		var $collect = $('#field_collect');
 		var $PropertyTable = $('#PropertyTable').find('tbody');
 
@@ -39,17 +44,39 @@
 				a.addClass('disabled');
 			}
 			var li = $('<li/>').attr('id', 'field_' + id).data(field_define[id]).appendTo($collect).append(a);
+
+			console.log(id + '\t => ', this_doc[id]);
+			if(this_doc.hasOwnProperty(id)){
+				var value = this_doc[id];
+				var define = field_define[id];
+				var fn = type_widget(define.type);
+				var $obj = fn(define['id'], define['subtype'], value, define['text']);
+				
+				$PropertyTable.append(form_item(define.name, $obj));
+
+				a.addClass('disabled');
+			}
 		}
+		value = define = fn = $obj = null;
+
+		console.log(this_doc);
 
 		$collect.on('click', 'a:not(.disabled)', function (){
-			var $this = $(this);//.addClass('disabled');
+			var $this = $(this).addClass('disabled');
 			var data = $this.parent().data();
 			var fn = type_widget(data.type);
-			var $obj = fn(data['id'],data['subtype'],data['value'],data['text']);
+			var $obj = fn(data['id'], data['subtype'], data['value'], data['text']);
 			$PropertyTable.append(form_item(data.name, $obj));
-			console.clear();
 		});
 
+		$('#btnSubmit').click(function (){
+			frmMain.attr('action', '<url method="submit"/>');
+			$.confirm('确定要保存吗？',function (){
+				frmMain.ajaxSubmit();
+			}, "取消").title('请谨慎操作。');
+			//frmMain.submit();
+			return false;
+		});
 	</script>
 </AddHeader>
 <div id="MainContainer" class="container">
@@ -84,16 +111,17 @@
 			</div>
 		</div>
 		<div id="property" class="col-xs-9">
-			<form id="PropertyForm" class="form-horizontal">
+			<form id="PropertyForm" class="form-horizontal" method="post">
 				<div class="panel panel-primary">
 					<div class="panel-heading">基本信息</div>
-						<table id="PropertyTable" class="table table-hover panel-body">
-							<tbody>
+					<table id="PropertyTable" class="table table-hover panel-body">
+						<tbody>
 
-							</tbody>
-						</table>
+						</tbody>
+					</table>
 					<div class="panel-footer">
-						<a class="btn-primary btn" onclick="console.log($('#PropertyForm').serialize())">提交</a>
+						<a id="btnSubmit" class="btn-warning btn">确认提交</a>
+						<input type="submit" class="btn-primary btn" value="预览">
 					</div>
 				</div>
 			</form>
