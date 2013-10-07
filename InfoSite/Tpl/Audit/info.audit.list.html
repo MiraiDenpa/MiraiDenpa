@@ -1,0 +1,37 @@
+<layout name=":InfoSiteFrame">
+	$title=isset($title)?'未来电波 - '.$title:'未来电波 - 资讯';
+</layout>
+<BrowserLib>
+	jquery/json3.js
+	jslib-gt/enhanced_link.js
+	styles/gray_background.css
+</BrowserLib>
+		<AddHeader>
+			<style type="text/css">
+				.changed_item {
+					border: transparent 1px solid;
+				}
+
+				.changed_item {
+					cursor: pointer;
+				}
+
+				.changed_item:hover {
+					background: #D9ECEF;
+					border: #52878F 1px solid;
+				}
+			</style>
+		</AddHeader>
+<div class="container">
+	<volist name="list" id="vo">
+		<div class="well changed_item hlink" style="" data-href="[%url method='edit' param-id='{$vo._id}'/%]">
+			<small class="pull-right">ID: {$vo._id}</small>
+			<h4><span style="font-weight: bold;">[%iif type="!isset" name="vo.origin_name" then="新条目 - "/%]</span>{:implode('、',$vo['name'])}</h4>
+			<div>
+				由 {:implode('，', array_column(array_column($vo['_history'],'user'), 0) )} 修改。
+			</div>
+		</div>
+		{$vo|var_dump}
+	</volist>
+	<div class="alert alert-success">总共有{$count}个，最多只显示5个。</div>
+</div>

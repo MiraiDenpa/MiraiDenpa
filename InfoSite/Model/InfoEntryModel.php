@@ -3,20 +3,55 @@ class InfoEntryModel extends Mongoo{
 	protected $collectionName = 'entry';
 	protected $connection = 'mongo-info';
 
-	public function getDocument($id){
-		$data = $this->findOneById($id, ['_history' => false]);
+	function cast_entry(&$entry){
+		$entry['broadcast_range'] = array(
+			'start' => intval($entry['broadcast_range']['start']),
+			'end'   => intval($entry['broadcast_range']['end'])
+		);
+		unset($entry['_id'], $entry['_history']);
+		ksort($entry);
+	}
+
+	public function getDocument($id, $history = false){
+		$data = $this->findOneById($id, ['_history' => $history]);
 		if(!$data){
 			return null;
 		}
-		$g           = '$id';
-		$data['_id'] = $data['_id']->$g;
-		
+		$data['_id'] = (string)$data['_id'];
+
 		return $data;
 	}
 
-	public function PreSavePage($data){
-		$data['_id'] = new MongoId('52495c597f8b9a99358b4569');
+	public function getChangedList(){
+		return $this
+				->find(['_change' => true],
+					   [
+					   '_id'           => true,
+					   '_last_update'  => true,
+					   '_history.user' => true,
+					   'name'          => true,
+					   'origin_name'   => true
+					   ]
+				)
+				->limit(5);
+	}
 
+	public function getChangedById($id){
+		return $this->findOne([
+							  '_id'     => new MongoId($id),
+							  '_change' => true
+							  ],
+							  [
+							  '_id'          => true,
+							  '_last_update' => true,
+							  '_history'     => true,
+							  'name'         => true,
+							  'origin_name'  => true
+							  ]
+		);
+	}
+
+	public function PreSavePage($data){
 		$id          = $data['_id'];
 		$update_info = $data['_update'];
 		unset($data['_id']);
@@ -27,14 +62,22 @@ class InfoEntryModel extends Mongoo{
 		ksort($last);
 		if(!$last){
 			$update_info['_data'] = & $data;
-			$ret                  = $this->insert(['_id' => $id, '_history' => [&$update_info]]);
+			$ret                  = $this->insert([
+												  '_id'      => $id,
+												  '_history' => [&$update_info],
+												  '_change'  => true,
+												  'name'     => $data['name']
+												  ]
+			);
 		} else{
-			$ret = $this->diff($last, $data);
+			$update_info['_data'] = & $data;
+			$ret                  = $this->diff($last, $data);
 			if(empty($ret)){
 				return ['ok' => 0, 'err' => '没有改变'];
 			}
-			$update_info['_data'] = & $ret;
-			$ret                  = $this->update(['_id' => $id], array('$push' => ['_history' => $update_info]));
+			$ret = $this->update(['_id' => $id],
+								 array('$push' => ['_history' => $update_info], '$set' => ['_change' => true])
+			);
 		}
 
 		return $ret;
@@ -48,7 +91,9 @@ class InfoEntryModel extends Mongoo{
 	 */
 	private function diff($last, $new){
 		$statement = [];
-		$this->diff_plat($last['name'], $new['name'], 'name', $statement);
+		$this->diff_plat(array_values($last['name']), array_values($new['name']), 'name', $statement);
+		ksort($last['broadcast_range']);
+		ksort($new['broadcast_range']);
 		$this->diff_plat($last['broadcast_range'], $new['broadcast_range'], 'broadcast_range', $statement);
 		unset($last['name'], $new['name'], $last['broadcast_range'], $new['broadcast_range']);
 
@@ -63,15 +108,20 @@ class InfoEntryModel extends Mongoo{
 			}
 			if(isset($b[$key])){
 				if($b[$key] != $val){
-					$pp                       = ($name? $name . '.' : '');
-					$diff['$set'][$pp . $key] = $b[$key];
+					$pp = ($name? $name . '.' : '');
+					if(is_numeric($key)){
+						$diff['array_set'][$pp][$key] = $b[$key];
+					} else{
+						$diff['set'][$pp . $key] = $b[$key];
+					}
+				} else{
 				}
 			} else{
 				if(is_numeric($key)){
-					$diff['$pullAll'][$name][] = $val;
+					$diff['pull'][$name][] = $val;
 				} else{
-					$pp                         = ($name? $name . '.' : '');
-					$diff['$unset'][$pp . $key] = "";
+					$pp                        = ($name? $name . '.' : '');
+					$diff['unset'][$pp . $key] = true;
 				}
 			}
 		}
@@ -81,10 +131,10 @@ class InfoEntryModel extends Mongoo{
 			}
 			if(!isset($a[$key])){
 				if(is_numeric($key)){
-					$diff['$push'][$name]['$each'][] = $val;
+					$diff['push'][$name][] = $val;
 				} else{
-					$pp                       = ($name? $name . '.' : '');
-					$diff['$set'][$pp . $key] = $val;
+					$pp                      = ($name? $name . '.' : '');
+					$diff['set'][$pp . $key] = $val;
 				}
 			}
 		}

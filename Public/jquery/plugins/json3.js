@@ -24,6 +24,8 @@
     // Export for web browsers and JavaScript engines.
     JSON3 = window.JSON || (window.JSON = {});
   }
+	JSON3={};
+	window.JSON3=JSON3;
 
   // Test the `Date#getUTC*` methods. Based on work by @Yaffle.
   var isExtended = new Date(-3509827334573292);

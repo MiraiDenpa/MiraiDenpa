@@ -2,7 +2,7 @@
 	<link href="/Public/bootstrap/css/bootstrap.css" rel="text/css"/>
 </comment>
 <layout name=":InfoSiteFrame">
-	$title='添加条目～';
+	$title=$data?'修改条目～ 《'.$data['origin_name'].'》':'添加条目～';
 </layout>
 <BrowserLib>
 	UI
@@ -25,13 +25,26 @@
 			min-width: 700px !important;
 		}
 
+		#field_collect .must {
+			color: red;
+			float: right;
+		}
+
 		#field_collect .disabled {
+			color: #ccc;
+		}
+
+		#field_collect .disabled > a {
+			color: #ccc;
+		}
+
+		#field_collect .disabled .must {
 			color: #ccc;
 		}
 	</style>
 	<script type="text/javascript" wrap="ready">
 		var field_define = {__ITEM_FIELDS__};
-		var this_doc = {$data: json};
+		var this_doc = {$data: json} || {};
 		var field_has = [];
 
 		var frmMain = $('#PropertyForm');
@@ -39,42 +52,49 @@
 		var $PropertyTable = $('#PropertyTable').find('tbody');
 
 		for(var id in field_define){
-			var a = $('<a/>').text(field_define[id]['name']);
+			var define = field_define[id];
+			var a = $('<a/>').text(define['name']);
 			if(field_has.indexOf(id) !== -1){
 				a.addClass('disabled');
 			}
-			var li = $('<li/>').attr('id', 'field_' + id).data(field_define[id]).appendTo($collect).append(a);
+			var li = $('<li/>').attr('id', 'field_' + id).data(define).appendTo($collect).append(a);
+			if(define['must']){
+				li.append($('<span class="must"/>').text('*'));
+			}
 
-			console.log(id + '\t => ', this_doc[id]);
 			if(this_doc.hasOwnProperty(id)){
 				var value = this_doc[id];
-				var define = field_define[id];
 				var fn = type_widget(define.type);
 				var $obj = fn(define['id'], define['subtype'], value, define['text']);
-				
+
 				$PropertyTable.append(form_item(define.name, $obj));
 
-				a.addClass('disabled');
+				li.addClass('disabled');
 			}
+		}
+		if(this_doc._id){
+			$('#IdField').val(this_doc._id);
 		}
 		value = define = fn = $obj = null;
 
-		console.log(this_doc);
-
-		$collect.on('click', 'a:not(.disabled)', function (){
-			var $this = $(this).addClass('disabled');
+		$collect.on('click', ':not(.disabled)>a', function (){
+			var $this = $(this);
+			$this.parent().addClass('disabled');
 			var data = $this.parent().data();
 			var fn = type_widget(data.type);
 			var $obj = fn(data['id'], data['subtype'], data['value'], data['text']);
 			$PropertyTable.append(form_item(data.name, $obj));
 		});
 
-		$('#btnSubmit').click(function (){
+		$('#btnSubmit').click(function (e){
 			frmMain.attr('action', '<url method="submit"/>');
-			$.confirm('确定要保存吗？',function (){
-				frmMain.ajaxSubmit();
-			}, "取消").title('请谨慎操作。');
-			//frmMain.submit();
+			if(e.which == 2){
+				frmMain.submit();
+			} else{
+				$.confirm('确定要保存吗？',function (){
+					frmMain.ajaxSubmit();
+				}, "取消").title('请谨慎操作。');
+			}
 			return false;
 		});
 	</script>
@@ -90,6 +110,10 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					字段们
+					<span class="pull-right">(带
+						<span style="color: red;">*</span>
+											 的必须有)
+					</span>
 				</div>
 				<div class="panel-body">
 					<ul id="field_collect">
@@ -112,6 +136,7 @@
 		</div>
 		<div id="property" class="col-xs-9">
 			<form id="PropertyForm" class="form-horizontal" method="post">
+				<input type="hidden" name="id" id="IdField"/>
 				<div class="panel panel-primary">
 					<div class="panel-heading">基本信息</div>
 					<table id="PropertyTable" class="table table-hover panel-body">

@@ -43,19 +43,36 @@ class InfoUploadAction extends Action{
 			$data['broadcast_range'][$k] = strtotime($v);
 		}
 
-		$data['name'] = $names;
-		if(!isset($data['id'])){
+		// 处理OneOf的结果
+		$data['classification'] = array_merge(array_keys($data['classification']),array_values($data['classification']));
+
+		$data['name'] = array_values($names);
+		if(!isset($data['id']) || !$data['id']){
 			$data['_id'] = new MongoId();
+		} else{
+			$data['_id'] = new MongoId($data['id']);
 		}
+		unset($data['id']);
 
 		$data['_update'] = array(
-			'user' => $this->currentUser()->uid,
+			'user' => [$this->currentUser()->uid],
 			'time' => time(),
 		);
+		
+		foreach($data as $k=>$v){
+			if(is_string($v) && is_numeric($v)){
+				if(intval($v)==$v){
+					$data[$k]=intval($v);
+				}else{
+					$data[$k]=floatval($v);
+				}
+			}
+		}
 
-		$mdl = ThinkInstance::D('InfoEntry');
 		ksort($data);
 		try{
+			$mdl = ThinkInstance::D('InfoEntry');
+			
 			$ret = $mdl->PreSavePage($data);
 			if($ret['ok']){
 				$this->success('编辑成功，请等待管理员审核。');

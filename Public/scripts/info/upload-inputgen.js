@@ -13,16 +13,24 @@ function create_date(id, sub, value, text){
 	var $from = (new $bui.FormControl()).addClass('col-xs-6').attr('name', id + '[start]').appendTo(container);
 	$from.append($bui.Icon('calendar'));
 
-	$from.centerWidget().datepicker({format: sub}).datepicker('setValue', 1000* value['start']);
+	var dp = $from.centerWidget().datepicker({format: sub});
+	if(value){
+		dp.datepicker('setValue', 1000*value['start']);
+	}
 	var $to = (new $bui.FormControl()).addClass('col-xs-6').attr('name', id + '[end]').appendTo(container);
 	$to.append($bui.Icon('calendar'));
-	console.log(value['end']);
-	$to.centerWidget().datepicker({format: sub}).datepicker('setValue', 1000*value['end']);
+	dp = $to.centerWidget().datepicker({format: sub});
+	if(value){
+		dp.datepicker('setValue', 1000*value['end']);
+	}
 	return container;
 }
 
 function create_number(id, sub, value, text){
-	var ii = (new $bui.IntInput(sub)).attr('name', id).val(value);
+	var ii = (new $bui.IntInput(sub)).attr('name', id);
+	if(value !== undefined){
+		ii.val(value);
+	}
 	ii.centerWidget().attr('id', id);
 
 	return ii;
@@ -33,10 +41,15 @@ function create_oneof(id, sub, value, text){
 	for(var i in sub){
 		var data = sub[i];
 		var fn = type_widget(data.type);
-		var $obj = fn(i, data['subtype'], data['value'], data['text']);
+		var $obj = fn(id + '[' + i + ']', data['subtype'], data['value'], data['text']);
 		$ret.addItem($obj);
+		if(value && value[0] == i){
+			$obj.val(value[1]).trigger({
+				preventDefault: true,
+				type          : 'click'
+			});
+		}
 	}
-	console.log(id, sub, value, text);
 	return $ret;
 }
 
@@ -48,13 +61,15 @@ function create_select(id, sub, value, text){
 			select.addOption(title, sub[title]);
 		}
 	}
+	select.val(value);
 	return select;
 }
 
 function create_static(id, sub, value, text){
 	var field = new $bui.FormControl();
-	var input = $('<input class="disabled"/>').attr({'type': 'hidden', 'name': id, 'title': text}).val(sub);
+	var input = $('<input class="disabled"/>').attr({'type': 'hidden', 'name': id, 'title': text});
 	field.centerWidget(input);
+	field.val(value);
 	return field;
 }
 function create_input(id, sub, value, text){
@@ -64,7 +79,9 @@ function create_inputlist(id, sub, value, text){
 	var $center = $('<input/>').attr('type', sub);
 	var ret = new $bui.InputList();
 	ret.addClass('inline').attr('name', id).centerWidget($center);
-	ret.val(value);
+	if(value){
+		ret.val(value);
+	}
 	return ret;
 }
 

@@ -1,17 +1,30 @@
 <?php
 function TaglibReplaceItem_fields(){
 	$ret = array(
+		"catalog"         => [
+			'name'    => '类别',
+			'type'    => 'select',
+			'subtype' => [
+				'动画' => 1,
+				'漫画' => 2,
+				'游戏' => 3,
+				'小说' => 4,
+				'音乐' => 5,
+				'剧集' => 6,
+				'p'  => 7,
+			],
+			'must'    => true,
+		],
 		"name"            => [
 			'name'    => '作品名称',
 			'type'    => 'inputlist',
 			'subtype' => 'text',
 			'must'    => true,
 		],
-		"origin_name"            => [
+		"origin_name"     => [
 			'name'    => '作品名称（原文）',
 			'type'    => 'input',
 			'subtype' => 'text',
-			'must'    => true,
 		],
 		"episodes"        => [
 			'name'    => '话数',
@@ -26,7 +39,7 @@ function TaglibReplaceItem_fields(){
 		"day_of_week"     => [
 			'name'    => '放送星期',
 			'type'    => 'select',
-			'subtype'   => [
+			'subtype' => [
 				'星期五' => '5',
 				'星期六' => '6',
 				'星期日' => '7',
@@ -45,13 +58,13 @@ function TaglibReplaceItem_fields(){
 			'name'    => '年龄限制',
 			'type'    => 'oneof',
 			'subtype' => [
-				'all'=>[
-					'text'=>'全年龄',
+				'all'   => [
+					'text'  => '全年龄',
 					'type'  => 'static',
 					'value' => 0
 				],
 				'limit' => [
-					'text'=>'限制',
+					'text'    => '限制',
 					'type'    => 'number',
 					'subtype' => '[1,100]'
 				]
@@ -60,7 +73,7 @@ function TaglibReplaceItem_fields(){
 		"come_from"       => [
 			'name'    => '作品地区',
 			'type'    => 'select',
-			'subtype'   => [
+			'subtype' => [
 				'11区' => 'region-11',
 				'大陆'  => 'mainland',
 				'特区'  => 'SAR',
@@ -68,10 +81,10 @@ function TaglibReplaceItem_fields(){
 			]
 		],
 		"doujin"          => [
-			'name'  => '同人作品',
-			'type'  => 'static',
+			'name'    => '同人作品',
+			'type'    => 'static',
 			'subtype' => 'on',
-			'text'  => '这是一部同人作品',
+			'text'    => '这是一部同人作品',
 		],
 	);
 	foreach($ret as $id => $data){

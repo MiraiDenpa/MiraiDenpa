@@ -756,11 +756,11 @@ function mouse_button(expect, fn){
 
 		addBtn.on('click', mouse_button('left', function (){
 			var val = $center.val();
-			console.log(val);
 			$center.val('').focus();
 			addItem(val);
 		}));
 
+		this.addVal = addItem;
 		function addItem(val){
 			if(!val){
 				return false;
@@ -1086,7 +1086,7 @@ $(document).on('shown.bs.tab', function (e){
 		$this.$input = $('<input/>').attr('type', 'hidden').val('').prependTo($this);
 		$this.$input.setValue = function (v){
 			if(!item_list.hasOwnProperty(v)){
-				$this.$show.text(this.attr('title'));
+				$this.$show.text($this.attr('title'));
 				return '';
 			}
 			$this.$show.text(item_list[v]);

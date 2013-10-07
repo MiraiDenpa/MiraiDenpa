@@ -112,9 +112,9 @@
 
 	$(document).on('click', '.hlink', function (e){
 		var option = $(this).data('hlink');
-		if(!option && /^a|button$/i.test(this.tagName)){
+		if(!option){
 			$(this).hlink();
-			var option = $(this).data('hlink');
+			option = $(this).data('hlink');
 		}
 		var cb = function (){
 			var _href = $.modifyUrl(option.href, option);
