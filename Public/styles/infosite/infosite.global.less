@@ -1,7 +1,20 @@
 #infosite_frame_head {
 	position: relative;
-	overflow: hidden;
+	overflow: visible;
 	white-space: nowrap;
+	
+	#SiteLogo{
+		background: #FFF;
+		position: absolute;
+		top: 34px;
+		left: 37px;
+		width: 295px;
+		height: 133px;
+		img{
+			width: 295px;
+			height: 133px;
+		}
+	}
 
 	#background {
 		>div {
@@ -13,12 +26,12 @@
 		}
 		.visible-md {
 			background: #4eff38;
-			width: 970px;
+			width: 940px;
 		}
 
 		.visible-sm {
 			background: #ff5549;
-			width: 750px;
+			width: 720px;
 		}
 
 		.visible-xs {
@@ -27,38 +40,41 @@
 			width: 100%;
 		}
 	}
-	#search {
-		width: 300px;
-		position: absolute;
-		margin: 0;
-		padding: 0;
-		right: 0;
-		bottom: 0;
-		input {
-			border-bottom-left-radius: 0;
-			border-top-left-radius: 5px;
-		}
-		button {
-			border-bottom-right-radius: 0;
-			border-top-right-radius: 0;
-		}
-
-		@media (min-width: 1200px) {
-			& {
-				padding-right: 15px;
-			}
-		}
-		@media (max-width: 767px) {
-			bottom: -1px;
-		}
-	}
 }
 
 #infosite_frame_nav {
 	.nav {
-		margin: 0;
-		width: 100%;
-		max-height: 49px;
+		width: 99%;
+	}
+	@media (max-width: 768px) {
+		#search .form-group {
+			width: auto !important;
+			transition: none !important;
+		}
+
+		#search {
+			margin-right: -15px !important;
+			margin-bottom: 8px !important;
+			margin-left: -15px !important;
+			-webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+			box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+		}
+
+		.block_sm {
+			padding-left: 20px;
+			display: block;
+		}
+	}
+	#search {
+		margin-bottom: 0;
+		.form-group {
+			width: 140px;
+			transition: width 200ms;
+		}
+		&.active .form-group,
+		&:active .form-group {
+			width: 210px;
+		}
 	}
 	.navbar-brand {
 		border: 1px solid #e3e3e3;
@@ -69,6 +85,7 @@
 		vertical-align: top;
 		position: relative;
 		display: inline-block;
+		float: none;
 
 		.toggle-show {
 			opacity: 1;
@@ -88,25 +105,17 @@
 			}
 		}
 
-		& {
-			float: none !important;
-		}
-
 		.toggle-show, .show {
 			text-align: center;
 			padding: 0;
 			display: inline-block;
 
-			> h3 {
+			> span {
 				display: inline-block;
 				font-weight: bolder;
 				margin: 6px 24px 0 24px;
 				font-size: 21px;
 			}
-		}
-
-		.nav-item { // 压缩显示
-
 		}
 	}
 	.navbar-collapse .navbar-left:first-child {
@@ -115,28 +124,36 @@
 	.container {
 		position: relative;
 	}
-	@media (max-width: 767px) {
-		.navbar-nav .open .dropdown-menu {
-			position: absolute;
-			top: 100%;
-			left: 0;
-			z-index: 1000;
-			float: left;
-			min-width: 160px;
-			padding: 5px 0;
-			margin: 2px 0 0;
-			font-size: 14px;
-			list-style: none;
-			background-color: #ffffff;
-			border: 1px solid #cccccc;
-			border: 1px solid rgba(0, 0, 0, 0.15);
-			border-radius: 4px;
-			-webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-			box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-			background-clip: padding-box;
-		}
-	}
+}
 
+#LoginBox {
+	.UserBox;
+	height: 210px;
+}
+
+#UserBox {
+	.UserBox;
+	height: 180px;
+}
+
+.UserBox() {
+	display: none;
+	position: absolute;
+	width: 300px;
+	background: rgba(0, 0, 0, 0.35);
+	z-index: 201;
+	bottom: -56px;
+	right: 21px;
+	padding: 22px;
+	box-shadow: rgba(0, 0, 0, 0.24) 0 0 25px;
+	border: black 1px solid;
+	color: #ffffff;
+	a {
+		color: #50ebff;
+	}
+	.show {
+		height: 73px;
+	}
 }
 
 #infosite_frame_foot {

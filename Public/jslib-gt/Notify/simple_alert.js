@@ -113,19 +113,41 @@ function SimpleNotify(id){
 		}
 	});
 }
-function CheckStandardReturn(ret, title){
-	if(ret.code){
-		var msg = ret.message + '，' + ret.info;
-		if(ret.redirect){
-			msg += '<div style="padding-top:24px;"></div><div style="position:absolute;right:10px;bottom:0px;">';
-			for(var i in ret.redirect){
-				if(ret.redirect.hasOwnProperty(i)){
-					msg += '<a class="btn btn-link" href="' + ret.redirect[i] + '">' + i + '</a>';
-				}
+function CheckStandardReturn(dfd, title){
+	dfd.done(function (ret){
+		if(typeof ret === 'string'){
+			try{
+				ret = JSON.parse(ret);
+			} catch(e){
+				console.error(title + '失败，返回内容不是json。');
+				console.dir(e);
 			}
-			msg += '</div>';
 		}
+		if(ret.code){
+			if(JS_DEBUG){
+				console.error('△ ' + title + '失败，返回消息： ' + ret.message + '，' + ret.info);
+			}
+			var msg = ret.message + '，' + ret.info;
+			if(ret.redirect){
+				msg += '<div style="padding-top:24px;"></div><div style="position:absolute;right:10px;bottom:0px;">';
+				for(var i in ret.redirect){
+					if(ret.redirect.hasOwnProperty(i)){
+						msg += '<a class="btn btn-link" href="' + ret.redirect[i] + '">' + i + '</a>';
+					}
+				}
+				msg += '</div>';
+			}
 
-		return SimpleNotify(time()).error(msg, title + '失败').autoDestroy();
-	}
+			return SimpleNotify(time()).error(msg, title + '失败').autoDestroy();
+		} else{
+			if(JS_DEBUG){
+				console.log('● ' + title + '成功');
+				console.dir(ret);
+			}
+		}
+	}).fail(function (xhr, state, error){
+				error = typeof error == 'string'? error : error.message;
+				console.error(title + '失败，HTTP错误 [' + state + ']: ' + error);
+				console.dir({response: xhr.responseText});
+			});
 }

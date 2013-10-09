@@ -39,7 +39,7 @@ function getPublicUser(){
 		),
 		'pm_account' => array(
 			'create' => false,
-			'read'   => true,
+			'read'   => false,
 			'update' => false,
 			'delete' => false,
 		),

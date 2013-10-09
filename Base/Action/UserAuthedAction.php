@@ -6,7 +6,10 @@ trait UserAuthedAction{
 	/** @var $uol UserOnlineModel */
 	protected $uol;
 
-	protected $user;
+	/**
+	 * @var array
+	 */
+	protected $token_data;
 
 	/* cache */
 	private $current_user;
@@ -24,7 +27,7 @@ trait UserAuthedAction{
 		} else{
 			Think::fail_error(ERR_INPUT_REQUIRE, 'token');
 		}
-		$this->user = UserLogin($this->token, $this->allow_public);
+		$this->token_data = UserLogin($this->token, $this->allow_public);
 	}
 
 	/**
@@ -36,7 +39,7 @@ trait UserAuthedAction{
 		}
 		$mdl = ThinkInstance::D('AppList');
 		return $this->current_app = $mdl
-				->where($this->user['app'])
+				->where($this->token_data['app'])
 				->getApp();
 	}
 
@@ -47,6 +50,6 @@ trait UserAuthedAction{
 		if($this->current_user){
 			return $this->current_user;
 		}
-		return $this->current_user = $this->getUser($this->user['user']);
+		return $this->current_user = $this->getUser($this->token_data['user']);
 	}
 }

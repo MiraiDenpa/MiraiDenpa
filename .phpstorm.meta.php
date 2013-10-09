@@ -14,6 +14,8 @@ namespace PHPSTORM_META {                                                 // we 
 			'UserRelation' instanceof \UserRelationModel,
 			'InfoEntry' instanceof \InfoEntryModel,
 			'InfoHistory' instanceof \InfoHistoryModel,
+			'UserProperty' instanceof \UserPropertyModel,
+			'UserSetting' instanceof \UserSettingModel,
 		],
 		\ThinkInstance::InStream('') => [
 			'Post' instanceof \PostInputStream,

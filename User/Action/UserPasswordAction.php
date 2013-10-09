@@ -10,7 +10,7 @@ class UserPasswordAction extends Action{
 	protected $allow_public = false;
 
 	final public function index(){
-		$user = $this->user;
+		$user = $this->token_data;
 		if(!$user['pm_account'][PERM_UPDATE]){
 			return $this->error(ERR_FAIL_PERMISSION, PERM_UPDATE);
 		}
@@ -19,7 +19,7 @@ class UserPasswordAction extends Action{
 	}
 
 	final public function update(){
-		$user = $this->user;
+		$user = $this->token_data;
 		if(!$user['pm_account'][PERM_UPDATE]){
 			return $this->error(ERR_FAIL_PERMISSION, PERM_UPDATE);
 		}

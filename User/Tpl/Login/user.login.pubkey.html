@@ -8,6 +8,7 @@
 	jslib-gt/enhanced_link.js
 	jslib-gt/gravatar.js
 	pure
+	UI
 </BrowserLib>
 <AddHeader>
 	<style type="text/css">
@@ -50,7 +51,7 @@
 							'input@value'   : 'itr.1',
 							'span'   : 'itr.0',
 							'img@src': function(){
-								return $.build.Gravatar.href(this[1],{size:32,default:'identicon'});
+								return $bui.Gravatar.build({'hash':this[1],size:32});
 							}
 						}
 					}

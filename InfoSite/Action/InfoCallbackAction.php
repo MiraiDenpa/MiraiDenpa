@@ -12,7 +12,7 @@ class InfoCallbackAction extends Action{
 		$auth  = $_GET['token'];
 		$token = md5(INFOSITE_APP_KEY . $auth);
 
-		$ret = SimpleCURL::POST(map_url('u-user-login-token') . URL_PATHINFO_DEPR . $token . '.php',
+		$ret = SimpleCURL::POST(map_url('u-user-login-ip') . URL_PATHINFO_DEPR . $token . '.php',
 								['ip' => get_client_ip()]
 		);
 		if(!$ret || !($data = unserialize($ret))){

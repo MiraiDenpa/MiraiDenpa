@@ -24,7 +24,7 @@ class UserRelationAction extends Action{
 
 	final public function my($target){
 		$method = $this->dispatcher->request_method;
-		$permission = $this->user['pm_relation'];
+		$permission = $this->token_data['pm_relation'];
 		
 
 		//$method         = 'POST';
@@ -34,19 +34,19 @@ class UserRelationAction extends Action{
 			if(!$permission[PERM_READ]){
 				return $this->error(ERR_FAIL_PERMISSION, PERM_READ);
 			}
-			$ret  = $this->mdl->getRelation($this->user['user'], $target);
+			$ret  = $this->mdl->getRelation($this->token_data['user'], $target);
 			break;
 		case 'POST':
 			if(!$permission[PERM_UPDATE]){
 				return $this->error(ERR_FAIL_PERMISSION, PERM_UPDATE);
 			}
-			$ret = $this->mdl->updateRelation($this->user['user'], $target, $_POST['value']);
+			$ret = $this->mdl->updateRelation($this->token_data['user'], $target, $_POST['value']);
 			break;
 		case 'DELETE':
 			if(!$permission[PERM_DELETE]){
 				return $this->error(ERR_FAIL_PERMISSION, PERM_DELETE);
 			}
-			$ret = $this->mdl->removeRelationTo($this->user['user'], $target, $_POST['value']);
+			$ret = $this->mdl->removeRelationTo($this->token_data['user'], $target, $_POST['value']);
 			break;
 		}
 		var_dump($ret,$this->mdl->getPage()->showArray());

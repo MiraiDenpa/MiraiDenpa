@@ -32,4 +32,12 @@ class UserTokenAction extends Action{
 			}
 		}
 	}
+	
+	final public function info(){
+		$user = UserLogin($_GET['token'], false);
+		unset($user['email']);
+		$this->assign('info',$user);
+		$this->assign('code',0);
+		$this->display('!data');
+	}
 }

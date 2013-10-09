@@ -1,4 +1,12 @@
 <?php
+/**
+ * 
+ *
+ * @param $token
+ * @param $allow_public
+ *
+ * @return array
+ */
 function UserLogin($token, $allow_public){
 	switch($token){
 	case 'public':

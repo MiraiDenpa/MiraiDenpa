@@ -26,7 +26,7 @@ class UserRegisterAction extends Action{
 							  ]
 				)
 				->filter('email', FILTER_VALIDATE_EMAIL)
-				->valid('uid', 'length', [3,12], ERR_RANGE_UID)
+				->valid('uid', 'length', [3, 12], ERR_RANGE_UID)
 				->filter_callback('uid', 'filter_uid_spec_char')
 				->filter_callback('email', [$usrlist, 'emailNotUse'])
 				->filter_callback('uid', [$usrlist, 'uidNotUse'])
@@ -49,8 +49,8 @@ class UserRegisterAction extends Action{
 							 ]
 				)
 				->filter('email', FILTER_VALIDATE_EMAIL)
-				->valid('passwd', 'length', [6,0], ERR_RANGE_PASSWORD)
-				->valid('uid', 'length', [3,12], ERR_RANGE_UID)
+				->valid('passwd', 'length', [6, 0], ERR_RANGE_PASSWORD)
+				->valid('uid', 'length', [3, 12], ERR_RANGE_UID)
 				->filter_callback('uid', 'filter_uid_spec_char')
 				->valid('passwd', 'is_same', 'repasswd', ERR_MISS_REPASSWORD)
 				->filter_callback('email', [$usrlist, 'emailNotUse'])
@@ -139,7 +139,13 @@ class UserRegisterAction extends Action{
 
 		$succ = $usrlist->add($user);
 		if($succ){
+			// 额外操作
 			$register->delete();
+			foreach(['UserRelation','UserProperty','UserSetting'] as $mdl){
+				ThinkInstance::D($mdl)
+						->initUser($user);
+			}
+
 			$this->success('帐号可以使用！', U('login', 'index'));
 		} else{
 			$this->error(ERR_SQL, '请联系管理员解决。');

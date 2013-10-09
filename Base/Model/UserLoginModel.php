@@ -5,8 +5,7 @@
  * @author ${USER}
  */
 class UserLoginModel extends UserListModel{
-	public function __construct($name = ''){
-		parent::__construct($name);
+	public function _initialize(){
 		$this->register_callback('before_insert', [&$this, 'InitUser']);
 		$this->register_callback('before_update', [&$this, 'EncryptPassword']);
 	}

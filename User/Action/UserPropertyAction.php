@@ -7,6 +7,20 @@
 class UserPropertyAction extends Action{
 	use UserAuthedAction;
 	protected $allow_public = true;
+	
+	final function account(){
+		if($this->token_data['type'] == SpecialUser::TYPE_PUBLIC){
+			return $this->error(ERR_FAIL_AUTH, 'public not allow(account)');
+		}
+		$permission = $this->token_data['pm_account'];
+		if(!$permission[PERM_READ]){
+			return $this->error(ERR_FAIL_PERMISSION, PERM_READ);
+		}
+		$d=get_object_vars($this->currentUser());
+		unset($d['passwd']);
+		$this->assign('account',$d);
+		$this->display('!data');
+	}
 
 	/**
 	 *
@@ -22,10 +36,10 @@ class UserPropertyAction extends Action{
 			return $this->error(ERR_INPUT_DENY, 'path may not include $ sign.');
 		}
 
-		$permission = $this->user['pm_user'];
+		$permission = $this->token_data['pm_user'];
 
 		if($target == 'me'){
-			if($this->user['type'] == SpecialUser::TYPE_PUBLIC){
+			if($this->token_data['type'] == SpecialUser::TYPE_PUBLIC){
 				return $this->error(ERR_FAIL_AUTH, 'public not allow(at me)');
 			}
 			$user = $this->currentUser();
@@ -89,9 +103,16 @@ class UserPropertyAction extends Action{
 
 	private function getValue(UserPropertyHelper &$pp){
 		$ret = $pp->get();
-		$this->assign('property', $ret);
 		$this->assign('code', 0);
-		return $ret !== null;
+		if($ret===null){
+			$this->assign('property', '');
+			$this->assign('exist', false);
+			return false;
+		}else{
+			$this->assign('property', $ret);
+			$this->assign('exist', true);
+			return true;
+		}
 	}
 
 	private function postValue(UserPropertyHelper &$pp, $new){
