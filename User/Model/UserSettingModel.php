@@ -13,7 +13,7 @@ class UserSettingModel extends Model{
 			}
 		);
 		$this->register_callback('before_write',
-			function ($opt,&$data){
+			function (&$data){
 				$data['app'] = $this->app_pub;
 			}
 		);
