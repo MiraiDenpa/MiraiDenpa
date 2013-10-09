@@ -46,7 +46,10 @@ return array(
 	['RANGE_PAGE', '不是正确的页码', '页码最低为 1。'],
 	['RANGE_PASSWORD', '密码长度不够', '最少6位。'],
 	['RANGE_UID', '用户ID长度错误', '3位到12位。'],
+
+	['CONFLICT_MTD_RES', '本资源不支持指定的方法', ''],
+	
 	
 	['JSON_SERIALIZE', '序列化失败', '这是个严重错误。'],
-	
+
 );

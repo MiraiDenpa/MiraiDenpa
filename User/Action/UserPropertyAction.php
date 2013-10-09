@@ -1,26 +1,13 @@
 <?php
 /**
  * @default_method
- * @class UserPropertyAction
+ * @class  UserPropertyAction
  * @author GongT
  */
 class UserPropertyAction extends Action{
 	use UserAuthedAction;
+
 	protected $allow_public = true;
-	
-	final function account(){
-		if($this->token_data['type'] == SpecialUser::TYPE_PUBLIC){
-			return $this->error(ERR_FAIL_AUTH, 'public not allow(account)');
-		}
-		$permission = $this->token_data['pm_account'];
-		if(!$permission[PERM_READ]){
-			return $this->error(ERR_FAIL_PERMISSION, PERM_READ);
-		}
-		$d=get_object_vars($this->currentUser());
-		unset($d['passwd']);
-		$this->assign('account',$d);
-		$this->display('!data');
-	}
 
 	/**
 	 *
@@ -42,54 +29,102 @@ class UserPropertyAction extends Action{
 			if($this->token_data['type'] == SpecialUser::TYPE_PUBLIC){
 				return $this->error(ERR_FAIL_AUTH, 'public not allow(at me)');
 			}
-			$user = $this->currentUser();
+			$uid = $this->token_data['user'];
 		} else{
 			if($this->dispatcher->request_method !== 'GET'){
 				return $this->error(ERR_NALLOW_EDIT_OTHER, $target);
 			}
-			$user = ThinkInstance::D('UserLogin')
-					->where($target)
-					->getUser();
+			$user = $this->getUser($target);
+			$uid  = $user->uid;
 		}
 
-		if(!$user){
+		if(!$uid){
 			return $this->error(ERR_NF_USER, $target);
 		}
 
+		$mdl = ThinkInstance::D('UserProperty');
 		try{
-			$pp = $user->property($path);
-			// 检查要修改的变量是否存在
-			$exist = $this->getValue($pp);
-			$this->assign('exist', $exist);
-
 			// 根据请求方式决定执行路径
 			switch($this->dispatcher->request_method){
 			case 'GET': // 读取
+				if($path){
+					$ret = $mdl->findOne(['_id' => $uid], [$path => true]);
+				} else{
+					$ret = $mdl->findOne(['_id' => $uid], ['_id' => false]);
+				}
+				$this->assign('value', $ret);
+				$this->assign('exist', empty($ret));
 				break;
 			case 'POST':
-				if($exist){ // 修改
-					if(!$permission[PERM_UPDATE]){
-						return $this->error(ERR_FAIL_PERMISSION, PERM_UPDATE);
-					}
-				} else{ // 添加
-					if(!$permission[PERM_CREATE]){
-						return $this->error(ERR_FAIL_PERMISSION, PERM_CREATE);
-					}
+				if(!$path && !$permission[PERM_DELETE]){
+					return $this->error(ERR_FAIL_PERMISSION, PERM_DELETE);
+				}
+				if(!$permission[PERM_UPDATE]){
+					return $this->error(ERR_FAIL_PERMISSION, PERM_UPDATE);
 				}
 				if(!isset($_POST['value'])){
 					return $this->error(ERR_INPUT_REQUIRE, 'value');
 				}
-				if(!is_scalar($_POST['value'])){
-					return $this->error(ERR_INPUT_DENY, 'value must scalar.');
+				$v = $_POST['value'];
+				$t = $_POST['type'];
+
+				if(!$path){
+					if($t && $t != 'replace' && $t != 'set'){
+						return $this->error(ERR_CONFLICT_MTD_RES, 'root cannot act as array.');
+					}
+					if(!is_array($v)){
+						return $this->error(ERR_CONFLICT_MTD_RES, 'root cannot set to scalar.');
+					}
 				}
-				$this->postValue($pp, $_POST['value']);
+				if($t == 'replace'){
+					if($path){
+						$data = ['$set' => [$path => $v]];
+					} else{
+						if(!is_array($v)){
+							return $this->error(ERR_INPUT_DENY, 'root cannot set to scalar.');
+						}
+						$data = $v;
+					}
+				} else if($t == 'merge'){
+					if(!is_array($v)){
+						return $this->error(ERR_INPUT_DENY, 'value must array.');
+					}
+					$data = ['$pushAll' => [$path => array_values($v)]];
+				} else if($t == 'merge_unique'){
+					if(!is_array($v)){
+						return $this->error(ERR_INPUT_DENY, 'value must array.');
+					}
+					$data = ['$addToSet' => [$path => ['$each' => array_values($v)]]];
+				} else if($t == 'push'){
+					$data = ['$push' => [$path => $v]];
+				} else if($t == 'push_unique'){
+					$data = ['$addToSet' => [$path => $v]];
+				} else if($t == 'pull'){
+					$data = ['$pull' => [$path => $v]];
+				} else if($t == 'pull_all'){
+					if(!is_array($v)){
+						return $this->error(ERR_INPUT_DENY, 'value must array.');
+					}
+					$data = ['$pull' => [$path => ['$each' => array_values($v)]]];
+				} else{
+					if($path){
+						$data = ['$set' => [$path => $v]];
+					} else{
+						if(!is_array($v)){
+							return $this->error(ERR_INPUT_DENY, 'root cannot act as array.');
+						}
+						$data = ['$set' => $v];
+					}
+				}
+				$ret = $mdl->update(['_id' => $uid], $data, ['upsert' => true]);
+				xdebug_max_depth(100);
+				var_dump($data, $mdl->findOne(['_id' => $uid]));
+				$this->mongo_ret($ret);
 				break;
-			case 'DELETE': // 删除
+			case
+			'DELETE': // 删除
 				if(!$permission[PERM_DELETE]){
 					return $this->error(ERR_FAIL_PERMISSION, PERM_DELETE);
-				}
-				if($exist){
-					$this->deleteValue($pp);
 				}
 				break;
 			default:
@@ -99,39 +134,5 @@ class UserPropertyAction extends Action{
 			return $this->error(ERR_NO_SQL, $e->getMessage());
 		}
 		return $this->display('!data');
-	}
-
-	private function getValue(UserPropertyHelper &$pp){
-		$ret = $pp->get();
-		$this->assign('code', 0);
-		if($ret===null){
-			$this->assign('property', '');
-			$this->assign('exist', false);
-			return false;
-		}else{
-			$this->assign('property', $ret);
-			$this->assign('exist', true);
-			return true;
-		}
-	}
-
-	private function postValue(UserPropertyHelper &$pp, $new){
-		$ret = $pp->set($new);
-		if($ret['ok']){
-			$this->assign('code', 0);
-		} else{
-			$this->assign('code', -1);
-			$this->assign('message', $ret['err']);
-		}
-	}
-
-	private function deleteValue(UserPropertyHelper &$pp){
-		$ret = $pp->remove();
-		if($ret['ok']){
-			$this->assign('code', 0);
-		} else{
-			$this->assign('code', -1);
-			$this->assign('message', $ret['err']);
-		}
 	}
 }
