@@ -1,6 +1,5 @@
 "use strict";
 $.fn.ajaxSubmit = function (){
-	var dfd = new $.Deferred();
 	if(this.get(0).nodeName != 'FORM'){
 		return false;
 	}
@@ -8,6 +7,7 @@ $.fn.ajaxSubmit = function (){
 		this.data('notify', new SimpleNotify(this[0].id));
 	}
 	var notify = this.data('notify');
+	var that = this;
 
 	var target = this.attr('target');
 	if(target){
@@ -35,44 +35,49 @@ $.fn.ajaxSubmit = function (){
 	var data = this.serialize();
 
 	var controls = this.on('click', 'a,input,button', mute).find('input,button').attr('disabled', 'disabled');
-	$.ajax({
+	var r = $.ajax({
 		url     : act,
 		dataType: 'json',
 		method  : this.attr('method'),
 		data    : data,
 		context : this
-	}).done(function (json){
-				if(json.code){
-					if(json.jumpurl){
-						notify.hide();
-						window.location.jumpto(json.jumpurl, json.timeout, json.jumpname, json.message, 'error', target);
-						return;
-					} else{
-						notify.error(json.extra? json.extra : json.info, json.name + ': ' + json.message);
-					}
-					dfd.reject(json);
-				} else if(json.code === 0){
-					if(json.jumpurl){
-						notify.hide('slideUp', 2000);
-						window.location.jumpto(json.jumpurl, json.timeout, json.jumpname, json.message, 'success', target);
-						return;
-					} else{
-						notify.success(json.extra? json.extra : json.info, json.message);
-					}
-					dfd.resolve(json);
-				} else{
-					notify.warning('', '服务器错误，不明觉厉。');
-					dfd.reject(json);
-				}
-				notify.hideTimeout(2000);
-			}).fail(function (obj, stat, msg){
-				notify.error(msg + '<br/>' + '请检查网络，如果确定不是网络问题，请联系我们！', 'HTTP ' + obj.status);
-				dfd.reject();
-			}).always(function (){
-				controls.removeAttr('disabled');
-				this.off('click', 'a,input,button', mute);
-			});
-	return dfd;
+	});
+	r.done(function (json){
+		var e = new $.Event('submitAjax');
+		that.trigger(e, json);
+		if(e.isDefaultPrevented() || e.isPropagationStopped()){
+			notify.hide('hide',0);
+			return;
+		}
+		if(json.code){
+			if(json.jumpurl){
+				notify.hide();
+				window.location.jumpto(json.jumpurl, json.timeout, json.jumpname, json.message, 'error', target);
+				return;
+			} else{
+				notify.error(json.extra? json.extra : json.info, json.name + ': ' + json.message);
+			}
+		} else if(json.code === 0){
+			if(json.jumpurl){
+				notify.hide('slideUp', 2000);
+				window.location.jumpto(json.jumpurl, json.timeout, json.jumpname, json.message, 'success', target);
+				return;
+			} else{
+				notify.success(json.extra? json.extra : json.info, json.message);
+			}
+		} else{
+			notify.warning('', '服务器错误，不明觉厉。');
+		}
+		notify.hideTimeout(2000);
+	});
+	r.fail(function (obj, stat, msg){
+		notify.error(msg + '<br/>' + '请检查网络，如果确定不是网络问题，请联系我们！', 'HTTP ' + obj.status);
+	});
+	r.always(function (){
+		controls.removeAttr('disabled');
+		this.off('click', 'a,input,button', mute);
+	});
+	return r;
 };
 
 $(function (){
@@ -82,8 +87,17 @@ $(function (){
 			if(no_ajax_submit){
 				return true;
 			}
-			e.preventDefault();
-			$(this).ajaxSubmit();
+			var ask = $(this).data('ask');
+			if(ask){
+				var that = $(this);
+				$.dialog.confirm(ask, function (){
+					that.ajaxSubmit();
+				}, function (){
+				});
+			} else{
+				$(this).ajaxSubmit();
+			}
+			return false;
 		});
 	}).length;
 	if(frmCnt){
@@ -91,4 +105,13 @@ $(function (){
 			no_ajax_submit = arg !== false;
 		}
 	}
+	$('form[type=ask]').removeAttr('type').submit(function (){
+		var that = $(this);
+		var ask = that.data('ask');
+		$.dialog.confirm(ask, function (){
+			that[0].submit(111);
+		}, function (){
+		});
+		return false;
+	});
 });

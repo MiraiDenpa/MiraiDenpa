@@ -52,9 +52,9 @@ class UserPropertyAction extends Action{
 				} else{
 					$ret = $mdl->findOne(['_id' => $uid], ['_id' => false]);
 				}
-				$this->assign('value', $ret);
+				$this->assign('property', $ret);
 				$this->assign('exist', empty($ret));
-				break;
+				return $this->success();
 			case 'POST':
 				if(!$path && !$permission[PERM_DELETE]){
 					return $this->error(ERR_FAIL_PERMISSION, PERM_DELETE);
@@ -117,10 +117,7 @@ class UserPropertyAction extends Action{
 					}
 				}
 				$ret = $mdl->update(['_id' => $uid], $data, ['upsert' => true]);
-				xdebug_max_depth(100);
-				var_dump($data, $mdl->findOne(['_id' => $uid]));
-				$this->mongo_ret($ret);
-				break;
+				return $this->mongo_ret($ret, '保存成功！');
 			case
 			'DELETE': // 删除
 				if(!$permission[PERM_DELETE]){
@@ -128,11 +125,10 @@ class UserPropertyAction extends Action{
 				}
 				break;
 			default:
-				return $this->error(ERR_NALLOW_HTTP_METHOD);
+				return $this->error(ERR_NALLOW_HTTP_METHOD,$this->dispatcher->request_method);
 			}
 		} catch(MongoException $e){
 			return $this->error(ERR_NO_SQL, $e->getMessage());
 		}
-		return $this->display('!data');
 	}
 }

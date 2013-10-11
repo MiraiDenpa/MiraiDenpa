@@ -22,8 +22,8 @@ class UserLoginAction extends Action{
 
 	final public function public_key_auth(){
 		$post = ThinkInstance::InStream('Post');
-		if(strpos($_SERVER['HTTP_REFERER'], map_url('user'))===false){
-			return $this->error(ERR_DENY_REFERER, 'only user.mirai allow access');
+		if(strpos($_SERVER['HTTP_REFERER'], map_url('user')) === false){
+			return $this->error(ERR_NALLOW_REFERER, 'hack deny');
 		}
 
 		/** @var UserEntity $user */
@@ -77,7 +77,8 @@ class UserLoginAction extends Action{
 				$_SESSION['current_login'][] = [$user->uid, md5(strtolower(trim($user->email)))];
 			}
 		}
-		$this->saveLoginState($user, $app);
+		$token = $this->saveLoginState($user, $app);
+		$this->success('登录成功', [$app->name, $app->callback . '?token=' . $token]);
 	}
 
 	final public function password_auth(){
@@ -88,29 +89,17 @@ class UserLoginAction extends Action{
 		/** @var ApplicationEntity $app */
 		$app  = null;
 		$data = $post
-				->optional('add_fast_login')
 				->requireAll(['email', 'passwd', 'app_auth'])
-				->valid('add_fast_login', FILTER_VALIDATE_BOOLEAN)
-				->filter_callback('email',
-					function ($email) use (&$user){
-						$usrlist = ThinkInstance::D('UserLogin');
-						$user    = $usrlist
-								->where(['email|uid' => $email])
-								->getUser();
-						if(!$user){
-							$this->modelError($usrlist);
-							exit;
-						} else{
-							return true;
-						}
-					}
-				)
 				->filter_callback('app_auth',
 					function ($public) use (&$app){
 						$applist = ThinkInstance::D('App');
 						$app     = $applist
 								->where($public)
 								->getApp();
+						if(!in_array(get_client_ip(), explode(',', $app->bind_ip))){
+							$this->error(ERR_NALLOW_REFERER, 'ip');
+							exit;
+						}
 						if(!$app){
 							$this->modelError($applist);
 							exit;
@@ -123,22 +112,30 @@ class UserLoginAction extends Action{
 						}
 					}
 				)
+				->filter_callback('email',
+					function ($email) use (&$user){
+						$usrlist = ThinkInstance::D('UserLogin');
+						$user    = $usrlist
+								->where(['email|uid' => $email])
+								->getUser();
+						if(!$user){
+							$this->modelError($usrlist);
+							exit;
+						} else{
+							return true;
+						}
+					}
+				)
 				->getAll();
 
 		$user->decrypt();
-		if($user->passwd !== $data['passwd']){
+		if(sha1($user->passwd) !== $data['passwd']){
 			return $this->error(ERR_MISS_PASSWORD);
 		}
 
 		// 允许登录
-
-		if($data['add_fast_login']){
-			session_start();
-			if(!$_SESSION['current_login'] || !in_array($user->email, $_SESSION['current_login'])){
-				$_SESSION['current_login'][] = [$user->uid, md5(strtolower(trim($user->email)))];
-			}
-		}
 		$this->saveLoginState($user, $app);
+		return $this->success();
 	}
 
 	final public function get_session(){
@@ -163,8 +160,8 @@ class UserLoginAction extends Action{
 		/** @var ApplicationEntity $app */
 		$app = null;
 
-		$fast = $_SESSION['current_login'];
-		$data = $post
+		$fast  = $_SESSION['current_login'];
+		$data  = $post
 				->requireAll(['fast_login', 'app_auth'])
 				->filter_callback('fast_login',
 					function ($ahash) use (&$user, $fast){
@@ -200,7 +197,8 @@ class UserLoginAction extends Action{
 					}
 				)
 				->getAll();
-		$this->saveLoginState($user, $app);
+		$token = $this->saveLoginState($user, $app);
+		$this->success('登录成功', [$app->name, $app->callback . '?token=' . $token]);
 	}
 
 	private function saveLoginState(UserEntity $user, ApplicationEntity $app){
@@ -210,7 +208,6 @@ class UserLoginAction extends Action{
 		$saveData['ip']    = explode(',', $app->bind_ip);
 		$saveData['user']  = $user->uid;
 		$saveData['email'] = $user->email;
-		$saveData['ahash'] = md5(strtolower(trim($user->email)));
 		$saveData['app']   = $app->public;
 
 		foreach(ApplicationEntity::getPermissions() as $perm => $name){
@@ -230,15 +227,18 @@ class UserLoginAction extends Action{
 				}
 			}
 			$ret = $uol->insert($saveData);
-
-			if(!$ret['ok'] || $ret['err']){
-				$this->error(ERR_NO_SQL, $ret['err'] . $ret['errmsg']);
-			} else{
-				$this->assign('token', $token);
-				$this->success('登录成功', [$app->name, $app->callback . '?token=' . $token]);
-			}
 		} catch(MongoException $e){
 			$this->error(ERR_NO_SQL, $e->getMessage());
+			exit;
+		}
+		if(!$ret['ok'] || $ret['err']){
+			$this->error(ERR_NO_SQL, $ret['err'] . $ret['errmsg']);
+			exit;
+		} else{
+			$usta = ThinkInstance::D('UserStatistics');
+			$usta->loginOccur($app->public);
+			$this->assign('token', $token);
+			return $token;
 		}
 	}
 }

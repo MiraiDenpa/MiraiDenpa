@@ -6,5 +6,5 @@
  */
 class UserOnlineModel extends Mongoo{
 	protected $collectionName = 'online';
-	protected $connection = 'mongo-system';
+	protected $connection = 'mongo-user';
 }

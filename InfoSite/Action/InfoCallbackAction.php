@@ -1,8 +1,8 @@
 <?php
 /**
  * @default_method index
- * @class InfoCallbackAction
- * @author GongT
+ * @class          InfoCallbackAction
+ * @author         GongT
  */
 class InfoCallbackAction extends Action{
 	final public function index(){
@@ -12,7 +12,7 @@ class InfoCallbackAction extends Action{
 		$auth  = $_GET['token'];
 		$token = md5(INFOSITE_APP_KEY . $auth);
 
-		$ret = SimpleCURL::POST(map_url('u-user-login-ip') . URL_PATHINFO_DEPR . $token . '.php',
+		$ret = SimpleCURL::POST(map_url('p-user-login-ip') . $token,
 								['ip' => get_client_ip()]
 		);
 		if(!$ret || !($data = unserialize($ret))){

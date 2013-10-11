@@ -3,15 +3,15 @@ require __DIR__ . '/BrowserLib.components.php';
 
 //定义前引入依赖
 $requirements = array(
-	'jslib-gt/formhandler.js'   => ['Notify'],
-	'Notify'                    => ['jquery/jquery.transit.js'],
-	'bootstrap/bootstrap.js'    => ['jquery'],
-	'jslib-gt/enhanced_link.js' => ['artDialog', 'jquery/purl.js', 'jslib-gt/murl.js'],
-	'jslib-gt/floatbox.js'      => ['jslib-gt/array.remove.js'],
-	'jslib-gt/login.js'         => ['jslib-gt/murl.js'],
-	'jslib-gt/settings.js'      => ['jslib-gt/login.js'],
-	'jslib-gt/murl.js'          => ['jquery/purl.js'],
-	'UI'                        => ['jquery/jquery.mousewheel.js'],
+	'jslib-gt/formhandler.js'    => ['Notify'],
+	'Notify'                     => ['jquery/jquery.transit.js'],
+	'bootstrap/bootstrap.js'     => ['jquery'],
+	'jslib-gt/enhanced_link.js'  => ['artDialog', 'jquery/purl.js', 'jslib-gt/murl.js'],
+	'jslib-gt/floatbox.js'       => ['jslib-gt/array.remove.js'],
+	'jslib-gt/login.js'          => ['jslib-gt/murl.js','jslib/sha1.js','jslib-gt/settings.js'],
+	'jslib-gt/murl.js'           => ['jquery/purl.js'],
+	'scripts/upload-inputgen.js' => ['UI'],
+	'UI'                         => ['jquery/jquery.mousewheel.js'],
 );
 
 //定义后引入组件

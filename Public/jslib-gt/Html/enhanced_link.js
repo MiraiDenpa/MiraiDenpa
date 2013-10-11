@@ -111,17 +111,24 @@
 	};
 
 	$(document).on('click', '.hlink', function (e){
+		console.log('点击');
 		var option = $(this).data('hlink');
 		if(!option){
 			$(this).hlink();
 			option = $(this).data('hlink');
 		}
 		var cb = function (){
-			var _href = $.modifyUrl(option.href, option);
-			if(e.which == 2){
-				window.open(_href);
+			if(/^javascript:/.test(option.href)){
+				var src = option.href.replace(/^javascript:/, '');
+				eval(src);
 			} else{
-				window.location.href = _href;
+				var _href = $.modifyUrl(option.href, option);
+				if(!option.ask && e.which == 2){
+					window.open(_href);
+				} else{
+					window.location.href = _href;
+				}
+				return false;
 			}
 		};
 		if(option.ask){

@@ -21,10 +21,10 @@ class UserSettingAction extends Action{
 			$data = $mdl->find($this->token_data['user']);
 			if(empty($data)){
 				$this->assign('exist', false);
-				$this->assign('value', []);
+				$this->assign('setting', []);
 			} else{
 				$this->assign('exist', true);
-				$this->assign('value', $data);
+				$this->assign('setting', $data);
 			}
 			$this->assign('code', 0);
 			return $this->display('!data');
@@ -80,7 +80,7 @@ class UserSettingAction extends Action{
 			$data = $mdl
 					->where($this->token_data['user'])
 					->getField($option_name);
-			$this->assign('value', $data);
+			$this->assign('setting', $data);
 			$this->assign('code', 0);
 			return $this->display('!data');
 		case 'POST':

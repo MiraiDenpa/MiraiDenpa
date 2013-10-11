@@ -5,9 +5,10 @@
  * @author         GongT
  */
 class UserTokenAction extends Action{
+	use UserAuthedAction;
 
-	final public function addip($token){
-		$user = UserLogin($token, false);
+	final public function addip(){
+		$user = $this->token_data;
 		if(!isset($_POST['ip'])){
 			return $this->error(ERR_INPUT_REQUIRE, 'ip');
 		}
@@ -23,7 +24,7 @@ class UserTokenAction extends Action{
 			$user['ip'][] = $_POST['ip'];
 			$this->assign('list', $user['ip']);
 			$uol = ThinkInstance::D('UserOnline');
-			$ret = $uol->update(['_id' => $token], ['$push' => ['ip' => $_POST['ip']]]);
+			$ret = $uol->update(['_id' => $this->token], ['$push' => ['ip' => $_POST['ip']]]);
 
 			if(!$ret['ok']){
 				$this->error(ERR_NO_SQL, $ret['err']);
@@ -32,12 +33,12 @@ class UserTokenAction extends Action{
 			}
 		}
 	}
-	
+
 	final public function info(){
-		$user = UserLogin($_GET['token'], false);
+		$user = $this->token_data;
 		unset($user['email']);
-		$this->assign('info',$user);
-		$this->assign('code',0);
+		$this->assign('info', $user);
+		$this->assign('code', 0);
 		$this->display('!data');
 	}
 }

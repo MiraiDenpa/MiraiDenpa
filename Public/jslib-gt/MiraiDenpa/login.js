@@ -11,29 +11,24 @@
 	if(!window.user){
 		window.user = {};
 	}
-	window.user.token = window.token = $.cookie('token');
+	var user = window.user;
+	var token;
+	if(window.token){
+		token = user.token = window.token;
+	} else{
+		token = user.token = window.token = $.cookie('token');
+	}
 	if(JS_DEBUG){
-		console.log('当前TOKEN为：' + window.token);
+		console.log('当前TOKEN为：' + token);
 	}
 	var $document = $(document);
-	$document.on({
-		'mirai.login' : function (a, b, c){
-			$('.login_visable').show();
-			$('.login_unvisable').hide();
-		},
-		'mirai.logout': function (){
-			$('.login_visable').hide();
-			$('.login_unvisable').show();
-		}
-	});
 
 	var token_domain = new RegExp('' + preg_quote(window.Think.URL_MAP['user']) + '', 'i');
 	var exist = /\btoken\b=/;
-	var loginIcon;
 
 	// 发往user的请求在get里自动加token
-	$(document).ajaxSend(function (event, jqxhr, settings){
-		if(!window.token){
+	$document.ajaxSend(function (event, jqxhr, settings){
+		if(!token){
 			return;
 		}
 		if(token_domain.test(settings.url) && !exist.test(settings.url)){
@@ -42,7 +37,7 @@
 			} else{
 				settings.url += '?';
 			}
-			settings.url += 'token=' + window.token
+			settings.url += 'token=' + token
 		}
 	});
 
@@ -64,87 +59,152 @@
 		}
 	};
 
-	$(function (){
-		"use strict";
-		loginIcon = new TrayIcon('user-login', 'transfer', '载入中...', login_action);
-
-		if(window.token){
-			$.when(getProperty(), getSetting(), getToken()).done(function (a1, a2, a3){
-				window.user.property = a1;
-				window.user.token_data = a3;
-				loginSuccess();
-			}).fail(notLogin);
+	user.initUser = function (){
+		if(token){
+			$.when(getProperty(), getSetting(), getToken()).done(loginSuccess).fail(notLogin);
 		} else{
 			notLogin();
 		}
+	};
+	$(user.initUser);
+	user.passwordLogin = function (email, passwd){
+		var url = $.modifyUrl('', {action: 'Login', method: 'index', extension: 'json'});
+		passwd = CryptoJS.SHA1(passwd).toString(CryptoJS.enc.Hex).toLowerCase();
+		var r = $.ajax({
+			url     : url,
+			dataType: 'json',
+			data    : {email: email, passwd: passwd},
+			method  : 'post'
+		});
+		LogStandardReturn(r, '用户登录');
+		r.done(function (ret){
+			if(ret.code == 0){
+				token = user.token = window.token = ret.token;
+				user.initUser();
+			} else{
+				(new SimpleNotify('userLogin')).autoDestroy(true).error('登录失败', ret.message);
+			}
+		})
+	};
 
-		function login_action(){
-			var wnd = loginWindow();
-
-		}
+	var logoutUrl = $.modifyUrl('', {
+		app      : 'user',
+		action   : 'Logout',
+		method   : 'index',
+		extension: 'json'
 	});
-
-	function loginWindow(){
-		if(loginWindow.$div){
-			return loginWindow.$div;
-		}
-		var $div = $('<div/>');
-
-		return loginWindow.$div = $div;
-	}
+	var removeTokenUrl = $.modifyUrl(location.href, {
+		action   : 'Logout',
+		method   : 'index',
+		extension: 'json'
+	});
+	user.logout = function (){
+		var r = $.ajax({
+			url     : logoutUrl,
+			dataType: 'json'
+		});
+		$.ajax({
+			url     : removeTokenUrl,
+			dataType: 'json'
+		});
+		LogStandardReturn(r, '退出登录');
+		r.done(function (ret){
+			if(ret.code == 0){
+				notLogin();
+			}
+		})
+	};
 
 	function loginSuccess(){
 		if(JS_DEBUG){
 			console.log('◎ 登录成功！');
 		}
 		is_login = true;
-		loginIcon.icon('off').alert('success').title('欢迎，' + window.user.property.nick + '！');
 		onLogin.fire();
-		$(document).trigger('mirai.login');
+		$document.trigger('mirai.login');
 	}
 
 	function notLogin(){
 		if(JS_DEBUG){
-			console.log('○ 未登录！');
+			console.groupCollapsed('○ 未登录！');
+			console.trace();
+			console.groupEnd();
 		}
+		user.token_data = null;
+		user.property = null;
+		if(user.setting){
+			user.setting.clear();
+		}
+		user.setting = {};
+		token = null;
+		token = user.token = window.token = null;
+		$.removeCookie('token');
+
 		is_login = false;
-		loginIcon.icon('off').alert('error').title('未登录');
 		onLogout.fire();
-		$(document).trigger('mirai.logout');
+		$document.trigger('mirai.logout');
 	}
 
 	function getToken(){
 		var df = new $.Deferred();
-		var r = $.ajax({
+		if(user.token_data){ // 在页面里用同步方式登录
+			console.groupCollapsed('●成功：获取登录token信息(同步)');
+			console.log('页内传输。');
+			console.log(user.token_data);
+			console.groupEnd();
+			return df.resolve(user.token_data).promise();
+		}
+		var r = $.ajax({ // 异步请求登录信息
 			url     : window.Think.URL_MAP['u-user-login-token'],
 			dataType: 'json'
-		}).done(function (ret){
-					if(0 == ret.code){
-						df.resolve(ret.info)
-					} else{
-						df.reject();
-					}
-				});
-		JS_DEBUG && CheckStandardReturn(r, '获取登录token信息');
+		});
+		LogStandardReturn(r, '获取登录token信息');
+		r.done(function (ret){
+			if(0 == ret.code){
+				user.token_data = ret.info;
+				df.resolve(ret.info)
+			} else{
+				df.reject();
+			}
+		});
 		return df.promise();
+	}
+
+	function getSetting(){
+		var url = window.Think.URL_MAP['u-user-login-settings'];
+		user.setting = new SyncStorage('MiraiSetting', url);
+		var r = user.setting.sync();
+		LogStandardReturn(r, '获取配置信息');
+		return r;
 	}
 
 	var pp_url = $.modifyUrl(window.Think.URL_MAP['u-user-login-property'], {}, true);
 
 	function getProperty($uid){
-		pp_url.modify({"method": $uid});
 		var df = new $.Deferred();
+		if(user.property){ // 在页面里用同步方式登录
+			if(JS_DEBUG){
+				console.groupCollapsed('●成功：获取用户信息(同步)');
+				console.log(user.property);
+				console.groupEnd();
+			}
+			return df.resolve(user.property).promise();
+		}
+
+		pp_url.modify({"method": $uid});
 		var r = $.ajax({
 			url     : pp_url.toString(),
 			dataType: 'json'
-		}).done(function (ret){
-					if(0 == ret.code){
-						df.resolve(ret.property)
-					} else{
-						df.reject();
-					}
-				});
-		JS_DEBUG && CheckStandardReturn(r, '获取用户信息');
+		});
+		LogStandardReturn(r, '获取用户信息');
+		r.done(function (ret){
+			if(0 == ret.code){
+				user.property = ret.property;
+				df.resolve(ret.property)
+			} else{
+				df.reject();
+			}
+		});
 		return df.promise();
 	}
 })(window);

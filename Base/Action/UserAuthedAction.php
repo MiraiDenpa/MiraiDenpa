@@ -52,4 +52,9 @@ trait UserAuthedAction{
 		}
 		return $this->current_user = $this->getUser($this->token_data['user']);
 	}
+	
+	protected function syncLogin(){
+		$this->assign('_sync_login_token_data',json_encode($this->token_data));
+		$this->assign('_sync_login_property',json_encode($this->currentUser()->propertys()->toArray()));
+	}
 }

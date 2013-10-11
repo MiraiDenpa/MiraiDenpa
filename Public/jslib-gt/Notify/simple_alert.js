@@ -5,13 +5,14 @@ function SimpleNotify(id){
 	if(SimpleNotify.cache_notify[id]){
 		return SimpleNotify.cache_notify[id];
 	}
+	
 	var $div = $('<div/>').css({'display': 'inline-block', 'margin': 'auto', 'paddingLeft': '40px', 'paddingRight': '40px', 'position': 'relative'}).addClass('alert');
 	var $title_container = $('<div class="clearfix"/>').appendTo($div);
 	var $title = $('<h4/>').css({'position': 'inline-block', 'max-width': '440px', 'overflow': 'hidden', 'white-space': 'nowrap', 'text-align': 'center', 'margin': 'auto'}).appendTo($title_container);
 	var $closer = $('<a class="text-muted" style="vertical-align:middle;line-height:26px;position:absolute;right:10px;top:5px;"/>').html('<i class="glyphicon glyphicon-remove"></i>').appendTo($title_container);
 	var $message = $('<div class="text-left"/>').insertAfter($title_container);
-	var timmer = $('<div/>').css({'position': 'absolute', 'left': '50px', 'top': '5px', 'backgroundColor': 'blue', 'border-radius': '10px', 'height': '10px', 'width': '10px'});
-	$div.push(timmer[0]);
+	var timmer = $('<div/>').css({'position': 'absolute', 'left': '5px', 'top': '5px', 'backgroundColor': 'blue', 'border-radius': '10px', 'height': '10px', 'width': '10px'});
+	timmer.prependTo($div);
 
 	var notify = new Notify('simple_alert' + id, $div);
 	var auto_destroy = false;
@@ -96,7 +97,7 @@ function SimpleNotify(id){
 					timmer.stop(true, false).css({
 						opacity: 1
 					}).animate({
-								opacity: 0.1
+								opacity: 0
 							}, timeout);
 					if(_time){
 						clearTimeout(_time);
@@ -113,41 +114,49 @@ function SimpleNotify(id){
 		}
 	});
 }
-function CheckStandardReturn(dfd, title){
+function LogStandardReturn(dfd, title){
+	/*function dispatch_standard_object(obj){
+		var msg = obj.message + '，' + obj.info;
+		if(obj.redirect){
+			msg += '<div style="padding-top:24px;"></div><div style="position:absolute;right:10px;bottom:0px;">';
+			for(var i in obj.redirect){
+				if(obj.redirect.hasOwnProperty(i)){
+					msg += '<a class="btn btn-link" href="' + obj.redirect[i] + '">' + i + '</a>';
+				}
+			}
+			msg += '</div>';
+		}
+		return SimpleNotify(time()).error(msg, title + '失败').hideTimeout(1000).autoDestroy();
+	}*/
+
 	dfd.done(function (ret){
 		if(typeof ret === 'string'){
 			try{
 				ret = JSON.parse(ret);
 			} catch(e){
-				console.error(title + '失败，返回内容不是json。');
+				console.groupCollapsed('△失败：' + title + '，返回内容不是json。');
 				console.dir(e);
+				console.groupEnd();
 			}
 		}
 		if(ret.code){
-			if(JS_DEBUG){
-				console.error('△ ' + title + '失败，返回消息： ' + ret.message + '，' + ret.info);
-			}
-			var msg = ret.message + '，' + ret.info;
-			if(ret.redirect){
-				msg += '<div style="padding-top:24px;"></div><div style="position:absolute;right:10px;bottom:0px;">';
-				for(var i in ret.redirect){
-					if(ret.redirect.hasOwnProperty(i)){
-						msg += '<a class="btn btn-link" href="' + ret.redirect[i] + '">' + i + '</a>';
-					}
-				}
-				msg += '</div>';
-			}
-
-			return SimpleNotify(time()).error(msg, title + '失败').autoDestroy();
-		} else{
-			if(JS_DEBUG){
-				console.log('● ' + title + '成功');
-				console.dir(ret);
-			}
+			console.groupCollapsed('△失败： ' + title + '，返回消息： ' + ret.message + '，' + ret.info);
+			console.dir(ret);
+			console.groupEnd();
+			//dispatch_standard_object(ret);
+		} else if(JS_DEBUG){
+			console.groupCollapsed('●成功： ' + title);
+			console.dir(ret);
+			console.groupEnd();
 		}
-	}).fail(function (xhr, state, error){
-				error = typeof error == 'string'? error : error.message;
-				console.error(title + '失败，HTTP错误 [' + state + ']: ' + error);
-				console.dir({response: xhr.responseText});
-			});
+	});
+	if(JS_DEBUG){
+		dfd.fail(function (xhr, state, error){
+			error = typeof error == 'string'? error : error.message;
+			console.groupCollapsed('△失败:' + title + '，HTTP错误 [' + state + ']: ' + error);
+			console.dir({response: xhr.responseText});
+			console.groupEnd();
+		});
+	}
+	return dfd;
 }

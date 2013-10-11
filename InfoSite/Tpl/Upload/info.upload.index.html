@@ -97,6 +97,19 @@
 			}
 			return false;
 		});
+
+		var delete_btn = $('<a/>').append($('<i class="glyphicon glyphicon-trash"/>'));
+		function form_item(title, obj){
+			var td = $('<td class="text-right field-title col-xs-3"/>')
+					.append($('<label class="control-label value"/>')
+							.attr({for: obj.find('input').attr('id')})
+							.css({"paddingRight": 20})
+							.text(title));
+			return $('<tr class="row"/>')
+					.append(td)
+					.append($('<td class="text-left field-input col-xs-8"/>').append(obj))
+					.append($('<td class="text-left field-delete col-xs-1"/>').append(delete_btn.clone()));
+		}
 	</script>
 </AddHeader>
 <div id="MainContainer" class="container">

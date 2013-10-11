@@ -20,6 +20,7 @@ return array(
 	['NALLOW_EDIT_OTHER', '不能修改其他用户的信息', '都是年轻时犯下的错误。'],
 	['NALLOW_MISS_PATH', 'url不全', '应为 \x\y 的形式。'],
 	['NALLOW_AUTHTYPE', '禁止认证', '没有达到指定的权限级别。'],
+	['NALLOW_REFERER', '禁止来源。', '请确认您正在访问正规合法的网站。'],
 
 	['MISS_PASSWORD', '密码错误', '请重新输入。', ['找回密码' => _UC('user', 'forget', 'index')]],
 	['MISS_EMAIL', '邮箱地址错误', '请重新输入。'],
@@ -48,8 +49,9 @@ return array(
 	['RANGE_UID', '用户ID长度错误', '3位到12位。'],
 
 	['CONFLICT_MTD_RES', '本资源不支持指定的方法', ''],
-	
-	
-	['JSON_SERIALIZE', '序列化失败', '这是个严重错误。'],
 
+	['SERVER_FAULT_CURL', '服务器错误', '这是个严重错误。'],
+	
+	['JSON_SERIALIZE', '服务器错误', '这是个严重错误。'],
+	
 );

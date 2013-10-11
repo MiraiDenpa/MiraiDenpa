@@ -168,3 +168,17 @@
 		list-style: none;
 	}
 }
+
+#loginWindow {
+	position: fixed;
+	height: 100%;
+	width: 260px;
+	background: #7500ac;
+	right: -300px;
+	top: 0;
+	z-index: 1999;
+	transition: 400ms;
+	&.active {
+		right: 0;
+	}
+}

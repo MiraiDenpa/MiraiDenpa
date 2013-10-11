@@ -3,11 +3,12 @@
 </layout>
 <include file="!items/login"/>
 <BrowserLib>
-	jslib-gt/formhandler.js
-	jslib-gt/gravatar.js
-	scripts/upload-inputgen.js
-	pure
 	UI
+	pure
+	artDialog
+	jslib-gt/formhandler.js
+	scripts/upload-inputgen.js
+	jquery/object.path.js
 </BrowserLib>
 <AddHeader>
 	<style type="text/css">
@@ -20,69 +21,174 @@
 		}
 	</style>
 	<script type="text/javascript">
+		$(document).on('mirai.login', buildBaseInfo);
+		$(document).on('mirai.login', buildMarks);
+
 		function buildBaseInfo(){
+			var $BaseInfo = $('#BaseInfo');
+			var field_define = {
+				"nick"           : {
+					'name'   : '昵称',
+					'type'   : 'input',
+					'subtype': 'text',
+					'info'   : '在电波的昵称，可以随意修改。'
+				},
+				"email"          : {
+					'name'   : '公开邮箱',
+					'type'   : 'input',
+					'subtype': 'email',
+					'info'   : '不用验证的邮箱，任何人都可以看到。'
+				},
+				"sex"            : {
+					'name'   : '性别',
+					'type'   : 'select',
+					'subtype': {
+						'软妹' : 'moe-girl',
+						'妹子' : 'normal-girl',
+						'女汉子': 'very-moe-girl',
+						'秀吉' : 'unknown',
+						'汉子' : 'normal-boy',
+						'纯爷们': 'boy-next-door'
+					},
+					'info'   : '少年，请在此填写性别。'
+				},
+				"comefrom.nation": {
+					'name'   : '国家',
+					'type'   : 'select',
+					'subtype': {
+						'天朝' : 'tianchao',
+						'11区': 'region-11',
+						'特区' : 'SAR',
+						'米国' : 'fation',
+						'喵星' : 'nya',
+						'其他' : 'other'
+					},
+					'info'   : '汝自何方而来。'
+				},
+				"intro"          : {
+					'name'   : '个人简介',
+					'type'   : 'input',
+					'subtype': 'textarea',
+					'info'   : '只有有人戳你的时候才看得到。'
+				},
+				"sign"           : {
+					'name'   : '签名',
+					'type'   : 'input',
+					'subtype': 'textarea',
+					'info'   : '帖子签名，markdown可用。'
+				},
+			};
+
+			var static_property = $(user.property).array_path();
+
+			for(var id in field_define){
+				var define = field_define[id];
+				define['id'] = id;
+				var value = static_property[id];
+				var fn = type_widget(define.type);
+				var post_id = 'value' + id.replace(/^([^\[]*)/, '[$1]');
+				var $obj = fn(post_id, define['subtype'], value, define['text']);
+
+				$BaseInfo.append(form_item(define.name, $obj, define['info']));
+			}
+		}
+
+		function buildMarks(){
+			var $Marks = $('#Marks');
 
 		}
-		$(buildBaseInfo);
+
+		function UserInfoSave(){
+			var r = $('#frmMain').ajaxSubmit();
+			LogStandardReturn(r, '保存资料表单提交');
+			r.done(function (ret){
+				if(ret.code == 0){
+					changed = false;
+				}
+			});
+		}
+
+		function form_item(title, obj, info){
+			var group = $('<div class="form-group"/>');
+			$('<label class="control-label col-xs-2"/>')
+					.attr({for: obj.find('input').attr('id')})
+					.text(title).appendTo(group);
+			var r = $('<div class="col-xs-10"/>').append(obj).appendTo(group);
+			if(info){
+				r.append($('<span class="help-block"/>').html(info))
+			}
+			return group;
+		}
+
+		var changed = false;
+		$(document).on('change', function (){
+			changed = true;
+		});
+
+		$(function (){
+			var last = $('.nav .active');
+			var tab = last.find('a[data-tab]').data('tab');
+			var last_cnt = $(tab).addClass('active');
+			$(document).on('click', '.nav a[data-tab]', function (){
+				var tabc = $(this).data('tab');
+				if(tabc == tab){
+					return;
+				}
+				tab = tabc;
+				last.removeClass('active');
+				last = $(this).parent().addClass('active');
+
+				last_cnt.removeClass('active');
+				last_cnt = $(tab).addClass('active');
+			});
+
+			$('#go_back').click(function (){
+				if(changed){
+					var $t = $(this);
+					$.dialog.confirm('要离开吗？会丢失未保存的改动。', function (){
+						location.href = $t.attr('href');
+					}, function (){
+					});
+					return false;
+				}
+			});
+		});
 	</script>
 </AddHeader>
 <div class="container">
-	<form class="row form-horizontal">
+	<form id="frmMain" method="post" action="[%url map='u-user-login-property' /%]" class="row form-horizontal">
 		<h2>编辑用户资料</h2>
 		<div class="col-xs-3">
 			<ul class="nav nav-pills nav-stacked">
 				<li class="active">
-					<a href="#BaseInfo" data-toggle="tab">基础</a>
+					<a data-tab="#BaseInfoParent">基础</a>
 				</li>
 				<li>
-					<a href="#Marks" data-toggle="tab">徽章和称号</a>
+					<a data-tab="#MarksParent">徽章和称号</a>
 				</li>
 				<li>
-					<a href="#" data-toggle="tab">没想好是什么按钮</a>
+					<a>没想好是什么按钮</a>
+				</li>
+			</ul>
+			<ul style="padding:0;margin:50px 0;list-style: none;">
+				<li>
+					<a class="btn btn-warning" style="display: block;text-align:left;" onclick="UserInfoSave();">保存</a>
+				</li>
+				<li>
+					<a class="btn btn-link" style="display: block;text-align:left;" href="{$goback_url}" id="go_back">返回</a>
 				</li>
 			</ul>
 		</div>
 		<div class="tab-content col-xs-9">
-			<fieldset id="BaseInfo" class="tab-pane active">
-				<div class="form-group">
-					<label for="nick" class="control-label col-xs-2">昵称</label>
-					<div class="col-xs-10">
-						<input type="text" class="form-control" id="nick" name="nick" placeholder="请填写昵称。（必填）">
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="nick" class="control-label col-xs-2">性别</label>
-					<div class="col-xs-10">
-						<div class="radio-inline">
-							<label>
-								<input type="radio" name="optionsRadios" value="soft-female">
-								软妹
-							</label>
-						</div>
-						<div class="radio-inline">
-							<label>
-								<input type="radio" name="optionsRadios" value="hard-female">
-								女汉
-							</label>
-						</div>
-						<div class="radio-inline">
-							<label>
-								<input type="radio" name="optionsRadios" value="setting-male">
-								秀吉
-							</label>
-						</div>
-						<div class="radio-inline">
-							<label>
-								<input type="radio" name="optionsRadios" value="real-male">
-								爷们
-							</label>
-						</div>
-					</div>
-				</div>
-			</fieldset>
-			<fieldset id="Marks" class="tab-pane">
-				bb
-			</fieldset>
+			<div id="BaseInfoParent" class="panel panel-info tab-pane">
+				<div class="panel-heading">基础</div>
+				<fieldset id="BaseInfo" class="panel-body"></fieldset>
+			</div>
+			<div id="MarksParent" class="panel panel-info tab-pane">
+				<div class="panel-heading">徽章和称号</div>
+				<fieldset id="Marks"></fieldset>
+			</div>
 		</div>
 	</form>
+	<div class="text-muted text-right">*&nbsp;点击保存后，古旧空间不能及时清除，请耐心等待(大约5分钟)。</div>
 </div>

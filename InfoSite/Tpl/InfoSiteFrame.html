@@ -11,8 +11,10 @@
 	{__STYLE__}
 	{__SCRIPT__}
 	<BrowserLib>
-		styles/infosite.global.less
 		pure
+		jslib-gt/enhanced_link.js
+		jslib-gt/formhandler.js
+		styles/infosite.global.less
 	</BrowserLib>
 	<include file="!items/login"/>
 	<AddHeader>
@@ -29,6 +31,16 @@
 			}).on('blur', function (){
 						search.removeClass('active');
 					});
+			$('#LoginBox').on('submit', function (){
+				var that = $(this);
+				var email = that.find('[name=email]').val();
+				if(!email){
+					location.href='[%url app="user" action="" method=""/%]';
+				}
+				var passwd = that.find('[name=password]').val();
+				window.user.passwordLogin(email,passwd);
+				return false;
+			});
 		</script>
 	</AddHeader>
 </head>
@@ -48,19 +60,21 @@
 
 		</div>
 	</div>
-	<div id="SiteLogo"><img title="我是logo"/></div>
+	<div id="SiteLogo">
+		<img title="我是logo" alt="我是logo" src=""/>
+	</div>
 	<div id="LoginBox" class="login_unvisable">
-		<form class="form-horizontal" action="[%url action='login' method='auth'/%]" method="post">
+		<form class="form-horizontal">
 			<div class="form-group">
 				<label for="login_email" class="control-label col-xs-3">用户名：</label>
 				<div class="col-xs-9">
-					<input id="login_email" name="email" type="text" class="form-control">
+					<input id="login_email" name="email" type="text" class="form-control input-sm"/>
 				</div>
 			</div>
 			<div class="form-group">
 				<label for="login_passwd" class="control-label col-xs-3">密码：</label>
 				<div class="col-xs-9">
-					<input id="login_passwd" name="passwd" type="password" class="form-control">
+					<input id="login_passwd" name="password" type="password" class="form-control input-sm"/>
 				</div>
 			</div>
 			<div class="text-right">
@@ -72,9 +86,7 @@
 	</div>
 	<div id="UserBox" class="login_visable">
 		<div class="show"></div>
-		<div class="text-right">
-			<button class="btn btn-primary">退出</button>
-		</div>
+		<button data-href="javascript: window.user.logout();" class="btn btn-info hlink pull-right" data-ask="真的要退出吗→_→">退出</button>
 	</div>
 </div>
 <nav id="infosite_frame_nav" class="navbar navbar-default navbar-static-top" role="navigation">

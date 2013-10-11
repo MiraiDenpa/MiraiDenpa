@@ -73,7 +73,11 @@ function create_static(id, sub, value, text){
 	return field;
 }
 function create_input(id, sub, value, text){
-	return $('<input class="form-control"/>').attr({'type': sub, 'name': id, 'title': text}).val(value);
+	if(sub == 'textarea'){
+		return $('<textarea class="form-control"/>').attr({ 'name': id, 'title': text}).text(value);
+	} else{
+		return $('<input class="form-control"/>').attr({'type': sub, 'name': id, 'title': text}).val(value);
+	}
 }
 function create_inputlist(id, sub, value, text){
 	var $center = $('<input/>').attr('type', sub);
@@ -83,17 +87,4 @@ function create_inputlist(id, sub, value, text){
 		ret.val(value);
 	}
 	return ret;
-}
-
-var delete_btn = $('<a/>').append($('<i class="glyphicon glyphicon-trash"/>'));
-function form_item(title, obj){
-	var td = $('<td class="text-right field-title col-xs-3"/>')
-			.append($('<label class="control-label value"/>')
-					.attr({for: obj.find('input').attr('id')})
-					.css({"paddingRight": 20})
-					.text(title));
-	return $('<tr class="row"/>')
-			.append(td)
-			.append($('<td class="text-left field-input col-xs-8"/>').append(obj))
-			.append($('<td class="text-left field-delete col-xs-1"/>').append(delete_btn.clone()));
 }

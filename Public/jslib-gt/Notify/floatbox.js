@@ -1,4 +1,5 @@
 (function (){
+	"use strict";
 	/**
 	 *  全局变量
 	 *  $box - 顶部通知根容器
@@ -8,11 +9,25 @@
 	 *  is_div_show - 顶部$box当前是否可见
 	 *  message_tray - 顶部通知的图标（TrayIcon）
 	 */
-	var $box, $tray;
 	var contents = {};
 	var visable_contents = [];
 	var is_div_show = false;
 	var message_tray = false;
+
+	/**
+	 * 初始化右上角的图标区域、顶部的根容器
+	 */
+	var $box = $('<div/>').css({'position': 'fixed', 'top': '-2em', 'left': 0, 'width': '100%', 'opacity': 0, 'zIndex': 1000}).addClass('text-center');
+	var $tray_box = $('<div/>').css({'position': 'fixed', 'top': 0, 'right': 0, 'zIndex': 2000}).addClass('text-right');
+	var $tray = $('<ul/>').css({'listStyle': 'none'}).appendTo($tray_box).on('mouseenter', 'li',function (){
+		$(this).css({'opacity': 1});
+	}).on('mouseleave', 'li', function (){
+				$(this).css({'opacity': 0.7});
+			});
+	$(function (){
+		// 等文档准备好后放置到正确未知
+		$('body').append($box.hide()).append($tray_box.show());
+	});
 
 	/**
 	 * 显示/隐藏顶部通知
@@ -39,21 +54,6 @@
 		}
 	}
 
-	/**
-	 * 初始化右上角的图标区域、顶部的根容器
-	 */
-	$(function (){
-		// 初始化
-		$box = $('<div/>').css({'position': 'fixed', 'top': '-2em', 'left': 0, 'width': '100%', 'opacity': 0, 'zIndex': 1000}).addClass('text-center').hide().appendTo($('body'));
-		var tray_box = $('<div/>').css({'position': 'fixed', 'top': 0, 'right': 0, 'zIndex': 2000}).addClass('text-right').show().appendTo($('body'));
-		$tray = $('<ul/>').css({'listStyle': 'none'}).appendTo(tray_box).on('mouseenter', 'li',function (){
-			$(this).css({'opacity': 1});
-		}).on('mouseleave', 'li', function (){
-					$(this).css({'opacity': 0.7});
-				});
-		return $box;
-	});
-
 	var cache_tray_icon = {};
 	/**
 	 * @param id 图标的唯一ID
@@ -64,6 +64,13 @@
 	 * @constructor
 	 */
 	var TrayIcon = function (id, icon, title, fn){
+		if(!(this instanceof TrayIcon)){
+			if(cache_tray_icon[id]){
+				return cache_tray_icon[id];
+			} else{
+				return undefined;
+			}
+		}
 		if(cache_tray_icon[id]){
 			return cache_tray_icon[id];
 		}
@@ -77,37 +84,37 @@
 			$li.click(fn);
 		}
 		return cache_tray_icon[id] = $.extend(this, {
-			id      : id,
-			icon    : function (newone){ // 替换图标icon
+			id    : id,
+			icon  : function (newone){ // 替换图标icon
 				$icon.removeClass().addClass('glyphicon glyphicon-' + newone);
 				return this;
 			},
-			remove  : function (){ // 删除图标
+			remove: function (){ // 删除图标
 				$li.remove();
 				$icon = null;
 				$li = null;
 			},
-			show    : function (){ // 显示图标
+			show  : function (){ // 显示图标
 				$li.show();
 				return this;
 			},
-			hide    : function (){ // 隐藏图标
+			hide  : function (){ // 隐藏图标
 				$li.hide();
 				return this;
 			},
-			title   : function (newone){ // 修改title属性
+			title : function (newone){ // 修改title属性
 				$li.attr('title', newone);
 				return this;
-			}, 
-			click: function (fn){ // 添加一个新的回调方法
+			},
+			click : function (fn){ // 添加一个新的回调方法
 				$li.click(fn);
 				return this;
-			}, 
-			css  : function (arg1, arg2){ // 修改css
+			},
+			css   : function (arg1, arg2){ // 修改css
 				$li.css(arg1, arg2);
 				return this;
 			},
-			alert   : function (type){ // 高亮图标
+			alert : function (type){ // 高亮图标
 				$li.removeClasses('text\\-.*');
 				if(type === true){
 					$li.addClass('text-primary');
@@ -172,7 +179,7 @@
 			if(undefined === time){
 				time = 800;
 			}
-			visable_contents.remove(id);
+			array_remove(visable_contents, id);
 			if(visable_contents.length == 0){
 				message_tray.alert(false);
 				show_div(false, function (){
@@ -204,7 +211,7 @@
 					delete contents[id];
 				});
 			}
-			visable_contents.remove(id);
+			array_remove(visable_contents, id);
 			if(visable_contents.length == 0){
 				show_div(false);
 			}

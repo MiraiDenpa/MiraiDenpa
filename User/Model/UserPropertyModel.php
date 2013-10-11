@@ -4,7 +4,7 @@ class UserPropertyModel extends Mongoo{
 	protected $connection = 'mongo-user';
 
 	function getEntity($uid){
-		$data = $this->findOneById($uid);
+		$data = $this->findOne(['_id'=>$uid]);
 		if(null === $data){
 			$ret = new UserPropertyEntity([]);
 		} else{
