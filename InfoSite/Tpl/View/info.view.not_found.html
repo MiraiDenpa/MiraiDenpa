@@ -1,0 +1,24 @@
+<comment>
+	<link href="/Public/bootstrap/css/bootstrap.css" rel="text/css"/>
+</comment>
+<layout name=":InfoSiteFrame">
+	$title=$data?'修改条目～ 《'.$data['origin_name'].'》':'添加条目～';
+</layout>
+<BrowserLib>
+	UI
+	jslib-gt/enhanced_link.js
+</BrowserLib>
+<AddHeader prepend="true">
+	<style type="text/css"></style>
+	<script type="text/javascript"></script>
+</AddHeader>
+<div class="container" id="mainContainer">
+	<dl>
+		<dt>页面找不到，您可以：</dt>
+		<present name="$keyword">
+			<dd>修改搜索条件（{$keyword}）</dd>
+		</present>
+		<dd>返回首页</dd>
+		<dd>随便看看</dd>
+	</dl>
+</div>

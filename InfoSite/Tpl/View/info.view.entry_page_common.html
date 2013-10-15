@@ -1,0 +1,73 @@
+<comment>
+	<link href="/Public/bootstrap/css/bootstrap.css" rel="text/css"/>
+</comment>
+<layout name=":InfoSiteFrame">
+	$title=$data?'修改条目～ 《'.$data['origin_name'].'》':'添加条目～';
+</layout>
+<BrowserLib>
+	UI
+	scripts/infosite.entry_page.js
+	styles/infosite.entry_page.less
+	jslib-gt/enhanced_link.js
+</BrowserLib>
+<AddHeader prepend="true">
+	<script type="text/javascript">
+		var doc = {$doc: json};
+	</script>
+</AddHeader>
+<div class="container" id="mainContainer">
+	<div id="wrap">
+		<div id="mainInfo" class="row row-compact">
+			<div class="col-xs-2 left">
+				<img>
+				<div>评分信息</div>
+			</div>
+			<div class="col-xs-10 center">
+				<div id="basic">
+					<h1>标题</h1>
+					<div>介绍</div>
+				</div>
+				<div>
+					<h4>章节列表</h4>
+					<div class="bui-inputlist inline" name="name">
+						<span class="tip">01</span>
+						<span class="tip">02</span>
+						<span class="tip">03</span>
+						<div>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-3 right">
+				<div class="bui-inputlist inline" name="name">
+					<ul class="list">
+						<li>
+							<span class="bui-label">标签</span>
+						</li>
+						<li>
+							<span class="bui-label">标签</span>
+						</li>
+						<li>
+							<span class="bui-label">标签</span>
+						</li>
+					</ul>
+					<div class="control">
+						<input type="text" class="form-control input-sm" name="" placeholder="添加标签">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="extend" class="row row-compact">
+			<div class="col-xs-9">评论</div>
+			<div class="col-xs-3">
+				<div>
+					<span>[制作信息]</span>
+					<span>[关联条目]</span>
+				</div>
+				<div>制作信息</div>
+			</div>
+		</div>
+		{$doc|var_dump}
+	</div>
+</div>

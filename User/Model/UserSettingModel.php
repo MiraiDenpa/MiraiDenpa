@@ -1,22 +1,27 @@
 <?php
-class UserSettingModel extends Model{
-	protected $connection = 'user';
-	protected $tableName = 'setting';
-	protected $pk = 'uid';
-	protected $app_pub;
+class UserSettingModel extends Mongoo{
+	protected $collectionName = 'setting';
+	protected $connection = 'mongo-user';
 
-	public function _initialize($pub){
+	protected $app_pub = '';
+
+	public function _initialize($pub, $unused){
 		$this->app_pub = $pub;
-		$this->register_callback('before_read',
-			function (&$opt){
-				$opt['where']['app'] = $this->app_pub;
-			}
-		);
-		$this->register_callback('before_write',
-			function (&$data){
-				$data['app'] = $this->app_pub;
-			}
-		);
+	}
+
+	public function getByUid($uid, $field = []){
+		$field['_id'] = false;
+		return $this->findOne(['app' => $this->app_pub, 'uid' => $uid], $field);
+	}
+
+	public function replaceByUid($uid, $data){
+		$data['update'] = time();
+		return $this->update(['app' => $this->app_pub, 'uid' => $uid], $data, ['upsert' => true]);
+	}
+
+	public function setByUid($uid, $data){
+		$data['update'] = time();
+		return $this->update(['app' => $this->app_pub, 'uid' => $uid], ['$set' => $data], ['upsert' => true]);
 	}
 
 	/**

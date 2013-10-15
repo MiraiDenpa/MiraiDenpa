@@ -11,16 +11,9 @@ function SyncStorage(key_name, url){
 	var callbacks = {};
 	var validate_time = 86400;
 	var murl;
-	if(url === undefined){
-		murl = null;
-	} else{
-		murl = $.modifyUrl(url, {}, true);
-	}
-	unserilize();
-	sync();
 
 	function serilize(){
-		st.setItem(key_name, read());
+		st.setItem(key_name, read.call(this));
 	}
 
 	function unserilize(){
@@ -33,7 +26,7 @@ function SyncStorage(key_name, url){
 				data = {};
 				return;
 			}
-			write(d);
+			write.call(this, d);
 		} else{
 			st.setItem(key_name, '{}');
 			data = {};
@@ -48,18 +41,19 @@ function SyncStorage(key_name, url){
 		if(data[name] != value){
 			last_update = time();
 			data[name] = value;
-			trigger(name);
+			this[name] = value;
+			trigger.call(this, name);
 			if(murl){
-				murl.modify({path: [name]});
+				murl.modify({method: [name]});
 				LogStandardReturn($.ajax({
-					url : url,
+					url : murl.toString(),
 					type: 'POST',
 					data: {
 						value: value
 					}
 				}), '修改单个设置（' + key_name + '.' + name + '）');
 			}
-			serilize();
+			serilize.call(this);
 		}
 		return this;
 	}
@@ -67,10 +61,10 @@ function SyncStorage(key_name, url){
 	function property_define(name){
 		return {
 			get: function (){
-				return get(name);
+				return get.call(this, name);
 			},
 			set: function (v){
-				return set(name, value);
+				return set.call(this, name, v);
 			}
 		}
 	}
@@ -88,25 +82,15 @@ function SyncStorage(key_name, url){
 		} else{
 			last_update = time();
 		}
-		for(i in changed){
-			if(this.hasOwnProperty(i) && !_data.hasOwnProperty(i)){ // 删除- 以前有现在没有
-				delete this[i];
-			}
-			if(!this.hasOwnProperty(i) && _data.hasOwnProperty(i)){// 添加- 以前没有
-				Object.defineProperty(this, i, property_define(i));
-			}
-			if(data[i] == _data[i]){ // 不变，不要触发change事件
-				delete changed[i];
-			}
-		}
-		data = _data;
 
+		var old = data;
+		data = _data;
 		for(i in changed){
-			if(changed.hasOwnProperty(i)){
-				trigger(i);
+			if(data[i] != old[i] && changed.hasOwnProperty(i)){ // 不变不要触发change事件
+				trigger.call(this, i);
 			}
 		}
-		serilize();
+		serilize.call(this);
 	}
 
 	function trigger(item){
@@ -121,7 +105,7 @@ function SyncStorage(key_name, url){
 		}
 		var e = $.ajax({
 			url : url,
-			data: read(),
+			data: read.call(this),
 			type: 'POST'
 		});
 	}
@@ -135,14 +119,14 @@ function SyncStorage(key_name, url){
 			type: 'GET'
 		}).done(function (ret){
 					if(!ret.code){
-						write(ret.setting);
+						write.call(this, ret.setting);
 					}
 				});
 	}
-	
+
 	function clear(){
-		write({});
-		serilize();
+		write.call(this, {});
+		serilize.call(this);
 	}
 
 	function sync(){
@@ -150,12 +134,12 @@ function SyncStorage(key_name, url){
 		if(!murl){
 			return dfd.resolve(data).promise();
 		}
-		if(data){ // 如果本地有缓存
+		if(data && data.update){ // 如果本地有缓存
 			if(data.update + validate_time < time()){ // 但是超时了
 				if(JS_DEBUG){
 					console.log('Storage: ' + key_name + ' 本地缓存超时');
 				}
-				download().done(function (){
+				download.call(this).done(function (){
 					dfd.resolve(data);
 				});
 			} else{ // 直接使用
@@ -179,6 +163,9 @@ function SyncStorage(key_name, url){
 		if(!callbacks[name]){
 			callbacks[name] = [];
 		}
+		if(data[name]){
+			callback(data[name]);
+		}
 		callbacks[name].push(callback);
 		return this;
 	}
@@ -190,6 +177,14 @@ function SyncStorage(key_name, url){
 	this.writeAll = write;
 	this.sync = sync;
 	this.clear = clear;
+
+	if(url === undefined){
+		murl = null;
+	} else{
+		murl = $.modifyUrl(url, {}, true);
+	}
+	unserilize.call(this);
+	//this.sync();
 
 	return this;
 }

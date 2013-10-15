@@ -19,13 +19,19 @@ class UserCheckModel extends UserListModel{
 	public function isDenyUid($uid){
 		$denys = array(
 			'admin',
+			'auth',
 			'relation',
 			'property',
+			'proxy',
 			'password',
 			'login',
 			'empty',
 			'forget',
 			'setting',
+			'square',
+			'search',
+			'fallback',
+			'empty',
 			'blacklist',
 			'follow',
 			'follower',
@@ -37,6 +43,7 @@ class UserCheckModel extends UserListModel{
 			'user',
 			'add',
 			'get',
+			'set',
 			'post',
 			'delete',
 		);

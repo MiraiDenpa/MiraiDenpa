@@ -1,0 +1,37 @@
+#wrap {
+	padding: 5px;
+
+	#mainInfo {
+		position: relative;
+		.left {
+			z-index: 8;
+			background: white;
+			padding: 20px;
+			img {
+				width: 150px;
+				height: 200px;
+			}
+		}
+		.center {
+			z-index: 9;
+			background: white;
+			padding-left: 10px;
+			#basic {
+				overflow: hidden;
+				height: 200px;
+			}
+		}
+		.right {
+			z-index: 10;
+			background: white;
+
+			position: absolute;
+			right: 0;
+			top: 0;
+		}
+	}
+
+	>div>div {
+		border: #000000 1px solid;
+	}
+}

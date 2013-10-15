@@ -46,6 +46,7 @@
 		var field_define = {__ITEM_FIELDS__};
 		var this_doc = {$data: json} || {};
 		var field_has = [];
+		var delete_btn = $('<a/>').append($('<i class="glyphicon glyphicon-trash"/>'));
 
 		var frmMain = $('#PropertyForm');
 		var $collect = $('#field_collect');
@@ -98,7 +99,6 @@
 			return false;
 		});
 
-		var delete_btn = $('<a/>').append($('<i class="glyphicon glyphicon-trash"/>'));
 		function form_item(title, obj){
 			var td = $('<td class="text-right field-title col-xs-3"/>')
 					.append($('<label class="control-label value"/>')

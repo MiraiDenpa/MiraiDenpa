@@ -1,5 +1,5 @@
 function call_func_list(fnlist, arg){
-	var args = Array.slice.call(arguments, 1);
+	var args = Array.prototype.slice.call(arguments, 1);
 	var i;
 	if(fnlist.length === undefined){
 		for(i in fnlist){
@@ -16,7 +16,7 @@ function call_func_list(fnlist, arg){
 }
 function call_func_list_with(bind, fnlist, arg){
 	var i;
-	var args = Array.slice.call(arguments, 2);
+	var args = Array.prototype.slice.call(arguments, 2);
 	if(fnlist.length === undefined){
 		for(i in fnlist){
 			if(fn.hasOwnProperty(i)){
@@ -32,7 +32,7 @@ function call_func_list_with(bind, fnlist, arg){
 }
 function call_func_list_until(fnlist, arg){
 	var i;
-	var args = Array.slice.call(arguments, 1);
+	var args = Array.prototype.slice.call(arguments, 1);
 	if(fnlist.length === undefined){
 		for(i in fnlist){
 			if(fn.hasOwnProperty(i)){
@@ -52,7 +52,7 @@ function call_func_list_until(fnlist, arg){
 }
 function call_func_list_until_with(bind, fnlist, arg){
 	var i;
-	var args = Array.slice.call(arguments, 2);
+	var args = Array.prototype.slice.call(arguments, 2);
 	if(fnlist.length === undefined){
 		for(i in fnlist){
 			if(fn.hasOwnProperty(i)){

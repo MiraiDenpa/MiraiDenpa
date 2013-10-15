@@ -938,10 +938,10 @@ artDialog.defaults = {
     beforeunload: null,
     
     // 确定按钮文本
-    okValue: 'ok',
+    okValue: '大丈夫，萌大奶。',
     
     // 取消按钮文本
-    cancelValue: 'cancel',
+    cancelValue: '不行！',
     
     // 内容宽度
     width: 'auto',

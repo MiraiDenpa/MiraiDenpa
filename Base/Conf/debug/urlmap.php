@@ -5,6 +5,7 @@ $GLOBALS['URL_MAP'] = array(
 	'app'  => 'app.mirai.localdomain',
 	'info' => 'info.mirai.localdomain',
 	'www'  => 'www.mirai.localdomain',
+	'weibo' => 't.mirai.localdomain',
 	'lafi'  => 'lafi.mirai.localdomain',
 );
 

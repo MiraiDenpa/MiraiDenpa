@@ -1,5 +1,9 @@
 @import '../basevar.less';
 
+// @import 'bootstrap.less';
+// @import 'mixins.less';
+// @import 'variables.less';
+
 .gt-switcher {
 	span {
 		display: none;
@@ -16,6 +20,17 @@ a {
 	cursor: pointer;
 }
 
-textarea{
+textarea {
 	resize: vertical;
+}
+
+.row-compact > [class^='col-'],
+.row-compact > [class*=' col-'] {
+	padding: 0;
+}
+
+.tip{
+	background: #E5CFFF;
+	border: #9222A5 1px solid;
+	padding: 2px 8px;
 }

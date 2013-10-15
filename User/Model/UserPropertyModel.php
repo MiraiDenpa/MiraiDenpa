@@ -25,4 +25,8 @@ class UserPropertyModel extends Mongoo{
 	function updatePath($uid, $name, $value){
 		return $this->update(['_id' => $uid], ['$set' => [$name => $value]]);
 	}
+
+	public function initUser($user){
+		return $this->insert(['_id'=>$user['uid']]);
+	}
 }

@@ -141,7 +141,7 @@ class UserRegisterAction extends Action{
 		if($succ){
 			// 额外操作
 			$register->delete();
-			foreach(['UserRelation','UserProperty','UserSetting'] as $mdl){
+			foreach(['UserProperty'] as $mdl){
 				ThinkInstance::D($mdl)
 						->initUser($user);
 			}

@@ -12,6 +12,7 @@
 		window.user = {};
 	}
 	var user = window.user;
+	user.setting = new SyncStorage('MiraiSetting', window.Think.URL_MAP['u-user-login-settings']);
 	var token;
 	if(window.token){
 		token = user.token = window.token;
@@ -135,7 +136,7 @@
 		if(user.setting){
 			user.setting.clear();
 		}
-		user.setting = {};
+		user.setting = null;
 		token = null;
 		token = user.token = window.token = null;
 		$.removeCookie('token');
@@ -171,8 +172,9 @@
 	}
 
 	function getSetting(){
-		var url = window.Think.URL_MAP['u-user-login-settings'];
-		user.setting = new SyncStorage('MiraiSetting', url);
+		if(!user.setting){
+			user.setting = new SyncStorage('MiraiSetting', window.Think.URL_MAP['u-user-login-settings']);
+		}
 		var r = user.setting.sync();
 		LogStandardReturn(r, '获取配置信息');
 		return r;
@@ -200,6 +202,9 @@
 		r.done(function (ret){
 			if(0 == ret.code){
 				user.property = ret.property;
+				if(!user.property){
+					user.property = {};
+				}
 				df.resolve(ret.property)
 			} else{
 				df.reject();

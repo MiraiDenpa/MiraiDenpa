@@ -1,5 +1,4 @@
 <?php
-
 $GLOBALS['URL_MAP'] = array(
 	'user'  => 'user.dianbo.me',
 	'home'  => 'u.dianbo.me',

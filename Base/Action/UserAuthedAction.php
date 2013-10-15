@@ -2,32 +2,15 @@
 trait UserAuthedAction{
 	use UserAction;
 
-	protected $token;
-	/** @var $uol UserOnlineModel */
-	protected $uol;
-
-	/**
-	 * @var array
-	 */
-	protected $token_data;
-
-	/* cache */
-	private $current_user;
-	private $current_app;
-
 	/**
 	 * @constructor
 	 * @return void
 	 */
 	protected function __UserAuthedAction(){
-		if(isset($_GET['token'])){
-			$this->token = $_GET['token'];
-		} elseif(isset($_COOKIE['token'])){
-			$this->token = $_COOKIE['token'];
-		} else{
-			Think::fail_error(ERR_INPUT_REQUIRE, 'token');
+		$error = $this->doLogin($this->allow_public);
+		if($error){
+			$this->error($error);
 		}
-		$this->token_data = UserLogin($this->token, $this->allow_public);
 	}
 
 	/**

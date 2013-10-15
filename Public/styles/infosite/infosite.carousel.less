@@ -1,0 +1,125 @@
+@import '../variables.less';
+@import '../mixins.less';
+
+@PicHeightSmall: 80px;
+@PicWidthSmall: 180px;
+
+@PicHeightLarge: 400px;
+@PicWidthLarge: 900px;
+
+@media-normal: #c9c9c9;
+@media-active: #767676;
+
+#CarouselTopic {
+	margin-bottom: 20px;
+	@media (max-width: @screen-sm-max) {
+		zoom: 0.777;
+	}
+	@media (max-width: @screen-xs-max) {
+		display: none;
+	}
+	.slider {
+		position: absolute;
+		white-space: nowrap;
+		font-size: 0;
+		.transition(400ms);
+	}
+	.carousel-inner {
+		.size(@PicWidthLarge,@PicHeightLarge);
+		position: relative;
+		margin: 0 20px;
+		overflow: visible;
+		@media (min-width: @screen-lg) {
+			display: inline-block;
+			margin: 0 0 0 20px;
+		}
+		>.img {
+			.size(@PicWidthLarge,@PicHeightLarge);
+		}
+		.item {
+			position: absolute;
+			display: block;
+			top: 0;
+			left: 0;
+			z-index: 0;
+			perspective: 600;
+			-webkit-perspective: 600;
+			&.active {
+				z-index: 1;
+			}
+		}
+	}
+	.carousel-side {
+		text-align: center;
+		position: absolute;
+		left: @PicWidthLarge + 20px;
+		border-left: black 1px solid;
+		top: 0;
+		right: 20px;
+		height: @PicHeightLarge;
+		display: none;
+		background: #ffffff;
+		z-index: 10;
+		overflow: hidden;
+		@media (min-width: @screen-lg) {
+			display: inline-block;
+		}
+		.item {
+			background: @media-normal;
+			position: relative;
+			overflow: hidden;
+			.size(200px,70px);
+			&.active {
+				background: @media-active;
+			}
+			h4 {
+				position: absolute;
+				bottom: 0;
+				width: 100%;
+				text-align: center;
+			}
+		}
+		.img {
+			.size(200px, 200px * @PicHeightSmall / @PicWidthSmall);
+		}
+	}
+	.carousel-bottom {
+		margin: 0 20px;
+		display: block;
+		position: relative;
+		overflow: hidden;
+		@media (min-width: @screen-lg) {
+			display: none;
+		}
+		.items {
+			z-index: 1;
+			overflow: hidden;
+			height: @PicHeightSmall;
+			position: relative;
+			.slider {
+				z-index: 0;
+				position: absolute;
+				left: 0;
+				top: 0;
+			}
+		}
+		.item {
+			background: @media-normal;
+			display: inline-block;
+			position: relative;
+			.size(@PicWidthSmall, @PicHeightSmall);
+			h4 {
+				position: absolute;
+				bottom: 0;
+				width: 100%;
+				text-align: center;
+			}
+			&.active {
+				background: @media-active;
+			}
+		}
+		.img {
+			.size(@PicWidthSmall,@PicHeightSmall);
+		}
+	}
+}
