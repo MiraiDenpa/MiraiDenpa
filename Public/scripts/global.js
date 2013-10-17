@@ -70,3 +70,50 @@ function call_func_list_until_with(bind, fnlist, arg){
 		}
 	}
 }
+
+function LogStandardReturn(dfd, title){
+	/*function dispatch_standard_object(obj){
+	 var msg = obj.message + '，' + obj.info;
+	 if(obj.redirect){
+	 msg += '<div style="padding-top:24px;"></div><div style="position:absolute;right:10px;bottom:0px;">';
+	 for(var i in obj.redirect){
+	 if(obj.redirect.hasOwnProperty(i)){
+	 msg += '<a class="btn btn-link" href="' + obj.redirect[i] + '">' + i + '</a>';
+	 }
+	 }
+	 msg += '</div>';
+	 }
+	 return SimpleNotify(time()).error(msg, title + '失败').hideTimeout(1000).autoDestroy();
+	 }*/
+
+	dfd.done(function (ret){
+		if(typeof ret === 'string'){
+			try{
+				ret = JSON.parse(ret);
+			} catch(e){
+				console.groupCollapsed('△失败：' + title + '，返回内容不是json。');
+				console.dir(e);
+				console.groupEnd();
+			}
+		}
+		if(ret.code){
+			console.groupCollapsed('△失败： ' + title + '，返回消息： ' + ret.message + '，' + ret.info);
+			console.dir(ret);
+			console.groupEnd();
+			//dispatch_standard_object(ret);
+		} else if(JS_DEBUG){
+			console.groupCollapsed('●成功： ' + title);
+			console.dir(ret);
+			console.groupEnd();
+		}
+	});
+	if(JS_DEBUG){
+		dfd.fail(function (xhr, state, error){
+			error = typeof error == 'string'? error : error.message;
+			console.groupCollapsed('△失败:' + title + '，HTTP错误 [' + state + ']: ' + error);
+			console.dir({response: xhr.responseText});
+			console.groupEnd();
+		});
+	}
+	return dfd;
+}

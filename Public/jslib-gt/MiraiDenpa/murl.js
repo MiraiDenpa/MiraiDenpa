@@ -54,6 +54,9 @@
 					} else{
 						url.path[item] = modify.path[item];
 					}
+					if(!url.path[item]){
+						url.path[item] = undefined;
+					}
 				}
 			}
 

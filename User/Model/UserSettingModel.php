@@ -35,9 +35,9 @@ class UserSettingModel extends Mongoo{
 				->where($uid)
 				->find();
 		if($data){
-			return new UserSettingEntity($data);
+			return UserSettingEntity::buildFromArray($data);
 		} else{
-			$ret        = new UserSettingEntity([]);
+			$ret        = new UserSettingEntity();
 			$ret->exist = false;
 			return $ret;
 		}

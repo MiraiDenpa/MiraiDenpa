@@ -27,4 +27,18 @@ class UserStatisticsModel extends Mongoo{
 							 ['upsert' => true]
 		);
 	}
+
+	/** 当用户发微博的时候 */
+	function postWeiboOccur(){
+		return $this->update(['_id' => $this->uid],
+							 array(
+								  '$inc' => [
+									  'weibo'      => 1,
+								  ],
+							 ),
+							 ['upsert' => true]
+		);
+	}
+
+
 }

@@ -21,6 +21,7 @@ class UserEntity extends Entity{
 	}
 
 	/**
+	 * @param $app
 	 * @return UserSettingEntity
 	 */
 	public function settings($app){
@@ -39,8 +40,16 @@ class UserEntity extends Entity{
 		return $this;
 	}
 
+	public static function decryptPassword($pwd){
+		return mdecrypt($pwd, self::KEY);
+	}
+
 	public function encrypt(){
 		$this->passwd = mencrypt($this->passwd, self::KEY);
 		return $this;
+	}
+
+	public static function encryptPassword($pwd){
+		return mencrypt($pwd, self::KEY);
 	}
 }

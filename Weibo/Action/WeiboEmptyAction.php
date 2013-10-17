@@ -8,7 +8,7 @@ class WeiboEmptyAction extends Action{
 	use UserAction;
 
 	final public function index(){
-		$error = $this->doLogin();
-		
+		//$error = $this->doLogin();
+		xdebug_var_dump('跳转到微博系统');
 	}
 }

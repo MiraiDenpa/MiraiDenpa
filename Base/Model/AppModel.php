@@ -16,7 +16,7 @@ class AppModel extends Model{
 	public function getApp(){
 		if(empty($this->options['where'])){
 			if($this->data){
-				return new ApplicationEntity($this->data);
+				return ApplicationEntity::buildFromArray($this->data);
 			} else{
 				Think::fail_error(ERR_SQL, '没有搜索条件');
 			}
@@ -27,6 +27,6 @@ class AppModel extends Model{
 			$this->error     = '恩……';
 			return null;
 		}
-		return new ApplicationEntity($user);
+		return ApplicationEntity::buildFromArray($user);
 	}
 }

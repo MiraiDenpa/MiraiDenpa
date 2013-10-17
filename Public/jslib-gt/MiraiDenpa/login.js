@@ -131,13 +131,13 @@
 			console.trace();
 			console.groupEnd();
 		}
-		user.token_data = null;
-		user.property = null;
+		user.token_data = {};
+		user.property = {};
 		if(user.setting){
 			user.setting.clear();
+		}else{
+			user.setting = new SyncStorage('MiraiSetting', window.Think.URL_MAP['u-user-login-settings']);
 		}
-		user.setting = null;
-		token = null;
 		token = user.token = window.token = null;
 		$.removeCookie('token');
 

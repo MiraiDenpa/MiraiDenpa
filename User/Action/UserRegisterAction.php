@@ -26,8 +26,7 @@ class UserRegisterAction extends Action{
 							  ]
 				)
 				->filter('email', FILTER_VALIDATE_EMAIL)
-				->valid('uid', 'length', [3, 12], ERR_RANGE_UID)
-				->filter_callback('uid', 'filter_uid_spec_char')
+				->filter_callback('uid', 'filter_uid_allow')
 				->filter_callback('email', [$usrlist, 'emailNotUse'])
 				->filter_callback('uid', [$usrlist, 'uidNotUse'])
 				->filter_callback('email', [$register, 'emailNotUse'])

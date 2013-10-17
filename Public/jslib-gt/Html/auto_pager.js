@@ -1,23 +1,41 @@
 $.fn.pager = function (page){
 	var $this = $(this);
 	if(!$this.data('_init_gt_pager')){
-		var rollPage = window.Settings.get('rollPage');
+		var rollPage = 7;
+		var current_page_object = page;
+		window.user.setting.onchange('rollpage', function (v){
+			rollPage = v? v : 7;
+			$this.data('page', '1');
+			$this.change(current_page_object);
+		});
 		var nowPage, totalPage;
-		if(!rollPage){
-			rollPage = 7;
-		}
 		page.rollPage = rollPage;
 		var $title = $this.find('li:first>a');
 
 		// 产生中间的分页按钮
-		var item = $this.find('[data-pager=page]').removeAttr('data-pager').hide();
 		var $items = [];
-		for(var i = 0; i < rollPage; i++){
-			$items.unshift(item.clone().insertAfter(item));
-			$items[0].value = function (newone){
-				this.attr({title: this.attr('title').replace('%page%', newone), value: newone}).show().find('>a').html(newone);
-				this.find('a:first').attr('href', page.url.replace('__PAGE__', newone));
+
+		function number_item_factory(i){
+			if($items[i]){
+				return $items[i];
 			}
+			var last = number_item_factory.last;
+			var obj = last.clone().insertAfter(last);
+			var title = obj.attr('title');
+			obj.value = function (newone){
+				this.attr({title: title.replace('%page%', newone), value: newone}).show().find('>a').html(newone);
+				this.find('a:first').attr('href', page.url.replace('__PAGE__', newone));
+			};
+			$items[i] = obj;
+			number_item_factory.last = obj;
+			console.log($items);
+			return obj;
+		}
+
+		var item = number_item_factory.last = $this.find('[data-pager=page]').removeAttr('data-pager').hide();
+
+		for(var i = 0; i < rollPage; i++){
+			number_item_factory(i);
 		}
 		item.remove();
 		item = null;
@@ -55,6 +73,7 @@ $.fn.pager = function (page){
 			$this.data('totalPage', totalPage);
 			// 更新列表头部
 			$title.html(replace(header, page));
+			current_page_object = page;
 
 			var width = Math.floor(rollPage/2);
 			var left = nowPage - width;
@@ -72,6 +91,9 @@ $.fn.pager = function (page){
 			}
 			// 同步中间数字
 			for(var i = left, j = 0; i <= right; i++, j++){
+				if(!$items[j]){
+					number_item_factory(j);
+				}
 				$items[j].show().value(i);
 				if(i > totalPage){
 					$items[j].hide();
@@ -98,14 +120,14 @@ $.fn.pager = function (page){
 			return text.replace('%totalPage%', data['totalPage']).replace('%totalRows%', data['totalRows']).replace('%nowPage%', data['nowPage']).replace('%rollPage%', rollPage);
 		}
 
-		$this.on('click', 'li:not(.disabled,.active)', function (){
+		$this.on('click', 'li:not(.disabled,.active)',function (){
 			var value = $(this).attr('value');
 			if(!value || value < 1 || value > totalPage || value == nowPage){
 				return false;
 			}
 			$this.trigger('page', value);
 			return false;
-		}).on('click','a',function(e){
+		}).on('click', 'a', function (e){
 					e.preventDefault();
 				});
 	}

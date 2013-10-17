@@ -4,12 +4,13 @@ trait UserAuthedAction{
 
 	/**
 	 * @constructor
-	 * @return void
+	 * @return null
 	 */
 	protected function __UserAuthedAction(){
 		$error = $this->doLogin($this->allow_public);
 		if($error){
-			$this->error($error);
+			$this->error($error, 'token');
+			exit;
 		}
 	}
 
@@ -35,9 +36,15 @@ trait UserAuthedAction{
 		}
 		return $this->current_user = $this->getUser($this->token_data['user']);
 	}
-	
+
 	protected function syncLogin(){
-		$this->assign('_sync_login_token_data',json_encode($this->token_data));
-		$this->assign('_sync_login_property',json_encode($this->currentUser()->propertys()->toArray()));
+		$this->assign('_sync_login_token_data', json_encode($this->token_data));
+		$this->assign('_sync_login_property',
+					  json_encode($this
+										  ->currentUser()
+										  ->propertys()
+										  ->toArray()
+					  )
+		);
 	}
 }

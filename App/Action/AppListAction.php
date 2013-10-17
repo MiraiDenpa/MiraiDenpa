@@ -34,8 +34,9 @@ class AppListAction extends Action{
 					  [
 					  'order'      => $order,
 					  'desc'       => $desc? 'desc' : 'asc',
-					  'search_for' => $search_for,
+					  'search_for' => $search_for?$search_for:'null',
 					  'pattern'    => $pattern,
+					  'page'    => $p,
 					  ]
 		);
 

@@ -21,6 +21,8 @@ return array(
 	['NALLOW_MISS_PATH', 'url不全', '应为 \x\y 的形式。'],
 	['NALLOW_AUTHTYPE', '禁止认证', '没有达到指定的权限级别。'],
 	['NALLOW_REFERER', '禁止来源。', '请确认您正在访问正规合法的网站。'],
+	
+	['NALLOW_UID', 'UID格式不对。', '请确认用户ID要求。'],
 
 	['MISS_PASSWORD', '密码错误', '请重新输入。', ['找回密码' => _UC('user', 'forget', 'index')]],
 	['MISS_EMAIL', '邮箱地址错误', '请重新输入。'],
@@ -29,6 +31,7 @@ return array(
 	['INPUT_TYPE', '输入变量类型不符', '客户端程序问题。'],
 	['INPUT_REQUIRE', '缺少输入', '请检查。'],
 	['INPUT_DENY', '输入中包含不允许的字符', '请重新输入。'],
+	['INPUT_RANGE', '输入长度不对', '请重新输入。'],
 	
 	['FAIL_REGISTER', '注册失败', '请联系管理员解决。'],
 	['FAIL_SEND_MAIL', '邮件发送失败', '请稍后再试。'],
@@ -40,6 +43,9 @@ return array(
 	
 	['TIMEOUT', '操作超时', '请重新请求。'],
 	['OP_TOO_FAST', '操作过快', '喵～'],
+	
+	['DUP_POST', '重复发送', '请不要连续发送相同内容'],
+	['DUP_POST_SAME', '重复发送', '请不要连续发送相似内容'],
 	
 	['SQL', '数据库错误', '请联系管理员解决。'],
 	['NO_SQL', '数据库错误', '请联系管理员解决。'],
@@ -54,4 +60,11 @@ return array(
 	
 	['JSON_SERIALIZE', '服务器错误', '这是个严重错误。'],
 	
+	['PARSE_FORWARD', '转发解析错误', '请确认输入。'],
+
+
+
+
+
+	['MISCELLANEOUS', '其他错误', '请查看返回消息。'],
 );

@@ -12,32 +12,21 @@ class UserLoginModel extends UserListModel{
 
 	protected function InitUser(&$data, $opt){
 		if(isset($data['passwd']) && $data['passwd']){
-			$user = new UserEntity($data);
-			$user->encrypt();
-			$data['passwd'] = $user->passwd;
+			$data['passwd'] = UserEntity::encryptPassword($data['passwd']);
 		}
 		$data['regdate'] = $_SERVER['REQUEST_TIME'];
 	}
 
 	protected function EncryptPassword(&$data, $opt){
 		if(isset($data['passwd']) && $data['passwd']){
-			$user = new UserEntity($data);
-			$user->encrypt();
-			$data['passwd'] = $user->passwd;
+			$data['passwd'] = UserEntity::encryptPassword($data['passwd']);
 		}
-	}
-
-	public function checkPassword($check){
-		$real = $this->data['passwd'];
-		$dec  = mdecrypt($real, self::KEY);
-
-		return $dec === $check;
 	}
 
 	public function getUser(){
 		if(empty($this->options['where'])){
 			if($this->data){
-				return new UserEntity($this->data);
+				return UserEntity::buildFromArray($this->data);
 			} else{
 				Think::fail_error(ERR_SQL, '没有搜索条件');
 			}
@@ -48,6 +37,6 @@ class UserLoginModel extends UserListModel{
 			$this->error     = '恩……';
 			return null;
 		}
-		return new UserEntity($user);
+		return UserEntity::buildFromArray($user);
 	}
 }

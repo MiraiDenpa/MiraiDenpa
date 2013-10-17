@@ -186,7 +186,9 @@
 	(function (window){
 		// 持续处理动态内容
 		var url = $.modifyUrl('', {}, true);
-		url['path'] = ['{$filters.order}', '{$filters.desc}', '{$filters.search_for}', '{$filters.pattern}'];
+		url['path'] =
+		['{$filters.order}', '{$filters.desc}', '{$filters.search_for}', '{$filters.pattern}', '{$filters.page}'];
+		url['path'][3] = url['path'][3]? url['path'][3] : 'null';
 		$('#mainpager').on('page', function (e, page){
 			url.path[4] = page;
 			title[1] = '(第' + page + '页)';
@@ -231,7 +233,6 @@
 		var pushUrl = '';
 
 		function push(log){
-			//console.log(log);
 			url.extension = '.json';
 			ajaxInitPage(url.toString());
 			url.extension = '';
@@ -262,7 +263,6 @@
 <BrowserLib>
 	phpjs
 	jslib/pure.js
-	jslib-gt/auto_pager.js
 	jslib-gt/enhanced_link.js
 	jslib-gt/bs-dropdown.js
 	jslib-gt/gt-switcher.js
@@ -270,6 +270,7 @@
 	jquery/waypoints.js
 	artDialog
 	styles/gray_background.css
+	jslib-gt/login.js
 </BrowserLib>
 </head>
 <body>
@@ -303,13 +304,13 @@
 							</a>
 							<ul class="dropdown-menu" role="menu">
 								<li>
-									<a value="{:ListAction::SearchContent}" title="名称和描述">名称和描述</a>
+									<a value="{:AppListAction::SearchContent}" title="名称和描述">名称和描述</a>
 								</li>
 								<li>
-									<a value="{:ListAction::SearchAuthor}" title="作者">作者</a>
+									<a value="{:AppListAction::SearchAuthor}" title="作者">作者</a>
 								</li>
 								<li>
-									<a value="{:ListAction::SearchTag}" title="标签">标签</a>
+									<a value="{:AppListAction::SearchTag}" title="标签">标签</a>
 								</li>
 							</ul>
 						</li>
@@ -332,13 +333,13 @@
 							</a>
 							<ul class="dropdown-menu" role="menu">
 								<li>
-									<a value="{:ListAction::OrderPopular}" title="人气">人气</a>
+									<a value="{:AppListAction::OrderPopular}" title="人气">人气</a>
 								</li>
 								<li>
-									<a value="{:ListAction::OrderUpdate}" title="最近更新">最近更新</a>
+									<a value="{:AppListAction::OrderUpdate}" title="最近更新">最近更新</a>
 								</li>
 								<li>
-									<a value="{:ListAction::OrderPublish}" title="最新发布">最新发布</a>
+									<a value="{:AppListAction::OrderPublish}" title="最新发布">最新发布</a>
 								</li>
 							</ul>
 						</li>

@@ -6,9 +6,9 @@ class UserPropertyModel extends Mongoo{
 	function getEntity($uid){
 		$data = $this->findOne(['_id'=>$uid]);
 		if(null === $data){
-			$ret = new UserPropertyEntity([]);
+			$ret = new UserPropertyEntity();
 		} else{
-			$ret        = new UserPropertyEntity($data);
+			$ret        = UserPropertyEntity::buildFromArray($data);
 			$ret->exist = true;
 		}
 		return $ret;

@@ -15,38 +15,4 @@ class UserCheckModel extends UserListModel{
 		}
 		return !$this->cache('user.check.uid'.$uid,60)->where(array('uid'=>$uid))->count();
 	}
-	
-	public function isDenyUid($uid){
-		$denys = array(
-			'admin',
-			'auth',
-			'relation',
-			'property',
-			'proxy',
-			'password',
-			'login',
-			'empty',
-			'forget',
-			'setting',
-			'square',
-			'search',
-			'fallback',
-			'empty',
-			'blacklist',
-			'follow',
-			'follower',
-			'friend',
-			'group',
-			'tag',
-			'denpa',
-			'dianbo',
-			'user',
-			'add',
-			'get',
-			'set',
-			'post',
-			'delete',
-		);
-		return in_array($denys, strtolower($uid));
-	}
 }
