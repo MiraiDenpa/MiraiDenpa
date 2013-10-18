@@ -88,3 +88,26 @@ function create_inputlist(id, sub, value, text){
 	}
 	return ret;
 }
+function create_upload(id, sub, value, text){
+	var opt = {
+		url               : window.Think.URL_MAP['u-infosite-cover-upload'],
+		dataType          : 'json',
+		autoUpload        : false,
+		acceptFileTypes   : /(\.|\/)(gif|jpe?g|png)$/i,
+		maxFileSize       : 5000000, // 5 MB
+		// Enable image resizing, except for Android and Opera,
+		// which actually support image resizing, but fail to
+		// send Blob objects via XHR requests:
+		disableImageResize: /Android(?!.*Chrome)|Opera/
+				.test(window.navigator.userAgent),
+		previewMaxWidth   : 100,
+		previewMaxHeight  : 100,
+		dropZone          : null,
+		pasteZone         : null,
+		replaceFileInput  : false,
+		previewCrop       : true
+	};
+	var $obj = new $bui.UploadSingle(opt);
+	$obj.attr({'name': id, title: text}).val(value);
+	return $obj;
+}

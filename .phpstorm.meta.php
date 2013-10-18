@@ -13,6 +13,7 @@ namespace PHPSTORM_META { // we want to avoid the pollution
 			'UserOnline' instanceof \UserOnlineModel,
 			'UserRelation' instanceof \UserRelationModel,
 			'InfoEntry' instanceof \InfoEntryModel,
+			'InfoList' instanceof \InfoListModel,
 			'InfoHistory' instanceof \InfoHistoryModel,
 			'UserProperty' instanceof \UserPropertyModel,
 			'UserSetting' instanceof \UserSettingModel,

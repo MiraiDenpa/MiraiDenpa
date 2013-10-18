@@ -189,6 +189,13 @@ fieldset[disabled] .bui-checkbox .checkbox-show {
 .bui-formcontrol .btn-group > .btn {
   float: none;
 }
+.bui-formcontrol .bui-progress {
+  width: 200px;
+  margin: 0;
+  height: 100%;
+  vertical-align: top;
+  border-radius: 0;
+}
 .bui input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   display: none;

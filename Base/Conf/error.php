@@ -53,7 +53,10 @@ return array(
 	['RANGE_PAGE', '不是正确的页码', '页码最低为 1。'],
 	['RANGE_PASSWORD', '密码长度不够', '最少6位。'],
 	['RANGE_UID', '用户ID长度错误', '3位到12位。'],
-
+	['RANGE_SIZE_FILE', '文件大小不标准', '请提交大小符合要求的文件。'],
+	['RANGE_SIZE_REQUEST', '请求过大', '服务器无法正确处理您的请求。'],
+	['RANGE_SIZE_IMAGE', '请求过大', '服务器无法正确处理您的请求。'],
+	
 	['CONFLICT_MTD_RES', '本资源不支持指定的方法', ''],
 
 	['SERVER_FAULT_CURL', '服务器错误', '这是个严重错误。'],
@@ -62,7 +65,9 @@ return array(
 	
 	['PARSE_FORWARD', '转发解析错误', '请确认输入。'],
 
-
+	['USER_ABORT', '取消操作', '操作已经取消。'],
+	
+	['ERR_HTTP_UPLOAD', '程序错误', '请求有问题，请联系管理员。'],
 
 
 

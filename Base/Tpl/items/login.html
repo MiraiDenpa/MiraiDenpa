@@ -8,7 +8,7 @@
 
 <AddHeader prepend="true">
 	<script type="text/javascript" prepend="yes">
-		window.token = '{$_REQUEST["token"]}';
+		window.token = $.cookie('token');
 		window.user = {};
 
 		try{

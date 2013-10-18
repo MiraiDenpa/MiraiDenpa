@@ -8,8 +8,27 @@ class InfoEntryModel extends Mongoo{
 			'start' => intval($entry['broadcast_range']['start']),
 			'end'   => intval($entry['broadcast_range']['end'])
 		);
+		if(isset($entry['classification'][1])){
+			$entry['classification'][1] = intval($entry['classification'][1]);
+		}
 		unset($entry['_id'], $entry['_history']);
 		ksort($entry);
+		foreach($entry as $k => $v){
+			if(is_numeric($v)){
+				if(intval($v) == $v){
+					$entry[$k] = intval($v);
+				} elseif(doubleval($v) == $v){
+					$entry[$k] = doubleval($v);
+				}
+			} elseif(is_string($v)){
+				$l = strtolower($v);
+				if($l === 'false' || $l === 'off'){
+					$entry[$k] = false;
+				} elseif($l === 'true' || $l === 'on'){
+					$entry[$k] = true;
+				}
+			}
+		}
 	}
 
 	public function getDocument($id, $history = false){

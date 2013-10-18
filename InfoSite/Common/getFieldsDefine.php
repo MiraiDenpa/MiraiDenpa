@@ -1,17 +1,18 @@
 <?php
+
 function TaglibReplaceItem_fields(){
 	$ret = array(
 		"catalog"         => [
 			'name'    => '类别',
 			'type'    => 'select',
 			'subtype' => [
-				'动画' => 1,
-				'漫画' => 2,
-				'游戏' => 3,
-				'小说' => 4,
-				'音乐' => 5,
-				'剧集' => 6,
-				'p'  => 7,
+				'动画' => TYPE_ANIME,
+				'漫画' => TYPE_COMIC,
+				'游戏' => TYPE_GAME,
+				'小说' => TYPE_NOVEL,
+				'音乐' => TYPE_MUSIC,
+				'剧集' => TYPE_DRAMA,
+				'期刊' => TYPE_PERIO,
 			],
 			'must'    => true,
 		],
@@ -25,6 +26,12 @@ function TaglibReplaceItem_fields(){
 			'name'    => '作品名称（原文）',
 			'type'    => 'input',
 			'subtype' => 'text',
+		],
+		"cover_pic"       => [
+			'name' => '封面图',
+			'type' => 'upload',
+			'subtype' => 'picture',
+			'text' => '图片最大不能超过2M',
 		],
 		"episodes"        => [
 			'name'    => '话数',

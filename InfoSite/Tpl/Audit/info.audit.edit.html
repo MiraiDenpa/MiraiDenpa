@@ -40,11 +40,11 @@ var data_on_page_load = {$data: json};
 var current = data_on_page_load;
 var compare = null;
 var cuid = null;
-var last_update = JSON.parse('{:json_encode($data["_update"])}');
+var last_update = JSON.parse('{:json_encode($data["_update"])}') || {};
 var page_refresh = intval("{:time()}");
-var btnForce = $('#btnForce')[page_refresh>last_update['time']?'hide':'show']();
+var btnForce = $('#btnForce')[(page_refresh > last_update['time'])? 'hide' : 'show']();
 
-window.onerror=function(){
+window.onerror = function (){
 	SimpleNotify('PageError').error('本页中发生了错误，请刷新页面。')
 };
 
@@ -52,10 +52,8 @@ window.onerror=function(){
 var all_users = new $bui.Select();
 $('.edit').each(function (i, e){
 	var uid = $(e).data('user');
-	console.log(uid);
 	uid = uid.split(/,/g);
 	$(e).data('user', uid);
-	console.log(uid);
 	all_users.addOption(uid, uid);
 });
 var update_users = new $bui.InputList();
@@ -87,9 +85,9 @@ $(document).on('click', '.changed_item .load_current', function (){
 					console.error(text);
 				}
 				$('#last_update').text(date('Y-m-d H:i:s', last_update['time']));
-				if(page_refresh>last_update['time']){
+				if(page_refresh > last_update['time']){
 					btnForce.hide();
-				}else{
+				} else{
 					btnForce.show();
 				}
 				var root = p.parents('.changed_item');
@@ -199,7 +197,9 @@ function parse_path(json){
 		} else{
 			path = parse_path.path? parse_path.path + '.' + i : i;
 		}
-		if(/string|number|boolean/.test(type)){
+		if(val===undefined || val===null){
+			//ret.push([path, '']);
+		} else if(/string|number|boolean/.test(type)){
 			ret.push([path, val]);
 		} else if(val.constructor === Object || val.constructor === Array){
 			var save = parse_path.path;
@@ -330,13 +330,13 @@ function initLine(name, currentval, userval){
 		<div id="{$item._id}" class="changed_item panel panel-[%iif name='item.name' then='default' else='info'/%]">
 			<div class="panel-heading">
 				<span class="text-primary">
-					<empty name="item.name">
-						新条目：{$item['_history'][0]['_data']['name'][0]}
-						<else>
-							《{$item['name'][0]}》
-						</else>
-					</empty>
-					（追加数量: {:count($item['_history'])} ）
+				<empty name="item.name">
+					新条目：{$item['_history'][0]['_data']['name'][0]}
+					<else>
+						《{$item['name'][0]}》
+					</else>
+				</empty>
+				（追加数量: {:count($item['_history'])} ）
 				</span>
 			</div>
 			<div class="panel-body diff active row">
@@ -384,7 +384,8 @@ function initLine(name, currentval, userval){
 			<div class="panel-footer text-right">
 				<div class="audit_list"></div>
 				<label id="btnForce">
-					<input type="checkbox" name="_force" value="1"/>当前文档更新，可能其他人已经审核过本页，打勾强制更新。
+				<input type="checkbox" name="_force" value="1"/>
+				当前文档更新，可能其他人已经审核过本页，打勾强制更新。
 				</label>
 				<input type="submit" class="btn btn-primary" value="提交更改"/>
 			</div>
