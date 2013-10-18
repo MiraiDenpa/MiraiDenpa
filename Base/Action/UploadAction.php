@@ -48,7 +48,7 @@ abstract class UploadAction extends Action{
 	protected $min_width = 1;
 	protected $min_height = 1;
 	// Set the following option to false to enable resumable uploads:
-	protected $discard_aborted_uploads = false;
+	protected $discard_aborted_uploads = true;
 	// Set to 0 to use the GD library to scale and orient images,
 	// set to 1 to use imagick (if installed, falls back to GD),
 	// set to 2 to use the ImageMagick convert binary directly:
@@ -812,10 +812,11 @@ protected $convert_params='-limit memory 32MiB -limit map 32MiB',
 
 	/**  */
 	protected function handle_file_upload($uploaded_file, $name, $size, $type, $error, $index = null, $content_range = null){
-		$file       = new stdClass();
-		$file_path  = $this->get_temp_name($name);
-		$file->size = $this->fix_integer_overflow(intval($size));
-		$file->type = $type;
+		$file        = new stdClass();
+		$file->error = ERR_NO_ERROR;
+		$file_path   = $this->get_temp_name($name);
+		$file->size  = $this->fix_integer_overflow(intval($size));
+		$file->type  = $type;
 		if($this->validate($uploaded_file, $file, $error, $index)){
 			$this->handle_form_data($file, $index);
 
@@ -852,7 +853,7 @@ protected $convert_params='-limit memory 32MiB -limit map 32MiB',
 					Think::halt('文件权限错误：' . $save_path);
 				}
 				$file->name = str_replace(PICTURE_PATH, '', $save_path);
-				$file->url  = PICTURE_URL.'/'.$file->name;
+				$file->url  = PICTURE_URL . '/' . $file->name;
 				/*if($this->is_valid_image_file($file_path)){
 					// 处理图片
 				}*/
@@ -893,10 +894,23 @@ protected $convert_params='-limit memory 32MiB -limit map 32MiB',
 	/**  */
 	protected function generate_response($content, $print_response = true){
 		if($print_response){
+			$files = isset($content[$this->param_name])? $content[$this->param_name] : null;
 			if($this->get_server_var('HTTP_CONTENT_RANGE')){
-				$files = isset($content[$this->param_name])? $content[$this->param_name] : null;
 				if($files && is_array($files) && is_object($files[0]) && $files[0]->size){
 					header('Range: 0-' . ($this->fix_integer_overflow(intval($files[0]->size)) - 1));
+				}
+			}
+			foreach($files as &$file){
+				if($file->error == ERR_NO_ERROR){
+					$file->message = "上传成功";
+				} else{
+					$e             = new Error($file->error);
+					$file->message = $e->getMessage();
+					$file->extra   = '';
+					$file->code    = $e->getCode();
+					$file->name    = $e->getName();
+					$file->info    = $e->getInfo();
+					$file->where   = $e->getWhere();
 				}
 			}
 			$this->assign($content);

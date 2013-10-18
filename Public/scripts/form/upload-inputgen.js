@@ -109,5 +109,14 @@ function create_upload(id, sub, value, text){
 	};
 	var $obj = new $bui.UploadSingle(opt);
 	$obj.attr({'name': id, title: text}).val(value);
+	$obj.on('fileuploaddone',function (e, data){
+		var file = data.result.files[0];
+		LogStandardReturnObject(file, '上传文件');
+		if(file.error){
+			(new SimpleNotify('upload')).autoDestroy(true).error(file.message, '上传失败');
+		}
+	}).on('fileuploadfail', function (e, data){
+				(new SimpleNotify('upload')).autoDestroy(true).error('HTTP错误', '上传失败');
+			});
 	return $obj;
 }

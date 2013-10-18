@@ -95,16 +95,7 @@ function LogStandardReturn(dfd, title){
 				console.dir(e);
 				console.groupEnd();
 			}
-		}
-		if(ret.code){
-			console.groupCollapsed('△失败： ' + title + '，返回消息： ' + ret.message + '，' + ret.info);
-			console.dir(ret);
-			console.groupEnd();
-			//dispatch_standard_object(ret);
-		} else if(JS_DEBUG){
-			console.groupCollapsed('●成功： ' + title);
-			console.dir(ret);
-			console.groupEnd();
+			LogStandardSuccess(ret,title);
 		}
 	});
 	if(JS_DEBUG){
@@ -116,4 +107,16 @@ function LogStandardReturn(dfd, title){
 		});
 	}
 	return dfd;
+}
+function LogStandardReturnObject(ret, title){
+	if(ret.code){
+		console.groupCollapsed('△失败： ' + title + '，返回消息： ' + ret.message + '，' + ret.info);
+		console.dir(ret);
+		console.groupEnd();
+		//dispatch_standard_object(ret);
+	} else if(JS_DEBUG){
+		console.groupCollapsed('●成功： ' + title);
+		console.dir(ret);
+		console.groupEnd();
+	}
 }

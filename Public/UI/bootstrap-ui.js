@@ -1420,10 +1420,11 @@ $(document).on('shown.bs.tab', function (e){
 					var file = data.result.files[0];
 					if(file.url){
 						$this.val(file.url);
-						console.log('done url', file.url);
+						current_preview.popover('show');
 					} else if(file.error){
 						$this.val(option.current);
-						console.log('done error', file.error);
+						preview_content = '上传失败';
+						preview.popover('show');
 					}
 					state_empty();
 				}).on('fileuploadfail', function (e, data){
