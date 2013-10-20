@@ -1,7 +1,5 @@
 (function ($){
 	"use strict";
-	var CURRENT = $.url('', true).data.attr;
-
 	$.modifyUrl = function (href, modify, ret_object){
 		var i, tmp, url = {}, p;
 		if(typeof href === 'string'){
@@ -23,19 +21,19 @@
 		url.fragment = p.attr.fragment? '#' + p.attr.fragment : '';
 		p = tmp = null;
 
-		url.modify = function (modify){
+		url.modify = function (cnt_modify){
 			var item;
-			if(modify.app){
-				url.host = window.Think.URL_MAP[modify.app];
+			if(cnt_modify.app){
+				url.host = window.Think.URL_MAP[cnt_modify.app];
 			}
-			if(modify.action){
-				url.action = '/' + modify.action;
+			if(cnt_modify.action){
+				url.action = '/' + cnt_modify.action;
 			}
-			if(modify.method){
-				url.method = '/' + modify.method;
+			if(cnt_modify.method){
+				url.method = '/' + cnt_modify.method;
 			}
-			if(modify.extension){
-				url.extension = '.' + modify.extension;
+			if(cnt_modify.extension){
+				url.extension = '.' + cnt_modify.extension;
 			}
 
 			// 修改路径参数
@@ -44,15 +42,12 @@
 					url.path[item] = url.path[item];
 				}
 			}
-			for(item in modify.path){
-				if(item == 0){
-					continue;
-				}
-				if(modify.path.hasOwnProperty(item)){
-					if(modify.path[item].constructor === Function){
-						url.path[item] = modify.path[item]();
+			for(item in cnt_modify.path){
+				if(cnt_modify.path.hasOwnProperty(item)){
+					if(cnt_modify.path[item].constructor === Function){
+						url.path[item] = cnt_modify.path[item]();
 					} else{
-						url.path[item] = modify.path[item];
+						url.path[item] = cnt_modify.path[item];
 					}
 					if(!url.path[item]){
 						url.path[item] = undefined;
@@ -61,30 +56,27 @@
 			}
 
 			// 修改get参数 (动态回调)
-			var param = [];
-			if(modify.append && modify.append.length){
-				for(i = 0; i < modify.append.length; i++){
-					modify.append[i](url.param)
+			if(cnt_modify.append && cnt_modify.append.length){
+				if(!modify.append){
+					modify.append = [];
 				}
+				$.merge(modify.append, cnt_modify.append);
 			}
 			// 修改get参数 (静态)
-			if(modify.param){
-				for(item in modify.param){
-					param.push(item + '=' + modify.param[item]);
+			if(cnt_modify.param){
+				if(!modify.param){
+					modify.param = {};
 				}
+				$.extend(url.param, modify.param, cnt_modify.param);
 			}
-			for(item in url.param){
-				param.push(item + '=' + url.param[item]);
-			}
-			param = param.join('&');
-			url.param = param? '?' + param : '';
 
 			if(url.port && !url.host){
-				url.host = CURRENT.host;
+				url.host = location.current.host;
 			}
 			if(!url.protocol && url.host){
 				url.protocol = 'http://'
 			}
+			return url.toString();
 		};
 
 		url.toString = function (){
@@ -98,15 +90,46 @@
 					}
 				}
 			}
+			if(modify.append && modify.append.length){
+				for(i = 0; i < modify.append.length; i++){
+					modify.append[i](url.param)
+				}
+			}
+			var param = [];
+			for(i in url.param){
+				if(url.param.hasOwnProperty(i)){
+					param.push(i + '=' + encodeURIComponent(url.param[i]));
+				}
+			}
+			if(param.length){
+				param = '?' + param.join('&');
+			} else{
+				param = '';
+			}
+
 			return this.protocol + this.userInfo + this.host + this.port + this.action + this.method + path +
-			       this.extension + this.param + this.fragment;
+			       this.extension + param + this.fragment;
 		};
 
-		url.modify(modify);
 		if(ret_object){
+			url.modify(modify);
 			return url;
 		} else{
-			return url.toString();
+			return url.modify(modify);
 		}
 	}
+
 })(jQuery);
+
+// 当前页面的url
+(function (){
+	var CURRENT = $.modifyUrl(location.href, {}, true);
+	location.modify = function (mod){
+		location.href = CURRENT.modify(mod);
+	};
+	Object.defineProperty(location, 'current', {
+		get: function (){
+			return CURRENT;
+		}
+	})
+})();

@@ -32,5 +32,5 @@ function UserLogin($token, $allow_public, &$error = null){
 		break;
 	}
 	$error = ERR_NO_ERROR;
-	return $user;
+	return LoginTokenEntity::buildFromArray($user);
 }

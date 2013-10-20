@@ -2,10 +2,11 @@
 	<link href="/Public/bootstrap/css/bootstrap.css" rel="text/css"/>
 </comment>
 <layout name=":InfoSiteFrame">
-	$title=$data?'修改条目～ 《'.$data['origin_name'].'》':'添加条目～';
+	$title=$doc->origin_name . ' - 电波资讯';
 </layout>
 <BrowserLib>
 	UI
+	scripts/weibo_framwork.js
 	scripts/infosite.entry_page.js
 	styles/infosite.entry_page.less
 	jslib-gt/enhanced_link.js
@@ -19,47 +20,73 @@
 	<div id="wrap">
 		<div id="mainInfo" class="row row-compact">
 			<div class="col-xs-2 left">
-				<img>
+				<img src="{$doc->cover_pic}">
 				<div>评分信息</div>
 			</div>
 			<div class="col-xs-10 center">
+				<div class="col-xs-3 pull-right" id="corner">
+					<div class="bui-inputlist inline" name="name">
+						<ul class="list">
+							<li>
+								<span class="bui-label">标签</span>
+							</li>
+							<li>
+								<span class="bui-label">标签</span>
+							</li>
+							<li>
+								<span class="bui-label">标签</span>
+							</li>
+						</ul>
+						<div class="control">
+							<input type="text" class="form-control input-sm" name="" placeholder="添加标签">
+						</div>
+					</div>
+				</div>
 				<div id="basic">
-					<h1>标题</h1>
-					<div>介绍</div>
+					<h1>{$doc->origin_name}
+						<small>
+							<a href="{$doc->_url}" class="text-muted">[修改]</a>
+						</small>
+					</h1>
+					<div>{$doc->intro}</div>
 				</div>
 				<div>
 					<h4>章节列表</h4>
+
 					<div class="bui-inputlist inline" name="name">
 						<span class="tip">01</span>
 						<span class="tip">02</span>
 						<span class="tip">03</span>
 						<div>
-							
+
 						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-3 right">
-				<div class="bui-inputlist inline" name="name">
-					<ul class="list">
-						<li>
-							<span class="bui-label">标签</span>
-						</li>
-						<li>
-							<span class="bui-label">标签</span>
-						</li>
-						<li>
-							<span class="bui-label">标签</span>
-						</li>
-					</ul>
-					<div class="control">
-						<input type="text" class="form-control input-sm" name="" placeholder="添加标签">
 					</div>
 				</div>
 			</div>
 		</div>
 		<div id="extend" class="row row-compact">
-			<div class="col-xs-9">评论</div>
+			<div id="WeiboContainer" data-weibo-channel="info{$doc->_oid}" class="col-xs-9">
+				<div class="content">
+					<div class="Loader">
+						<div class="center">
+							<h1 class="text">点击加载评论</h1>
+						</div>
+					</div>
+					<ul class="WBList"></ul>
+					<div class="page_container">
+						<include file="!items/page" id="mainpager" class="hide"/>
+					</div>
+				</div>
+				<div class="Sender">
+					<form action="" method="post" onsubmit="return false;">
+						<label class="send_label" for="weibo_content">发表评论：</label>
+						<input type="hidden" name="forward_type" value="mirai/info-entry"/>
+						<input type="hidden" name="forward_content" value="{$doc->_oid}"/>
+						<textarea id="weibo_content" name="content" required="required" class="form-control show"></textarea>
+						<input type="submit" class="btn btn-primary" value="发布"/>
+					</form>
+				</div>
+			</div>
 			<div class="col-xs-3">
 				<div>
 					<span>[制作信息]</span>

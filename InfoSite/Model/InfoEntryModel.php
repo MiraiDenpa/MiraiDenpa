@@ -31,14 +31,17 @@ class InfoEntryModel extends Mongoo{
 		}
 	}
 
+	/**
+	 * @param      $id
+	 * @param bool $history
+	 * @return InfoEntryEntity
+	 */
 	public function getDocument($id, $history = false){
 		$data = $this->findOneById($id, ['_history' => $history]);
 		if(!$data){
 			return null;
 		}
-		$data['_id'] = (string)$data['_id'];
-
-		return $data;
+		return InfoEntryEntity::buildFromArray($data);
 	}
 
 	public function getChangedList(){

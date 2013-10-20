@@ -40,10 +40,9 @@ class InfoAuditAction extends Action{
 	}
 
 	final function loadjson(){
-		$id   = $_GET['id'];
-		$mdl  = ThinkInstance::D('InfoEntry');
-		$data = $mdl->getDocument($id);
-
+		$id       = $_GET['id'];
+		$mdl      = ThinkInstance::D('InfoEntry');
+		$data     = $mdl->getDocument($id);
 		echo json_encode($data, JSON_PRETTY_PRINT + JSON_UNESCAPED_SLASHES + JSON_UNESCAPED_UNICODE);
 	}
 
@@ -105,8 +104,8 @@ class InfoAuditAction extends Action{
 				$ret     = $log->add($logData);
 				if($ret){
 					$this->success('编辑成功，已经生效，请关闭页面或后退到列表。', ['后退到列表', UI('index')], 0);
-				}else{
-					$this->error('编辑成功，已经生效，但编辑历史保存失败：'.$log->getDbError().$log->getError());
+				} else{
+					$this->error('编辑成功，已经生效，但编辑历史保存失败：' . $log->getDbError() . $log->getError());
 				}
 			} else{
 				$this->error(ERR_NO_SQL, $ret['err']);

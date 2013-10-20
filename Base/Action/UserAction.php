@@ -5,7 +5,7 @@ trait UserAction{
 	protected $uol;
 
 	/**
-	 * @var array
+	 * @var LoginTokenEntity
 	 */
 	protected $token_data;
 

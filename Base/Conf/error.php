@@ -31,7 +31,7 @@ return array(
 	['INPUT_TYPE', '输入变量类型不符', '客户端程序问题。'],
 	['INPUT_REQUIRE', '缺少输入', '请检查。'],
 	['INPUT_DENY', '输入中包含不允许的字符', '请重新输入。'],
-	['INPUT_RANGE', '输入长度不对', '请重新输入。'],
+	['INPUT_RANGE', '输入长度不符合要求', '请重新输入。'],
 	
 	['FAIL_REGISTER', '注册失败', '请联系管理员解决。'],
 	['FAIL_SEND_MAIL', '邮件发送失败', '请稍后再试。'],

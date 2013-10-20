@@ -24,6 +24,13 @@
 				transition: 0.3s;
 			}
 		</style>
+		<script type="text/javascript" prepend="yes">
+			if(!window.weibo){
+				window.weibo = {};
+			}
+			window.weibo.baseurl = 'http://' + window.Think.URL_MAP.weibo;
+			window.weibo.app_pub = '{:INFOSITE_APP_PUB:}';
+		</script>
 		<script type="text/javascript" wrap="ready">
 			var search = $('#search');
 			search.find('input').on('focus',function (){
@@ -35,10 +42,10 @@
 				var that = $(this);
 				var email = that.find('[name=email]').val();
 				if(!email){
-					location.href='[%url app="user" action="" method=""/%]';
+					location.href = '[%url app="user" action="" method=""/%]';
 				}
 				var passwd = that.find('[name=password]').val();
-				window.user.passwordLogin(email,passwd);
+				window.user.passwordLogin(email, passwd);
 				return false;
 			});
 		</script>
@@ -48,13 +55,13 @@
 <div id="infosite_frame_head" class="container">
 	<div id="background">
 		<div class="backimg visible-lg">
-1140像素
+			1140像素
 		</div>
 		<div class="backimg visible-md">
-940像素
+			940像素
 		</div>
 		<div class="backimg visible-sm">
-720像素
+			720像素
 		</div>
 		<div class="backimg visible-xs">
 

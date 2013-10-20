@@ -93,6 +93,7 @@
 				$li.remove();
 				$icon = null;
 				$li = null;
+				delete(cache_tray_icon[id]);
 			},
 			show  : function (){ // 显示图标
 				$li.show();
@@ -211,6 +212,7 @@
 					delete contents[id];
 				});
 			}
+			delete(cache_notify[id]);
 			array_remove(visable_contents, id);
 			if(visable_contents.length == 0){
 				show_div(false);

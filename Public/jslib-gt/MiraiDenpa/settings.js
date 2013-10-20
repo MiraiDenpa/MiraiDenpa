@@ -140,21 +140,25 @@ function SyncStorage(key_name, url){
 					console.log('Storage: ' + key_name + ' 本地缓存超时');
 				}
 				download.call(this).done(function (){
-					dfd.resolve(data);
-				});
+					dfd.resolve.apply(dfd, arguments);
+				}).fail(function (){
+							dfd.reject.apply(dfd, arguments);
+						})
 			} else{ // 直接使用
 				if(JS_DEBUG){
 					console.log('Storage: ' + key_name + ' 使用本地缓存');
 				}
-				dfd.resolve(data);
+				dfd.resolve($.extend({code: 0}, data));
 			}
 		} else{ // 没有缓存，下载新的
 			if(JS_DEBUG){
 				console.log('Storage: ' + key_name + ' 更新');
 			}
 			download().done(function (){
-				dfd.resolve(data);
-			});
+				dfd.resolve.apply(dfd, arguments);
+			}).fail(function (){
+						dfd.reject.apply(dfd, arguments);
+					})
 		}
 		return dfd.promise();
 	}

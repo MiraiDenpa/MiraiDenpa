@@ -1,5 +1,6 @@
 (function (window, $){
 	var loginIcon;
+	//$bui.Gravatar.default = window.Think.DEFAULT_AVATAR;
 
 	// 初始化右上角的小图标
 	loginIcon = new TrayIcon('user-login-launch-icon', 'transfer', '载入中...', login_action).show();
@@ -36,7 +37,20 @@
 				}
 			});
 			UserBox.empty();
-			var avatar = $bui.Gravatar(48, window.user.token_data.ahash).addClass('pull-left').css({'margin': '0 7px'});
+
+			var avatar;
+			var avatar_size = 48;
+			if(window.user.property.avatar){
+				if(/^https?:\/\//i.test(window.user.property.avatar)){
+					avatar = $('<img/>').attr('src', 'window.user.property.avatar').css({'height': avatar_size, 'width': avatar_size});
+				} else if(/[0-9a-z]{32}/i.test(window.user.property.avatar)){
+					avatar = $bui.Gravatar(avatar_size, window.user.property.avatar).addClass('pull-left').css({'margin': '0 7px'});
+				}
+			} 
+			if(!avatar){
+				avatar = $bui.Gravatar(avatar_size, window.Think.DEFAULT_AVATAR).addClass('pull-left').css({'margin': '0 7px'});
+			}
+
 			var title = $('<div/>').append(avatar).append('欢迎回来，').append($('<span/>').text(window.user.property.nick).attr('class', 'user_id')).append('。');
 			UserBox.append(title);
 			UserBox.append($('<a/>').html('修改用户资料').attr('href', userdataurl));

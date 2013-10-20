@@ -1,8 +1,8 @@
 @import '../basevar.less';
+@import 'mixins.less';
+@import 'variables.less';
 
 // @import 'bootstrap.less';
-// @import 'mixins.less';
-// @import 'variables.less';
 
 .gt-switcher {
 	span {
@@ -20,17 +20,41 @@ a {
 	cursor: pointer;
 }
 
+.pagination > li > a{
+	.transition(background-color 300ms);
+}
+.pagination > .active > a{
+	.transition(none);
+}
+
 textarea {
 	resize: vertical;
 }
 
-.row-compact > [class^='col-'],
-.row-compact > [class*=' col-'] {
-	padding: 0;
+.row-compact {
+	margin: 0;
+	&> [class^='col-'],
+	&> [class*=' col-'] {
+		padding: 0;
+	}
 }
 
-.tip{
-	background: #E5CFFF;
-	border: #9222A5 1px solid;
+.tip {
+	@bg: #E5CFFF;
+	@border: #9222A5;
+	background: @bg;
+	border: @border 1px solid;
 	padding: 2px 8px;
+	&.active {
+		background: @bg;
+		border: @border 1px solid;
+	}
+
+	&:hover {
+
+	}
+	&.disabled {
+		background: transparent;
+		border: transparent 1px solid;
+	}
 }

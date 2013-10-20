@@ -23,12 +23,12 @@ $.fn.pager = function (page){
 			var obj = last.clone().insertAfter(last);
 			var title = obj.attr('title');
 			obj.value = function (newone){
-				this.attr({title: title.replace('%page%', newone), value: newone}).show().find('>a').html(newone);
-				this.find('a:first').attr('href', page.url.replace('__PAGE__', newone));
+				var href = page.url.replace('__PAGE__', newone);
+				this.attr({title: title.replace('%page%', newone), value: newone}).show().data('href', href)
+						.find('>a').html(newone).attr('href', href);
 			};
 			$items[i] = obj;
 			number_item_factory.last = obj;
-			console.log($items);
 			return obj;
 		}
 
@@ -47,21 +47,27 @@ $.fn.pager = function (page){
 				this.attr({value: newone});
 				this.find('a:first').attr('href', page.url.replace('__PAGE__', newone));
 			};
-			$this.__defineSetter__(li.data('pager'), function (page){
-				// 确定按钮可用性
-				if(page <= 0 || page > totalPage){
-					//console.log(li.data('pager') + ' -> ' + page + '   [disabled]');
-					li.addClass('disabled');
-				} else{
-					//console.log(li.data('pager') + ' -> ' + page + '   [enabled]');
-					li.removeClass('disabled');
+			Object.defineProperty($this, li.data('pager'), {
+				set: function (page){
+					// 确定按钮可用性
+					if(page <= 0 || page > totalPage){
+						//console.log(li.data('pager') + ' -> ' + page + '   [disabled]');
+						li.addClass('disabled');
+					} else{
+						//console.log(li.data('pager') + ' -> ' + page + '   [enabled]');
+						li.removeClass('disabled');
+					}
+					li.value(page);
+				},
+				get: function (){
+					return li;
 				}
-				li.value(page);
 			});
 			li.attr('title', replace(li.attr('title'), page));
 		});
 
 		var header = $title.html();
+		var last_page = page;
 
 		$this.change = function (page){
 			nowPage = page['nowPage'];
@@ -75,21 +81,23 @@ $.fn.pager = function (page){
 			$title.html(replace(header, page));
 			current_page_object = page;
 
+			// 已知当前页、显示宽度，求出最左侧和右侧的页码
 			var width = Math.floor(rollPage/2);
 			var left = nowPage - width;
 			var right = nowPage + width;
-			if(right > totalPage){
+			var flash_self = (left > 1) && (right < totalPage);
+			if(right > totalPage){//当前页码接近最后一页
 				left = totalPage - rollPage + 1;
 				right = totalPage + 1;
 			}
-			if(left < 1){
+			if(left < 1){ // 当前页码接近第一页
 				right = rollPage;
 				left = 1;
 			}
-			if(right > totalPage){
+			if(right > totalPage){ // 总页数不足填充显示
 				right = totalPage;
 			}
-			// 同步中间数字
+			// 同步中间数字，从左侧页码循环到右侧
 			for(var i = left, j = 0; i <= right; i++, j++){
 				if(!$items[j]){
 					number_item_factory(j);
@@ -99,6 +107,12 @@ $.fn.pager = function (page){
 					$items[j].hide();
 				} else if(nowPage == i){
 					$items[j].show().addClass('active')
+				} else if(flash_self && last_page == i){
+					var cache = $items[j].show().addClass('active');
+					setTimeout(function (){
+						//noinspection JSReferencingMutableVariableFromClosure
+						cache.removeClass('active');
+					}, 0);
 				} else{
 					$items[j].show().removeClass('active');
 				}
@@ -110,9 +124,19 @@ $.fn.pager = function (page){
 			this.prev = nowPage - 1;
 			this.next = nowPage + 1;
 			this.prevN = nowPage == 1? 0 : Math.max(nowPage - rollPage, 1);
-			this.nextN = Math.min(nowPage + rollPage, totalPage);
-			this.first = 1;
+			this.nextN = nowPage + rollPage;
+			this.first = nowPage == 1? 0 : 1;
 			this.last = totalPage;
+
+			if(totalPage < rollPage){
+				this.prevN.hide();
+				this.nextN.hide();
+			} else{
+				this.prevN.show();
+				this.nextN.show();
+			}
+
+			last_page = nowPage;
 		};
 		$this.data('_init_gt_pager', $this);
 
@@ -121,11 +145,12 @@ $.fn.pager = function (page){
 		}
 
 		$this.on('click', 'li:not(.disabled,.active)',function (){
-			var value = $(this).attr('value');
+			var li = $(this);
+			var value = li.attr('value');
 			if(!value || value < 1 || value > totalPage || value == nowPage){
 				return false;
 			}
-			$this.trigger('page', value);
+			li.trigger('page', [value, li.data('href')]);
 			return false;
 		}).on('click', 'a', function (e){
 					e.preventDefault();

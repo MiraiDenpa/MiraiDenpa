@@ -417,7 +417,6 @@ module.exports[module.name] = $bui;
 		};
 	}
 })($bui);
-
 (function ($bui){
 	var gravatar = $bui.Gravatar = plugin('Gravatar', Gravatar);
 	gravatar.hook('attr', 'hash', 'set', function (hash){
@@ -431,16 +430,26 @@ module.exports[module.name] = $bui;
 		return size;
 	});
 
+	gravatar.default = 'identicon';
+
 	function buildUrl(data){
 		var ret = 'http://www.gravatar.com/avatar/';
 		ret += data.hash;
 		ret += '.' + (data.type? data.type : 'png');
 		ret += '?';
-		ret += 'd=' + (data.default? encodeURIComponent(data.default) : 'identicon');
-		ret += '&s=' + data.size;
+		ret += 's=' + data.size;
 
 		if(data.rating){
 			ret += '&r=' + data.rating;
+		}
+
+		var def = data.default || gravatar.default;
+		if(/^https?:\/\//i.test(def)){
+			ret += '&d=' + encodeURIComponent(def);
+		} else if(/[0-9a-z]{32}/i.test(def)){
+			ret += '&d=' + encodeURIComponent('http://www.gravatar.com/avatar/' + def + '.png');
+		} else if(def){
+			ret += '&d=' + def;
 		}
 		return ret;
 	}

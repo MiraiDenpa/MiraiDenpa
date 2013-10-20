@@ -9,6 +9,7 @@ class WeiboMyAction extends Action{
 
 	/** @var WeiboModel */
 	private $publish;
+	protected $allow_public = false;
 
 	/**
 	 * @constructor yes
@@ -25,20 +26,93 @@ class WeiboMyAction extends Action{
 		} else{
 			$perpage = 30;
 		}
-		$page = new Page($total,$perpage);
+	}
+
+	final public function test(){
+		$this->dispatcher->request_method = 'POST';
+		//
+		$cache = [];
+		$post  = function ($forward = false) use (&$cache){
+			$data            = [];
+			$data['sendto']  = 'square';
+			$data['channel'] = 'info';
+			if($forward){
+				static $fId;
+				if(!$fId){
+					$fId = 1;
+				}
+				$data['forward'] = [
+					'type'    => 'mirai/denpa',
+					'content' => $forward
+				];
+				$level           = $cache[$forward][1] + 1;
+				$title           = '转发' . ($fId++);
+				$content         = $title . ' [ {this}';
+				$itr             = $cache[$forward];
+				do{
+					$content .= '->' . $itr[0];
+				} while($itr = $cache[$itr[2]]);
+				$content = $content . ']';
+			} else{
+				static $oId;
+				if(!$oId){
+					$oId = 1;
+				}
+				$data['forward'] = [
+					'type'    => 'site/bilibili',
+					'content' => 'av103196'
+				];
+				$title           = $content = '原创' . ($oId++);
+				$level           = 0;
+			}
+			$data['content'] = '[' . $level . '] ' . $content . ' ' . md5(rand());
+			$_POST           = $data;
+			$data            = $this->preprocess($data);
+			$data->_id       = new MongoId();
+			$id              = (string)$data->_id;
+			$ret             = $this->publish->postNewWeibo($data);
+			echo '发微博 ' . $content;
+			var_dump($ret);
+
+			$cache[$id] = [$title, $level, $forward];
+			return $id;
+		};
+		$this->publish->remove([]);
+		$pid = $post();
+		$post();
+
+		$rid = $post($pid);
+		$i   = 2;
+		while($i--){
+			$post($pid);
+		}
+		$i = 5;
+		while($i--){
+			$post($rid);
+		}
+
+		$post();
+		$post($pid);
+		$i = 2;
+		while($i--){
+			$post($pid);
+		}
+
+		exit;
+		/*$_POST                            = array(
+			'content' => '[0] 原创 [ 原创2 ] ' . md5(rand()),
+			'forward' => [
+				'type' => 'site/bilibili',
+				'content' => 'av103196'
+			],
+			'sendto'  => 'square',
+			'channel' => 'info',
+		);*/
+		// debug
 	}
 
 	/**  */
 	final public function next(){
-		$_POST                            = array(
-			'content' => '测试微博内@a111 @b222容 @ccc ' . rand(),
-			'forward' => '',
-			'sendto'  => 'square',
-			'channel' => 'info',
-		);
-		$this->dispatcher->request_method = 'POST';
-		// debug
-
 		if($this->dispatcher->request_method !== 'POST'){
 			return $this->error(ERR_NALLOW_HTTP_METHOD, 'only POST');
 		}
@@ -49,10 +123,12 @@ class WeiboMyAction extends Action{
 		$data      = $this->preprocess($_POST);
 		$data->_id = new MongoId();
 
-		$ret     = $this->publish->insert(get_object_vars($data));
+		$ret = $this->publish->postNewWeibo($data);
+		$this->assign('id', (string)$data->_id);
 		$success = $this->mongo_ret($ret);
 
 		if($success){
+			$this->assign('_id', (string)$data->_id);
 			$this->dispatcher->finish();
 			$new_id = (string)$data->_id;
 			$stati  = ThinkInstance::D('UserStatistics', $this->token_data['user']);
@@ -74,15 +150,6 @@ class WeiboMyAction extends Action{
 
 		$oid         = $last['_id'];
 		$last['_id'] = (string)$oid;
-
-		$_POST                            = array(
-			'content' => '测试微博内@a111 @b222容 @gggc c',
-			'forward' => '',
-			'sendto'  => 'square',
-			'channel' => 'info',
-		);
-		$this->dispatcher->request_method = 'DELETE';
-		// debug
 
 		if($this->dispatcher->request_method == 'GET'){
 			$this->assign($last);
@@ -136,10 +203,25 @@ class WeiboMyAction extends Action{
 		$data          = new WeiboEntity;
 		$data->content = $arr['content'];
 
+		$data->content = htmlentities($data->content);
+
 		if(isset($arr['forward']) && $arr['forward']){
-			$data->forward = ForwardEntity::parse($arr['forward']);
+			$data->forward = ForwardEntity::buildFromArray($arr['forward']);
 			if(!$data->forward){
 				return $this->error(ERR_PARSE_FORWARD, 'content');
+			}
+			if($data->forward['type'] == 'mirai/denpa'){
+				$forward_weibo = $this->publish->getWeiboById($data->forward->content);
+				if(!$forward_weibo){
+					return $this->error(ERR_TARGET_NOT_EXIST, $data->forward->content);
+				}
+				$data->level = $forward_weibo->level + 1;
+				if($forward_weibo->forward->type == 'mirai/denpa'){ // 转发目标也是转发
+					$data->forward->original = $forward_weibo->forward->original;
+				} else{ // 转发目标是电波
+					$data->forward->original = (string)$forward_weibo->_id;
+				}
+				$this->publish->forwarded($forward_weibo);
 			}
 		}
 		if(isset($arr['sendto']) && $arr['sendto']){
@@ -167,11 +249,11 @@ class WeiboMyAction extends Action{
 		}
 		if(isset($arr['forward'])){
 			if(strlen($arr['content']) < 6){ // 2个汉子
-				$this->error(ERR_INPUT_RANGE, 'content');
+				$this->error(ERR_INPUT_RANGE, 'content least ' . strlen($arr['content']));
 				return false;
 			}
 		} else if(strlen($arr['content']) < 30){ // 10个
-			$this->error(ERR_INPUT_RANGE, 'content');
+			$this->error(ERR_INPUT_RANGE, 'content least ' . strlen($arr['content']));
 			return false;
 		}
 

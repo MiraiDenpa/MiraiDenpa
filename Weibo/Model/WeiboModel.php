@@ -34,4 +34,39 @@ class WeiboModel extends Mongoo{
 			return WeiboEntity::buildFromArray($data);
 		}
 	}
+
+	public function postNewWeibo(WeiboEntity & $data){
+		$cacheObj = ThinkInstance::D('WeiboCache');
+		$cacheObj->updateUser($data->user);
+		if($data->channel){
+			$cacheObj->updateChannel($data->app, $data->channel);
+		}
+		return $this->insert(get_object_vars($data));
+	}
+
+	/**
+	 * 
+	 *
+	 * @param $id
+	 *
+	 * @return WeiboEntity
+	 */
+	public function getWeiboById($id){
+		$data = $this->findOneById($id);
+		if(!$data){
+			return null;
+		}
+		return WeiboEntity::buildFromArray($data);
+	}
+
+	/**
+	 *
+	 * @param WeiboEntity $wb
+	 *
+	 * @return bool
+	 */
+	public function forwarded(WeiboEntity &$wb){
+		$wb->beforwardcount++;
+		return $this->update(['_id' => $wb->_id], ['$inc' => ['beforwardcount' => 1]]);
+	}
 }

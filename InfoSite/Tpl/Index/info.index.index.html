@@ -36,7 +36,7 @@
 			<div class="slider">
 				<div class="item active">
 					<img class="img" src="{:PICTURE_URL:}/infosite/index-carousel/1.png">
-					<h4 class="media-heading">这里大概要写标题</h4>
+					<h4 class="media-heading">这里大概<br/>要写标题</h4>
 				</div>
 				<div class="item">
 					<img class="img" src="{:PICTURE_URL:}/infosite/index-carousel/2.png">
@@ -101,7 +101,8 @@
 		<div class="clearfix"></div>
 	</div>
 
-	<div class="row">
+	<div class="row row-compact">
+		<assign name="hots" source="index-hot"/>
 		<div class="col-sm-9">
 			<div class="panel panel-primary">
 				<div class="panel-heading">链接</div>
@@ -110,17 +111,32 @@
 			</div>
 			<div class="panel panel-primary">
 				<div class="panel-heading">新番</div>
-				<div class="panel-body">内容内容内容内容内容内容内容</div>
+				<div class="panel-body">
+					<volist name="hots[TYPE_BANGUMI]" id="entry">
+						<a href="{$entry->_url}">{$entry->name[0]}</a>
+						{$entry|var_dump}
+					</volist>
+				</div>
 				<div class="panel-footer"></div>
 			</div>
 			<div class="panel panel-primary">
 				<div class="panel-heading">动画</div>
-				<div class="panel-body">内容内容内容内容内容内容内容</div>
+				<div class="panel-body">
+					<volist name="hots[TYPE_ANIME]" id="entry">
+						<a href="{$entry->_url}">{$entry->name[0]}</a>
+						{$entry|var_dump}
+					</volist>
+				</div>
 				<div class="panel-footer"></div>
 			</div>
 			<div class="panel panel-primary">
 				<div class="panel-heading">漫画</div>
-				<div class="panel-body">内容内容内容内容内容内容内容</div>
+				<div class="panel-body">
+					<volist name="hots[TYPE_COMIC]" id="entry">
+						<a href="{$entry->_url}">{$entry->name[0]}</a>
+						{$entry|var_dump}
+					</volist>
+				</div>
 				<div class="panel-footer"></div>
 			</div>
 			<div class="panel panel-primary">
@@ -142,7 +158,9 @@
 			<div class="panel panel-primary">
 				<div class="panel-heading">随机推荐</div>
 				<div class="panel-body">
-					<div><img width="80%" height="200" title="封面"></div>
+					<div>
+						<img width="80%" height="200" title="封面">
+					</div>
 					随机作品简讯
 				</div>
 				<div class="panel-footer"></div>
@@ -156,7 +174,7 @@
 					在线观看1，在线观看2，迅雷下载<br/>
 					《XXXX》预计N小时内<br/>
 					首发字幕组K<br/>
-					
+
 				</div>
 				<div class="panel-footer"></div>
 			</div>

@@ -920,7 +920,7 @@ artDialog.defaults = {
     content: '<div class="d-loading"><span>loading..</span></div>',
     
     // 标题
-    title: 'message',
+    title: '电波娘中二地提醒道: ',
     
     // 自定义按钮
     button: null,

@@ -47,6 +47,9 @@ class UserPropertyAction extends Action{
 			// 根据请求方式决定执行路径
 			switch($this->dispatcher->request_method){
 			case 'GET': // 读取
+				if(!$permission[PERM_READ]){
+					return $this->error(ERR_FAIL_PERMISSION, PERM_READ);
+				}
 				if($path){
 					$ret = $mdl->findOne(['_id' => $uid], [$path => true]);
 				} else{
@@ -125,10 +128,18 @@ class UserPropertyAction extends Action{
 				}
 				break;
 			default:
-				return $this->error(ERR_NALLOW_HTTP_METHOD,$this->dispatcher->request_method);
+				return $this->error(ERR_NALLOW_HTTP_METHOD, $this->dispatcher->request_method);
 			}
 		} catch(MongoException $e){
 			return $this->error(ERR_NO_SQL, $e->getMessage());
 		}
+	}
+
+	final public function hash_email(){
+		$permission = $this->token_data['pm_user'];
+		if(!$permission[PERM_READ]){
+			return $this->error(ERR_FAIL_PERMISSION, PERM_READ);
+		}
+		return $this->success(md5(strtolower(trim($this->token_data->email))));
 	}
 }

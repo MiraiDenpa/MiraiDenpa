@@ -16,6 +16,8 @@
 	var token;
 	if(window.token){
 		token = user.token = window.token;
+	} else if(location.current.param.token){
+		token = user.token = window.token = location.current.param.token;
 	} else{
 		token = user.token = window.token = $.cookie('token');
 	}
@@ -135,7 +137,7 @@
 		user.property = {};
 		if(user.setting){
 			user.setting.clear();
-		}else{
+		} else{
 			user.setting = new SyncStorage('MiraiSetting', window.Think.URL_MAP['u-user-login-settings']);
 		}
 		token = user.token = window.token = null;

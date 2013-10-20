@@ -95,8 +95,8 @@ function LogStandardReturn(dfd, title){
 				console.dir(e);
 				console.groupEnd();
 			}
-			LogStandardSuccess(ret,title);
 		}
+		LogStandardReturnObject(ret, title);
 	});
 	if(JS_DEBUG){
 		dfd.fail(function (xhr, state, error){
@@ -109,7 +109,7 @@ function LogStandardReturn(dfd, title){
 	return dfd;
 }
 function LogStandardReturnObject(ret, title){
-	if(ret.code){
+	if(ret.code != window.Think.ERR_NO_ERROR){
 		console.groupCollapsed('△失败： ' + title + '，返回消息： ' + ret.message + '，' + ret.info);
 		console.dir(ret);
 		console.groupEnd();

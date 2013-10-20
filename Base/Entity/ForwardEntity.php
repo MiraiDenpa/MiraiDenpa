@@ -1,14 +1,23 @@
 <?php
 class ForwardEntity extends Entity{
-	public $mime;
+	public $type;
 	public $content;
 
-	function resolve(){
+	public $list;
+	public $original;
+
+	public $arg1;
+	public $arg2;
+
+	function _init(){
+		$this->content;
 	}
 
 	static function parse($string){
 		$obj          = new ForwardEntity;
 		$obj->content = $string;
+		$obj->type    = '';
+		$obj->_init();
 		if($obj){
 			return $obj;
 		} else{

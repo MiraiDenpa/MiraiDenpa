@@ -11,9 +11,10 @@ class InfoUploadAction extends Action{
 
 	final public function index(){
 		if($_GET['id']){
-			$mdl  = ThinkInstance::D('InfoEntry');
+			$mdl = ThinkInstance::D('InfoEntry');
 			$data = $mdl->getDocument($_GET['id']);
 			if($data){
+				$data->id = $_GET['id'];
 				$this->assign('data', $data);
 			}
 		}
@@ -44,7 +45,9 @@ class InfoUploadAction extends Action{
 		}
 
 		// 处理OneOf的结果
-		$data['classification'] = array_merge(array_keys($data['classification']),array_values($data['classification']));
+		$data['classification'] = array_merge(array_keys($data['classification']),
+											  array_values($data['classification'])
+		);
 
 		$data['name'] = array_values($names);
 		if(!isset($data['id']) || !$data['id']){
@@ -58,13 +61,13 @@ class InfoUploadAction extends Action{
 			'user' => [$this->currentUser()->uid],
 			'time' => time(),
 		);
-		
-		foreach($data as $k=>$v){
+
+		foreach($data as $k => $v){
 			if(is_string($v) && is_numeric($v)){
-				if(intval($v)==$v){
-					$data[$k]=intval($v);
-				}else{
-					$data[$k]=floatval($v);
+				if(intval($v) == $v){
+					$data[$k] = intval($v);
+				} else{
+					$data[$k] = floatval($v);
 				}
 			}
 		}
@@ -72,7 +75,7 @@ class InfoUploadAction extends Action{
 		ksort($data);
 		try{
 			$mdl = ThinkInstance::D('InfoEntry');
-			
+
 			$ret = $mdl->PreSavePage($data);
 			if($ret['ok']){
 				$this->success('编辑成功，请等待管理员审核。');
