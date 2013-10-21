@@ -1,27 +1,32 @@
 (function (window, $){
 	var current_data = window.doc;
-	if(current_data._id){
-		$(document).on('mirai.login', initWeiboFramework);
-		$('#WeiboContainer').find('.clickStart').click(initWeiboFramework);
-	}
+	$(document).on('mirai.login', initWeiboFramework);
+	$(document).on('click', '#WeiboContainer .clickStart', initWeiboFramework);
+	$(function (){
+		var loader = $('#WeiboContainer').find('.Loader');
+		loader.find('.center').css('height', loader.height());
+	});
 
 	function initWeiboFramework(){
+		if(!current_data || !current_data._id){
+			return;
+		}
 		var container = $('#WeiboContainer');
 		if(container.data('weibo')){
 			return;
 		}
-
 		var list = container.find('.WBList');
+		var mpager = $('#mainpager');
 		var sender = container.find('.Sender');
 
 		var channel = container.data('weiboChannel');
-		var weibo = window.weibo;
+		var weibo = window.denpa;
 
 		// “点击加载评论”
 		var loader = container.find('.Loader');
-		loader.txt=loader.find('.text');
-		loader.center=loader.find('.center');
-		loader.setState = function (state){
+		loader.txt = loader.find('.text');
+		loader.center = loader.find('.center');
+		loader.loadingStatus = function (state){
 			if(!state){
 				return this.hide();
 			}
@@ -31,49 +36,25 @@
 		};
 
 		// 加载评论、翻页
-		var initPage = function (ret){
-			var data = ret.list;
-			var page = ret.page;
+		var request = denpa.Channel(current_data._oid);
+		request.listHandler(function (wbl){
 			list.empty();
-			$(data).each(function (i, e){
-				var li = new Weibo(e);
-				list.append(li);
-			});
-			$('#mainpager').removeClass('hide').pager(page);
-		};
-		var loadPage = function (page){
-			if(last){
-				last.abort();
-			}
-			loader.setState('正在加载……');
-			last = weibo.channel(channel, page).done(function (ret){
-				if(ret.code == window.Think.ERR_NO_ERROR){
-					loader.setState();
-					initPage(ret);
-				} else{
-					loader.setState('抱歉，载入失败，请重试。');
-					SimpleNotify('weibo').error(ret.message, '评论加载失败。').autoDestroy();
-				}
-			}).fail(function (){
-						loader.setState('载入失败，服务器可能在维护或出错。');
-						SimpleNotify('weibo').error('HTTP错误', '评论加载失败。').autoDestroy();
-					});
-			return last;
-		};
-		History.Adapter.bind(window, 'statechange', function (){ // Note: We are using statechange instead of popstate
-			var State = History.getState(); // Note: We are using History.getState() instead of event.state
-			initPage(State.data);
-		});
-		var statepageurl = $.modifyUrl(location.href, {}, true);
-		var page_title = $('title').text();
-		$('#mainpager').on('page', function (e, page, url){
-			loadPage(page).done(function (ret){
-				if(ret.code == window.Think.ERR_NO_ERROR){
-					History.pushState(ret, page_title, statepageurl.modify({param: {p: page}}));
-				}
+			$(wbl).each(function (_, wb){
+				list.append($('<li/>').text(_+' -> '+wb.content))
 			});
 		});
-		var last;
+		request.pageHandler(function (page){
+			mpager.removeClass('hide').pager(page);
+		});
+
+		mpager.on('page', function (e, page){
+			request.page(page);
+		});
+
+		// 启动
+		container.find('.clickStart').removeClass('clickStart');
+		$(document).off('click', initWeiboFramework);
+		request.page();
 
 		// 表单变量
 		var postform = sender.find('form');
@@ -103,16 +84,6 @@
 			})
 		});
 
-		// 启动
-		loadPage(statepageurl.param.p);
-
 		container.data('weibo', true);
-	}
-
-	function Weibo(wb){
-		var obj = $('<li class="weibo"/>');
-		obj.text(wb.content);
-
-		return obj;
 	}
 })(window, jQuery);

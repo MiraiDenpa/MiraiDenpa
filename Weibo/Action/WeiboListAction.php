@@ -40,7 +40,7 @@ class WeiboListAction extends Action{
 		$this->assign('list', $ret);
 		$this->assign('page', $listmdl->getPage());
 		$this->assign('code', ERR_NO_ERROR);
-
+		
 		$this->display(':list/default.html');
 	}
 }

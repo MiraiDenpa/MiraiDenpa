@@ -6,10 +6,12 @@
 </layout>
 <BrowserLib>
 	UI
-	scripts/weibo_framwork.js
+	pure
+	weibo
 	scripts/infosite.entry_page.js
 	styles/infosite.entry_page.less
 	jslib-gt/enhanced_link.js
+	jslib-gt/history.js
 </BrowserLib>
 <AddHeader prepend="true">
 	<script type="text/javascript">
@@ -66,13 +68,45 @@
 		</div>
 		<div id="extend" class="row row-compact">
 			<div id="WeiboContainer" data-weibo-channel="info{$doc->_oid}" class="col-xs-9">
-				<div class="content">
+				<div class="wrap">
 					<div class="Loader">
 						<div class="center">
-							<h1 class="text">点击加载评论</h1>
+							<h1 class="text">
+								<span class="clickStart">点击加载评论</span>
+							</h1>
 						</div>
 					</div>
-					<ul class="WBList"></ul>
+					<ul class="WBList">
+						<li id="%id%" class="weibo">
+							<div class="c">
+								<div class="head">
+									<span class="user">
+										<span>%username%</span>
+										（
+										<a href="[%url app='home' action='user' method='id' suffix=''/%]/">@</a>
+										）
+									</span>
+									<span class="time">2013-10-21</span>
+								</div>
+								<div class="body">
+									<div class="content"></div>
+									<div class="forward"></div>
+									<div class="tree"></div>
+								</div>
+								<div class="foot">
+									<span class="from">来自：
+										<a class="app"></a>
+									</span>
+									<a class="btnForward pull-right" data-id="%id%">转发(
+										<span class="beforwardcount">0</span>
+																					)
+									</a>
+									<a class=" pull-right">评论</a>
+									<a class=" pull-right">赞</a>
+								</div>
+							</div>
+						</li>
+					</ul>
 					<div class="page_container">
 						<include file="!items/page" id="mainpager" class="hide"/>
 					</div>

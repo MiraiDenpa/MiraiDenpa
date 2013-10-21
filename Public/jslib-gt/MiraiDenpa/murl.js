@@ -32,7 +32,9 @@
 			if(cnt_modify.method){
 				url.method = '/' + cnt_modify.method;
 			}
-			if(cnt_modify.extension){
+			if(cnt_modify.suffix){
+				url.suffix = '.' + cnt_modify.suffix;
+			}else if(cnt_modify.extension){
 				url.extension = '.' + cnt_modify.extension;
 			}
 

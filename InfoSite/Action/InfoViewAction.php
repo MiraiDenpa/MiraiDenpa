@@ -18,7 +18,7 @@ class InfoViewAction extends Action{
 		$this->ambiguous($list);
 	}
 
-	final public function id($id){
+	final public function id($id, $page = 1){
 		$mdl = ThinkInstance::D('InfoEntry');
 		try{
 			$doc = $mdl->getDocument($id);
@@ -38,8 +38,8 @@ class InfoViewAction extends Action{
 		$this->display('not_found');
 	}
 
-	private function showpage($type='common'){
-		$this->display('entry_page_'.$type);
+	private function showpage($type = 'common'){
+		$this->display('entry_page_' . $type);
 	}
 
 	private function ambiguous($list){
