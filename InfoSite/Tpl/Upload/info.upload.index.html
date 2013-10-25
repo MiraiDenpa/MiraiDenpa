@@ -63,7 +63,7 @@
 				li.append($('<span class="must"/>').text('*'));
 			}
 
-			if(this_doc.hasOwnProperty(id)){
+			if(this_doc.hasOwnProperty(id) && this_doc[id ] !== null && this_doc[id] !== undefined){
 				var value = this_doc[id];
 				var fn = type_widget(define.type);
 				var $obj = fn(define['id'], define['subtype'], value, define['text']);

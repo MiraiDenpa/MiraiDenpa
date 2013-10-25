@@ -50,7 +50,7 @@ class UserRegisterAction extends Action{
 				->filter('email', FILTER_VALIDATE_EMAIL)
 				->valid('passwd', 'length', [6, 0], ERR_RANGE_PASSWORD)
 				->valid('uid', 'length', [3, 12], ERR_RANGE_UID)
-				->filter_callback('uid', 'filter_uid_spec_char')
+				->filter_callback('uid', 'filter_uid_allow')
 				->valid('passwd', 'is_same', 'repasswd', ERR_MISS_REPASSWORD)
 				->filter_callback('email', [$usrlist, 'emailNotUse'])
 				->filter_callback('uid', [$usrlist, 'uidNotUse'])

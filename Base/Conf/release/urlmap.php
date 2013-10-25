@@ -8,6 +8,15 @@ $GLOBALS['URL_MAP'] = array(
 	'weibo' => 't.dianbo.me',
 	'lafi'  => 'lafi.dianbo.me',
 );
+$GLOBALS['DOMAIN_MAP'] = array(
+	'user'  => 'dianbo.me',
+	'home'  => 'dianbo.me',
+	'app'   => 'dianbo.me',
+	'info'  => 'dianbo.me',
+	'www'   => 'dianbo.me',
+	'weibo' => 'dianbo.me',
+	'lafi'  => 'dianbo.me',
+);
 
 require dirname(__DIR__).'/urls.php';
 

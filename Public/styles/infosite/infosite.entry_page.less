@@ -1,33 +1,144 @@
 @import '../variables.less';
 @import '../mixins.less';
 
+@media (min-width: @screen-sm)  and (max-width: @screen-md) {
+	.nav {
+		height: 48px;
+	}
+
+	#search {
+		margin-top: 2px;
+		input, .btn {
+			.border-top-radius(0);
+		}
+	}
+}
+
 #wrap {
 	padding: 5px;
 
 	#mainInfo {
 		position: relative;
+		@media (min-width: @screen-sm) {
+			padding-left: 172px;
+		}
 		.left {
 			z-index: 8;
 			background: white;
-			padding: 20px;
-			img {
+			padding: 10px;
+			margin: 0;
+			@media (min-width: @screen-sm) {
+				width: 170px;
+				float: left;
+				position: absolute;
+				left: 0;
+			}
+
+			>div {
+				@media (max-width: @screen-sm) {
+					display: inline-block;
+				}
+			}
+			>img {
 				width: 150px;
 				height: 200px;
+				vertical-align: top;
+				outline: #51a297 dashed 1px;
 			}
 		}
 		.center {
 			z-index: 9;
 			background: white;
 			padding-left: 10px;
-			#basic {
-				overflow: hidden;
-				height: 200px;
+			@media (min-width: @screen-sm) {
+				right: 0px;
+				#basic {
+					overflow: hidden;
+					height: 200px;
+				}
+			}
+		}
+		.right {
+			@media (min-width: @screen-md) {
+				position: absolute;
+				top: 0;
+				right: 0;
 			}
 		}
 	}
+}
 
-	>div>div {
-		border: #000000 1px solid;
+// 评分切换
+#mainInfo {
+	// 评分
+	.vote_small {
+		text-align: center;
+		margin-top: 6px;
+		cursor: pointer;
+
+		@media (min-width: @screen-sm) {
+			display: block;
+		}
+		@media (max-width: @screen-sm) {
+			display: none;
+		}
+
+		.disp {
+			background: #c400ff;
+			padding: 1px 1px 2px 2px;
+			border-radius: 4px;
+			display: inline-block;
+			margin: auto;
+			.name {
+				color: white;
+				font-size: 18px;
+				font-weight: bold;
+				padding: 5px;
+				margin-left: 3px;
+				margin-right: 5px;
+			}
+			.value {
+				padding: 5px;
+				background: white;
+				.border-right-radius(4px);
+			}
+		}
+	}
+	.vote_large {
+		position: absolute;
+		@transition: opacity 400ms;
+		.transition(@transition);
+		@media (min-width: @screen-sm) {
+			opacity: 0;
+		}
+		@media (max-width: @screen-sm) {
+			opacity: 1;
+		}
+	}
+	.vote_op {
+		display: none;
+	}
+
+	.center {
+		@transition: margin-left 600ms, opacity 400ms;
+		.transition(@transition);
+	}
+	&.vote_show {
+		.center {
+			opacity: 0;
+			margin-left: -30px;
+		}
+		.vote_large {
+			opacity: 1;
+		}
+	}
+}
+
+#extend {
+	@media (min-width: @screen-sm) {
+		.info {
+			float: right;
+		}
 	}
 }
 
@@ -37,8 +148,6 @@
 		min-height: 180px;
 		position: relative;
 		.Loader {
-			display: none;
-			
 			z-index: 100;
 			position: absolute;
 			left: 0;
@@ -70,28 +179,99 @@
 	.send_label {
 		font-size: 24px;
 	}
-}
 
-.WBList {
-	padding: 0;
-	list-style: none;
-	.weibo {
-		background-repeat: no-repeat;
-		margin: 7px;
-		.c{
-			margin-left: 55px;
-			min-height: 64px;
-		}
-		.user{
-			font-weight: bold;
-		}
-		.time{
-			float: right;
-		}
-		.foot{
-			&>a{
-				padding-left: 30px;
+	.WBList {
+		padding: 0;
+		list-style: none;
+		.weibo {
+			background-repeat: no-repeat;
+			margin: 7px;
+			position: relative;
+			.avatar {
+				position: absolute;
+				top: 0;
+				left: 0;
+				height: 48px;
+				width: 48px;
+			}
+			.c {
+				margin-left: 55px;
+				min-height: 64px;
+			}
+			.user {
+				font-weight: bold;
+			}
+			.time {
+				float: right;
+			}
+			.foot {
+				&>a {
+					margin: 0 15px;
+					&:first-child {
+						margin-right: 0;
+					}
+				}
 			}
 		}
 	}
+	.Sender {
+		display: none;
+		.forward-tip {
+			display: none;
+			position: relative;
+			.tip {
+				cursor: pointer;
+			}
+			.text {
+				display: inline;
+			}
+			.content-tip {
+				position: absolute;
+				top: 110%;
+				width: 300px;
+
+				background: #ffffff;
+				padding: 10px;
+				border-radius: 5px;
+				border: black 1px solid;
+
+				clear: both;
+				.avatar {
+					float: left;
+					margin-right: 20px;
+				}
+				.user {
+					font-weight: bold;
+				}
+			}
+		}
+		textarea {
+			margin-bottom: 10px;
+			min-height: 100px;
+		}
+		&.forward {
+			.forward-tip {
+				display: inline-block;
+			}
+		}
+	}
+
+	&.logout {
+		.foot {
+			color: black;
+			>a {
+				color: black;
+				&:hover {
+					cursor: default;
+					text-decoration: none;
+				}
+			}
+		}
+	}
+	&.loaded {
+		.Sender {
+			display: block;
+		}
+	}
 }
+

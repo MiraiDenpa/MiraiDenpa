@@ -10,9 +10,6 @@ class UserCheckModel extends UserListModel{
 	}
 	
 	public function uidNotUse($uid){
-		if( $this->isDenyUid($uid) ){
-			return false;
-		}
 		return !$this->cache('user.check.uid'.$uid,60)->where(array('uid'=>$uid))->count();
 	}
 }

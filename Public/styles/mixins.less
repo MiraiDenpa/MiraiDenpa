@@ -124,9 +124,9 @@
 }
 
 // Transitions
-.transition(@transition) {
-  -webkit-transition: @transition;
-          transition: @transition;
+.transition(@a, @rest...) {
+  -webkit-transition: @arguments;
+          transition: @arguments;
 }
 .transition-property(@transition-property) {
   -webkit-transition-property: @transition-property;

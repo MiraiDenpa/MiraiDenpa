@@ -24,8 +24,7 @@
 	$(document).on({
 		'mirai.login' : function (){
 			loginIcon.icon('off').alert('success').title('欢迎，' + user.property.nick + '！');
-			$('.login_visable').show();
-			$('.login_unvisable').hide();
+			$('body').addClass('login').removeClass('logout');
 
 			var UserBox = $('#UserBox').find('.show');
 			var userdataurl = $.modifyUrl('', {
@@ -42,7 +41,7 @@
 			var avatar_size = 48;
 			if(window.user.property.avatar){
 				if(/^https?:\/\//i.test(window.user.property.avatar)){
-					avatar = $('<img/>').attr('src', 'window.user.property.avatar').css({'height': avatar_size, 'width': avatar_size});
+					avatar = $('<img/>').attr('src', window.user.property.avatar).css({'height': avatar_size, 'width': avatar_size});
 				} else if(/[0-9a-z]{32}/i.test(window.user.property.avatar)){
 					avatar = $bui.Gravatar(avatar_size, window.user.property.avatar).addClass('pull-left').css({'margin': '0 7px'});
 				}
@@ -57,8 +56,7 @@
 		},
 		'mirai.logout': function (){
 			loginIcon.icon('off').alert('error').title('未登录');
-			$('.login_visable').hide();
-			$('.login_unvisable').show();
+			$('body').addClass('logout').removeClass('login');
 		}
 	});
 })(window, jQuery);

@@ -41,7 +41,7 @@ function filter_uid_allow($uid){
 		'post',
 		'delete',
 	);
-	if(!in_array(strtolower($uid), $denys)){
+	if(in_array(strtolower($uid), $denys)){
 		return false;
 	}
 

@@ -135,38 +135,34 @@
 		var cnt_gr = $(sel).filter('.gravatar');
 		var cnt_ud = $(sel).filter('.userdefine');
 
-		cnt_gr.find('input').change(function (){
-			gra.attr('src', $bui.Gravatar.build({
-				hash: $(this).val(),
-				size: 64
-			}));
-		});
-
 		var user = $('#useravatar');
 		cnt_ud.find('input').change(function (){
 			user.attr('src', $(this).val());
-		}).change();
+		});
 
 		sel.on('click', function (){
 			sel.addClass('disabled').find('input').attr('disabled', 'disabled');
 			$(this).removeClass('disabled').find('input').removeAttr('disabled');
 		});
+		function initAvatar(msg){
+			var input = cnt_gr.find('input').val(msg);
+			gra.attr('src', $bui.Gravatar.build({
+				hash: input.val(),
+				size: 64
+			}));
+		}
 
-		if(window.user.property.avatar){
-			if(/[0-9a-z]{32}/i.test(window.user.property.avatar)){
-				cnt_gr.find('input').val(window.user.property.avatar).change();
-				cnt_gr.click();
-			}else{
-				cnt_ud.find('input').val(window.user.property.avatar).change();
-				cnt_ud.click();
-			}
+		if(window.user.property.avatar && /[0-9a-z]{32}/i.test(window.user.property.avatar)){
+			initAvatar(window.user.property.avatar);
+			cnt_gr.click();
 		} else{
+			cnt_ud.find('input').val(window.user.property.avatar);
+			cnt_ud.click();
 			$.ajax({
 				url: '[%url app="user" action="Property" method="hash_email" suffix="json"/%]'
 			}).done(function (ret){
-						cnt_gr.find('input').val(ret.message).change();
+						initAvatar(ret.message);
 					});
-			cnt_gr.click();
 		}
 	}
 
@@ -193,8 +189,11 @@
 	}
 
 	var changed = false;
-	$(document).on('change', function (){
-		changed = true;
+	$(document).ready(function (){
+		$(document).on('change', function (e){
+			console.log('changed by ', e.target)
+			changed = true;
+		});
 	});
 
 	$(function (){
@@ -232,13 +231,13 @@
 		<h2>编辑用户资料</h2>
 		<div class="col-xs-3">
 			<ul class="nav nav-pills nav-stacked">
-				<li>
+				<li class="active">
 					<a data-tab="#BaseInfoParent">基础</a>
 				</li>
 				<li>
 					<a data-tab="#MarksParent">徽章和称号</a>
 				</li>
-				<li class="active">
+				<li>
 					<a data-tab="#AvatarParent">头像</a>
 				</li>
 			</ul>

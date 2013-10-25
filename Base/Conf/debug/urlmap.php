@@ -8,5 +8,14 @@ $GLOBALS['URL_MAP'] = array(
 	'weibo' => 't.mirai.localdomain',
 	'lafi'  => 'lafi.mirai.localdomain',
 );
+$GLOBALS['DOMAIN_MAP'] = array(
+	'user'  => 'mirai.localdomain',
+	'home'  => 'mirai.localdomain',
+	'app'   => 'mirai.localdomain',
+	'info'  => 'mirai.localdomain',
+	'www'   => 'mirai.localdomain',
+	'weibo' => 'mirai.localdomain',
+	'lafi'  => 'mirai.localdomain',
+);
 
 require dirname(__DIR__).'/urls.php';

@@ -3,16 +3,18 @@ require __DIR__ . '/BrowserLib.components.php';
 
 //定义前引入依赖
 $requirements = array(
-	'jslib-gt/formhandler.js'    => ['Notify'],
-	'Notify'                     => ['jquery/jquery.transit.js'],
-	'bootstrap/bootstrap.js'     => ['jquery'],
-	'jslib-gt/enhanced_link.js'  => ['artDialog', 'jquery/purl.js', 'jslib-gt/murl.js'],
-	'jslib-gt/floatbox.js'       => ['jslib-gt/array.remove.js'],
-	'jslib-gt/login.js'          => ['jslib-gt/murl.js', 'jslib/sha1.js', 'jslib-gt/settings.js'],
-	'jslib-gt/murl.js'           => ['jquery/purl.js'],
-	'scripts/upload-inputgen.js' => ['UI','upload'],
-	'UI'                         => ['jquery/jquery.mousewheel.js'],
-	'jquery/jquery.fileupload.js'       => ['jquery/jquery.ui.widget.js'],
+	'jslib-gt/formhandler.js'     => ['Notify'],
+	'Notify'                      => ['jquery/jquery.transit.js'],
+	'bootstrap/bootstrap.js'      => ['jquery'],
+	'jslib-gt/enhanced_link.js'   => ['artDialog', 'jquery/purl.js', 'jslib-gt/murl.js'],
+	'jslib-gt/floatbox.js'        => ['jslib-gt/array.remove.js'],
+	'jslib-gt/login.js'           => ['jslib-gt/murl.js', 'jslib/sha1.js', 'jslib-gt/settings.js'],
+	'jslib-gt/murl.js'            => ['jquery/purl.js'],
+	'scripts/upload-inputgen.js'  => ['UI', 'upload'],
+	'jquery/jquery.indexeddb.js'  => ['jquery/IndexedDBShim.js'],
+	'jquery/jquery.fileupload.js' => ['jquery/jquery.ui.widget.js'],
+	'UI'                          => ['jquery/jquery.mousewheel.js'],
+	'weibo'                       => ['jquery/jquery.indexeddb.js'],
 );
 
 //定义后引入组件
@@ -30,7 +32,7 @@ $component = array(
 
 // 定义“库”
 $userlib   = array(
-	'global'    => ['basevar.less', 'jslib/basevar.js', 'styles/global.less', 'scripts/global.js', 'jslib/debug.js'],
+	'global'    => ['basevar.less', 'scripts/base-'.APP_NAME.'.js', 'styles/global.less', 'scripts/global.js', 'jslib/debug.js'],
 	'validate'  => ['jquery/jquery.validate.js',],
 	'login'     => ['Notify', 'jslib-gt/settings.js',],
 	'jquery'    => ['jquery/jquery.js',],

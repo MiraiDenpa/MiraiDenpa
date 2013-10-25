@@ -66,7 +66,9 @@
 		if(token){
 			$.when(getProperty(), getSetting(), getToken()).done(loginSuccess).fail(notLogin);
 		} else{
-			notLogin();
+			$(function(){
+				setTimeout(notLogin,0);
+			})
 		}
 	};
 	$(user.initUser);
@@ -133,8 +135,8 @@
 			console.trace();
 			console.groupEnd();
 		}
-		user.token_data = {};
-		user.property = {};
+		user.token_data = null;
+		user.property = null;
 		if(user.setting){
 			user.setting.clear();
 		} else{

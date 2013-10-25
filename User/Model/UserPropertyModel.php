@@ -4,12 +4,27 @@ class UserPropertyModel extends Mongoo{
 	protected $connection = 'mongo-user';
 
 	function getEntity($uid){
-		$data = $this->findOne(['_id'=>$uid]);
+		$data = $this->findOne(['_id' => $uid]);
 		if(null === $data){
 			$ret = new UserPropertyEntity();
 		} else{
 			$ret        = UserPropertyEntity::buildFromArray($data);
 			$ret->exist = true;
+		}
+		return $ret;
+	}
+
+	function getList($where, $entity = true){
+		$cur = $this->find($where);
+		if($entity){
+			$ret = [];
+			foreach($cur as $item){
+				$item        = UserPropertyEntity::buildFromArray($item);
+				$item->exist = true;
+				$ret[]       = $item;
+			}
+		} else{
+			$ret = iterator_to_array($cur, false);
 		}
 		return $ret;
 	}
@@ -27,6 +42,6 @@ class UserPropertyModel extends Mongoo{
 	}
 
 	public function initUser($user){
-		return $this->insert(['_id'=>$user['uid']]);
+		return $this->insert(['_id' => $user['uid']]);
 	}
 }

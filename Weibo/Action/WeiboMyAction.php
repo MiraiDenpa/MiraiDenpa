@@ -196,7 +196,12 @@ class WeiboMyAction extends Action{
 
 	/**
 	 * @param $arr
-	 *
+	 * arg1: null
+	 * arg2: null
+	 * content: "526240db7f8b9a891c8b4567"
+	 * list: null
+	 * original: !
+	 * type: "mirai/info-entry"
 	 * @return WeiboEntity
 	 */
 	private function preprocess($arr){

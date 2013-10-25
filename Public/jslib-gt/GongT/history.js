@@ -1,8 +1,15 @@
 (function (exports){
+	"use strict";
+
+	// query对象的key到modify的映射
 	var query_map = {};
+	// 回调列表id => [回调对象数组] 
 	var handlers = {};
+	// 保存当前状态，比较新的query，只触发改变了的部分
 	var current_query = {};
+	// query对象的key到回调列表id的映射
 	var query_hook = {};
+	// ajax过程中的current_query暂存
 	var notsubmit_query = {};
 
 	// 同ID的url必须相同
@@ -21,22 +28,11 @@
 			throw new Error('HistotyHandler必须有 hook。');
 		}
 
-		if(ho.map){
-			// 把 query 的 name 转移到其他地方（比如path的第2项）
-			for(var name in ho.map){
-				var info = ho.map[name].split(/\./, 2);
-				if(!/^(protocol|userInfo|host|port|action|method|extension|fragment|path|param|append)$/.test(info[0])){
-					throw new Error('未知name：' + name);
-				}
-				query_map[name] = info;
-			}
-		}
-
 		// 注册需要的的请求变量
 		for(var index = 0; index < ho.hook.length; index++){
-			name = ho.hook[index];
+			var name = ho.hook[index];
 			if(query_hook[name] && query_hook[name] !== id){
-				throw new Error('请求变量' + index + '已经被其他回调[' + query_hook[name] + ']注册。');
+				throw new Error('请求变量' + index + '已经被其他回调注册。\n' + query_hook[name] + '\n' + id);
 			}
 			query_hook[name] = id;
 		}
@@ -54,6 +50,10 @@
 			handlers[id].url = $.modifyUrl(ho.url, {suffix: 'json'}, true);
 		}
 		handlers[id].push(ho);
+	};
+
+	exports.urlChanged = function (id, new_url){
+		handlers[id].url = new_url;
 	};
 
 	History.Adapter.bind(window, 'statechange', function (){
@@ -77,7 +77,7 @@
 		if(obj._state_fail){
 			$(hl).each(function (_, ho){
 				if(ho.fail){
-					ho.fail.apply(this, obj.arguments);
+					ho.fail.apply(this, obj.argument);
 				}
 			});
 		} else{
@@ -136,13 +136,28 @@
 					History.pushState(ret, $('title').text(), new_url);
 				});
 				dfd.fail(function (){
-					var data = {_state_fail: true, arguments: arguments, _state_triggers: triggers};
+					var data = {_state_fail: true, argument: argument, _state_triggers: triggers};
 					History.pushState(data, $('title').text(), new_url);
 				});
 			})($.ajax(ajax), triggers, debug_title);
 		}
 	};
 
+	exports.map = function (name, info){
+		// 把 query 的 name 转移到其他地方（比如path的第2项）
+		info = info.split(/\./, 2);
+		if(!/^(protocol|userInfo|host|port|action|method|extension|fragment|path|param|append)$/.test(info[0])){
+			throw new Error('未知name：' + name);
+		}
+		if(query_map[name]){
+			throw new Error('urlmap不能重复定义', name);
+		}
+		query_map[name] = info;
+	};
+
+	exports.unmap = function (name){
+		delete(query_map[name]);
+	};
 	exports.map_current = function (name){
 		var data = query_map[name];
 		if(!data){

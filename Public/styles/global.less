@@ -4,6 +4,10 @@
 
 // @import 'bootstrap.less';
 
+body{
+	min-width: 500px;
+}
+
 .gt-switcher {
 	span {
 		display: none;
@@ -20,10 +24,15 @@ a {
 	cursor: pointer;
 }
 
-.pagination > li > a{
+.pagination {
+	white-space: nowrap;
+}
+
+.pagination > li > a {
 	.transition(background-color 300ms);
 }
-.pagination > .active > a{
+
+.pagination > .active > a {
 	.transition(none);
 }
 
@@ -56,5 +65,18 @@ textarea {
 	&.disabled {
 		background: transparent;
 		border: transparent 1px solid;
+	}
+}
+
+body {
+	&.logout {
+		.login_visable {
+			display: none !important;
+		}
+	}
+	&.login {
+		.login_unvisable {
+			display: none !important;
+		}
 	}
 }

@@ -5,6 +5,8 @@ class WeiboListModel extends Mongoo{
 
 	/** @var  WeiboCacheModel */
 	protected $cacheObj;
+	
+	public $perPage = 10;
 
 	public function _initialize($arg1, $arg2){
 		$this->cacheObj = ThinkInstance::D('WeiboCache');
@@ -30,7 +32,7 @@ class WeiboListModel extends Mongoo{
 						   'channel'      => $channel,
 						   'forward.type' => ['$ne' => 'mirai/denpa']
 						   ]
-		);
+		)->sort(['time'=>'desc']);
 		$this->pageCursor($itr, $page);
 		$data = [];
 		foreach($itr as $weibo){

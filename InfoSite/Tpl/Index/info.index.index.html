@@ -5,6 +5,7 @@
 	jquery/jquery.transit.js
 	scripts/infosite.carousel.js
 	styles/infosite.carousel.less
+	styles/infosite.index.less
 </BrowserLib>
 
 <div class="container">
@@ -106,42 +107,61 @@
 		<div class="col-sm-9">
 			<div class="panel panel-primary">
 				<div class="panel-heading">链接</div>
-				<div class="panel-body">内容内容内容内容内容内容内容</div>
+				<div class="panel-body type_link">内容内容内容内容内容内容内容</div>
 				<div class="panel-footer"></div>
 			</div>
 			<div class="panel panel-primary">
 				<div class="panel-heading">新番</div>
-				<div class="panel-body">
+				<div class="panel-body type_bangumi">
 					<volist name="hots[TYPE_BANGUMI]" id="entry">
-						<a href="{$entry->_url}">{$entry->name[0]}</a>
-						{$entry|var_dump}
+						<div class="item_block">
+							<a href="{$entry->_url}">
+								<img class="img" src="{$entry->cover_pic}">
+							</a>
+							<a href="{$entry->_url}">
+							<div class="text-center text">{$entry->name[0]}</div>
+							</a>
+						</div>
 					</volist>
+					{$entry|var_dump}
 				</div>
 				<div class="panel-footer"></div>
 			</div>
 			<div class="panel panel-primary">
 				<div class="panel-heading">动画</div>
-				<div class="panel-body">
+				<div class="panel-body type_anime">
 					<volist name="hots[TYPE_ANIME]" id="entry">
-						<a href="{$entry->_url}">{$entry->name[0]}</a>
-						{$entry|var_dump}
+						<div class="item_block">
+							<a href="{$entry->_url}">
+								<img class="img" src="{$entry->cover_pic}">
+							</a>
+							<a href="{$entry->_url}">
+								<div class="text-center text">{$entry->name[0]}</div>
+							</a>
+						</div>
 					</volist>
 				</div>
 				<div class="panel-footer"></div>
 			</div>
 			<div class="panel panel-primary">
 				<div class="panel-heading">漫画</div>
-				<div class="panel-body">
+				<div class="panel-body type_comic">
 					<volist name="hots[TYPE_COMIC]" id="entry">
-						<a href="{$entry->_url}">{$entry->name[0]}</a>
-						{$entry|var_dump}
+						<div class="item_block">
+							<a href="{$entry->_url}">
+								<img class="img" src="{$entry->cover_pic}">
+							</a>
+							<a href="{$entry->_url}">
+								<div class="text-center text">{$entry->name[0]}</div>
+							</a>
+						</div>
 					</volist>
 				</div>
 				<div class="panel-footer"></div>
 			</div>
 			<div class="panel panel-primary">
 				<div class="panel-heading">游戏</div>
-				<div class="panel-body">内容内容内容内容内容内容内容</div>
+				<div class="panel-body type_game">内容内容内容内容内容内容内容</div>
 				<div class="panel-footer"></div>
 			</div>
 		</div>

@@ -120,3 +120,17 @@ function LogStandardReturnObject(ret, title){
 		console.groupEnd();
 	}
 }
+
+function avatar_url(hash, avatar_size){
+	if(hash){
+		if(/^https?:\/\//i.test(hash)){
+			return hash;
+		} else if(/[0-9a-z]{32}/i.test(hash)){
+			return $bui.Gravatar.build({size: avatar_size, hash: hash});
+		} else{
+			return $bui.Gravatar.build({size: avatar_size, hash: window.Think.DEFAULT_AVATAR});
+		}
+	} else{
+		return $bui.Gravatar.build({size: avatar_size, hash: window.Think.DEFAULT_AVATAR});
+	}
+}
