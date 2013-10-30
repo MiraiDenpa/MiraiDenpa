@@ -1,0 +1,33 @@
+.flex {
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+}
+
+.dptip (@bg: #E5CFFF; @border: #9222A5) {
+	background: @bg;
+	border: @border 1px solid;
+	padding: 2px 8px;
+	&.active {
+		background: @bg;
+		border: @border 1px solid;
+	}
+
+	&:hover {
+
+	}
+	&.disabled {
+		background: transparent;
+		border: transparent 1px solid;
+	}
+}
+
+.hover-tip (@bg: #E5CFFF; @border: #9222A5){
+	border: transparent 1px solid;
+	padding: 2px 8px;
+	&.active,&:hover {
+		background: @bg;
+		border: @border 1px solid;
+	}
+}

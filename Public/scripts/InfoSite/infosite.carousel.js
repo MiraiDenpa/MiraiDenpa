@@ -1,5 +1,5 @@
 $(function (){
-	var defaultCss = {transform: 'perspective(600px) rotateX(90deg)'};
+	var defaultCss = {transform: 'perspective(600px) rotateX(90deg)',display:'none'};
 	var autoInterval;
 	var register_ok = false;
 

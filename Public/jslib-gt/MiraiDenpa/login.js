@@ -44,7 +44,13 @@
 		}
 	});
 
-	var is_login;
+	Object.defineProperty(user, 'isLogin', {
+		get: function (){
+			return is_login;
+		}
+	});
+
+	var is_login = false;
 	var onLogin = $.Callbacks();
 	var onLogout = $.Callbacks();
 	window.onlogin = function (fn){
@@ -64,10 +70,12 @@
 
 	user.initUser = function (){
 		if(token){
-			$.when(getProperty(), getSetting(), getToken()).done(loginSuccess).fail(notLogin);
+			$.when(getProperty(), getSetting(), getToken()).done(loginSuccess).fail(function (){
+				user.logout();
+			});
 		} else{
-			$(function(){
-				setTimeout(notLogin,0);
+			$(function (){
+				setTimeout(notLogin, 0);
 			})
 		}
 	};

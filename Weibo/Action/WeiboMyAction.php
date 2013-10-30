@@ -202,6 +202,7 @@ class WeiboMyAction extends Action{
 	 * list: null
 	 * original: !
 	 * type: "mirai/info-entry"
+	 *
 	 * @return WeiboEntity
 	 */
 	private function preprocess($arr){
@@ -210,7 +211,8 @@ class WeiboMyAction extends Action{
 
 		$data->content = htmlentities($data->content);
 
-		if(isset($arr['forward']) && $arr['forward']){
+		if(isset($arr['forward']) && is_array($arr['forward'])){
+			// 转发微博
 			$data->forward = ForwardEntity::buildFromArray($arr['forward']);
 			if(!$data->forward){
 				return $this->error(ERR_PARSE_FORWARD, 'content');
@@ -220,14 +222,24 @@ class WeiboMyAction extends Action{
 				if(!$forward_weibo){
 					return $this->error(ERR_TARGET_NOT_EXIST, $data->forward->content);
 				}
+
 				$data->level = $forward_weibo->level + 1;
-				if($forward_weibo->forward->type == 'mirai/denpa'){ // 转发目标也是转发
+				if(empty($forward_weibo->forward->original)){ // 转发目标是条原创
+					$data->forward->original = [];
+				} else{ // 转发目标也是转发
 					$data->forward->original = $forward_weibo->forward->original;
-				} else{ // 转发目标是电波
-					$data->forward->original = (string)$forward_weibo->_id;
 				}
+				$data->forward->original[] = (string)$forward_weibo->_id;
+				
 				$this->publish->forwarded($forward_weibo);
+			} else{
+				// 转发内容不是另一条微博
+				$data->level = 0;
 			}
+		} else{
+			// 原创微博
+			$data->forward->original = null;
+			$data->level             = 0;
 		}
 		if(isset($arr['sendto']) && $arr['sendto']){
 			$data->sendto = explode(',', $arr['sendto']);

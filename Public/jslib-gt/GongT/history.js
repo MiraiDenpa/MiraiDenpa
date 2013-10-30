@@ -136,7 +136,7 @@
 					History.pushState(ret, $('title').text(), new_url);
 				});
 				dfd.fail(function (){
-					var data = {_state_fail: true, argument: argument, _state_triggers: triggers};
+					var data = {_state_fail: true, argument: arguments, _state_triggers: triggers};
 					History.pushState(data, $('title').text(), new_url);
 				});
 			})($.ajax(ajax), triggers, debug_title);

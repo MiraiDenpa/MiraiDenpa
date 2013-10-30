@@ -14,7 +14,7 @@ $requirements = array(
 	'jquery/jquery.indexeddb.js'  => ['jquery/IndexedDBShim.js'],
 	'jquery/jquery.fileupload.js' => ['jquery/jquery.ui.widget.js'],
 	'UI'                          => ['jquery/jquery.mousewheel.js'],
-	'weibo'                       => ['jquery/jquery.indexeddb.js'],
+	'weibo'                       => ['jquery/jquery.indexeddb.js', 'jslib-gt/history.js'],
 );
 
 //定义后引入组件
@@ -32,7 +32,13 @@ $component = array(
 
 // 定义“库”
 $userlib   = array(
-	'global'    => ['basevar.less', 'scripts/base-'.APP_NAME.'.js', 'styles/global.less', 'scripts/global.js', 'jslib/debug.js'],
+	'global'    => [
+		'basevar.less',
+		'scripts/base-' . APP_NAME . '.js',
+		'styles/global.less',
+		'scripts/global.js',
+		'jslib/debug.js'
+	],
 	'validate'  => ['jquery/jquery.validate.js',],
 	'login'     => ['Notify', 'jslib-gt/settings.js',],
 	'jquery'    => ['jquery/jquery.js',],

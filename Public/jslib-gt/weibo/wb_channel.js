@@ -14,6 +14,7 @@
 		var callbackPageFn = $.Callbacks('unique');
 		var req_name = 'page_of_channel_' + channel + '';
 		var req = {};
+		var type = 'tree';
 
 		var autoForward;
 
@@ -51,7 +52,7 @@
 			if(p < 1){
 				throw new Error('页码不正确', p);
 			}
-			var r = {p: p};
+			var r = {p: p, type: type};
 			r[req_name] = p;
 			weibo.attachToken(r);
 			DenpaHistory.query(r, '更新微博列表[' + channel + '] 第' + p + '页');

@@ -9,9 +9,9 @@
 	pure
 	weibo
 	scripts/infosite.entry_page.js
+	scripts/infosite.entry_comment.js
 	styles/infosite.entry_page.less
 	jslib-gt/enhanced_link.js
-	jslib-gt/history.js
 </BrowserLib>
 <AddHeader prepend="true">
 	<script type="text/javascript">
@@ -20,20 +20,37 @@
 </AddHeader>
 <div class="container" id="mainContainer">
 	<div id="wrap">
-		<div id="mainInfo" class="row row-compact clearfix">
+		<div id="mainInfo" class="row row-compact clearfix vote_show">
 			<div class="left">
 				<img src="{$doc->cover_pic}">
 				<div>
 					<div class="vote_small">
-						<div class="disp">
-							<span class="name">剧情</span>
-							<span class="value">5.5</span>
+						<table class="disp">
+							<tr>
+								<td class="name">剧情</td>
+								<td class="value">5.5</td>
+							</tr>
+						</table>
+						<div>
+							<a>查看详情</a>
 						</div>
-						<div><a>查看详情</a></div>
 					</div>
 				</div>
 			</div>
-			<div class="vote_large">评分详细信息</div>
+			<div class="vote_large">
+				<pre>
+人物	普通 - 俺的嫁
+音乐	无印象 - 想下CD听
+声优	一般 - 华丽
+					
+剧情	一般 - 扣人心弦
+搞笑	不好笑 - 笑尿
+卖肉	把持住了 - 把持不住！
+基	无爱 - 有爱
+萌	一般 - 超萌
+宅	入门 - 专业
+				</pre>
+			</div>
 			<div class="vote_op">评分面板</div>
 			<div class="center">
 				<div id="basic">
@@ -76,6 +93,7 @@
 				</div>
 			</div>
 		</div>
+		<div class="clearfix"></div>
 		<div id="extend" class="row row-compact">
 			<div class="info col-sm-3">
 				<div>
@@ -95,32 +113,31 @@
 					</div>
 					<ul class="WBList">
 						<li id="%id%" class="weibo hide">
-							<img class="avatar"/>
+							<img class="avatar" src=""/>
 							<div class="c">
 								<div class="head">
 									<span class="user">
-										<span class="nickname"></span>
-										（
-										<a href="[%url app='home' action='user' method='id' suffix=''/%]/"></a>
-										）
+									<span class="nickname"></span>
+									（
+									<a href="[%url app='home' action='user' method='id' suffix=''/%]/"></a>
+									）
 									</span>
-									<span class="time">2013-10-21</span>
+									<span class="time">xxxx-xx-xx</span>
 								</div>
 								<div class="body">
 									<div class="content"></div>
 									<div class="forward"></div>
-									<div class="tree"></div>
 								</div>
-								<div class="foot">
-									&nbsp;
-									<a class="btnForward pull-right" data-id="%id%">转
-										<span class="beforwardcount">(0)</span>
-									</a>
-									<a class=" pull-right">评
-										<span class="">(0)</span>
-									</a>
-									<a class=" pull-right">赞</a>
-								</div>
+							</div>
+							<div class="foot">
+								&nbsp;
+								<a class="btnForward" data-id="%id%">转
+								<span class="beforwardcount">(0)</span>
+								</a>
+								<a class="">评
+								<span class="">(0)</span>
+								</a>
+								<a class="">赞</a>
 							</div>
 						</li>
 					</ul>

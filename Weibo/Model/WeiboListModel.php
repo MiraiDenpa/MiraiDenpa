@@ -5,7 +5,7 @@ class WeiboListModel extends Mongoo{
 
 	/** @var  WeiboCacheModel */
 	protected $cacheObj;
-	
+
 	public $perPage = 10;
 
 	public function _initialize($arg1, $arg2){
@@ -25,23 +25,35 @@ class WeiboListModel extends Mongoo{
 			$page = 1;
 		}
 		if($this->cacheObj->channel($app, $channel, $page, $this->page)){
-			return $this->cacheObj->data;
+			//return $this->cacheObj->data;
 		}
 		$itr = $this->find([
 						   'app'          => $app,
 						   'channel'      => $channel,
 						   'forward.type' => ['$ne' => 'mirai/denpa']
-						   ]
-		)->sort(['time'=>'desc']);
+						   ])
+				->sort(['time' => -1]);
 		$this->pageCursor($itr, $page);
 		$data = [];
 		foreach($itr as $weibo){
 			$wb       = WeiboEntity::buildFromArray($weibo);
-			$wb->tree = $wb->buildTree();
+			$cur      = $this->find(['forward.type' => 'mirai/denpa', 'forward.original' => $wb->_id->{'$id'}])
+					->sort(['time' => -1])
+					->limit(5);
+			$wb->list = iterator_to_array($cur, false);
 			$data[]   = $wb;
 		}
 
 		$this->cacheObj->setChannel($app, $channel, $page, $data, $this->page);
 		return $data;
+	}
+
+	public function getReply($wid, $page){
+		if($this->cacheObj->weiboreply($wid, $page, $this->page)){
+			//return $this->cacheObj->data;
+		}
+		$cur = $this->find(['forward.type' => 'mirai/denpa', 'forward.original' => $wid])
+				->sort(['time' => -1]);
+		$this->pageCursor($itr, $page);
 	}
 }

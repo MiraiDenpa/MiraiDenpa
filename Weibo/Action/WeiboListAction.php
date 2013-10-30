@@ -33,14 +33,27 @@ class WeiboListAction extends Action{
 		} else{
 			$p = 1;
 		}
+		
+		$flat = false;
+		if(isset($_GET['type'])){
+			if($_GET['type'] == 'tree'){
+				$flat = false;
+			}elseif($_GET['type'] == 'list'){
+				$flat = true;
+			}else{
+				$this->error(ERR_INPUT_DENY, 'type = tree or list');
+				return;
+			}
+		}
+
 		$listmdl      = ThinkInstance::D('WeiboList');
-		$ret          = $listmdl->getChannel($app, $channel, $p);
+		$ret          = $listmdl->getChannel($app, $channel, $p, $flat);
 		$listmdl->url = UI(METHOD_NAME, ['p' => '__PAGE__']);
 
 		$this->assign('list', $ret);
 		$this->assign('page', $listmdl->getPage());
 		$this->assign('code', ERR_NO_ERROR);
-		
+
 		$this->display(':list/default.html');
 	}
 }

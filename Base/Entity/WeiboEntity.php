@@ -15,19 +15,21 @@ class WeiboEntity extends Entity{
 	public $user;
 	public $time;
 
-	public function buildTree(){
+	public $list;
+
+	public function buildList($full){
 		static $mdl;
 		if(!$mdl){
 			$mdl = ThinkInstance::D('WeiboList');
 		}
 		$itr = $mdl
 				->find(['forward.type' => 'mirai/denpa', 'forward.original' => (string)$this->_id])
-				->sort(['level' => 1]);
-		$ret = [];
+				->sort(['time' => -1]);
+		$this->list = [];
 		foreach($itr as $wb){
-			$ret[] = WeiboEntity::buildFromArray($wb);
+			$this->list[] = WeiboEntity::buildFromArray($wb);
 		}
-		return $ret;
+		return $this;
 	}
 
 	protected function _init(){

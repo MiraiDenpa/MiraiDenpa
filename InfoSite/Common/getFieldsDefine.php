@@ -19,7 +19,10 @@ function TaglibReplaceItem_fields(){
 		"name"            => [
 			'name'    => '作品名称',
 			'type'    => 'inputlist',
-			'subtype' => 'text',
+			'subtype' => [
+				'type'    => 'input',
+				'subtype' => 'text',
+			],
 			'must'    => true,
 		],
 		"origin_name"     => [
@@ -28,10 +31,10 @@ function TaglibReplaceItem_fields(){
 			'subtype' => 'text',
 		],
 		"cover_pic"       => [
-			'name' => '封面图',
-			'type' => 'upload',
+			'name'    => '封面图',
+			'type'    => 'upload',
 			'subtype' => 'picture',
-			'text' => '图片最大不能超过2M',
+			'text'    => '图片最大不能超过2M',
 		],
 		"episodes"        => [
 			'name'    => '话数',
@@ -81,7 +84,7 @@ function TaglibReplaceItem_fields(){
 			'name'    => '作品地区',
 			'type'    => 'select',
 			'subtype' => [
-				'11区' => 'region-11',
+				'11区' => 'aria-11',
 				'大陆'  => 'mainland',
 				'特区'  => 'SAR',
 				'西方'  => 'west',
@@ -92,6 +95,35 @@ function TaglibReplaceItem_fields(){
 			'type'    => 'static',
 			'subtype' => 'on',
 			'text'    => '这是一部同人作品',
+		],
+		"robot"           => [
+			'name'    => '萝卜',
+			'type'    => 'static',
+			'subtype' => 'on',
+			'text'    => '这是一部萝卜片',
+		],
+		"externalize"     => [
+			'name'    => '主要內容',
+			'type'    => 'inputlist',
+			'subtype' => [
+				'type'    => 'select',
+				'subtype' => [
+					'日常'     => '日常',
+					'爆笑'     => '爆笑',
+					'催泪'     => '催泪',
+					'深沉'     => '深沉',
+					'猎奇'     => '猎奇',
+					//
+					'基'      => '基',
+					'百合'     => '百合',
+					'卖肉'     => '卖肉',
+					//
+					'未来/硬科幻' => '未来/硬科幻',
+					'魔法/伪科幻' => '魔法/伪科幻',
+					'现实'     => '现实',
+				]
+			],
+			'must'    => true,
 		],
 	);
 	foreach($ret as $id => $data){

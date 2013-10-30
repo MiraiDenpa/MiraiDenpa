@@ -68,8 +68,7 @@ function create_select(id, sub, value, text){
 function create_static(id, sub, value, text){
 	var field = new $bui.FormControl();
 	var input = $('<input class="disabled"/>').attr({'type': 'hidden', 'name': id, 'title': text});
-	field.centerWidget(input);
-	field.val(value);
+	field.centerWidget(input).val(sub);
 	return field;
 }
 function create_input(id, sub, value, text){
@@ -80,7 +79,8 @@ function create_input(id, sub, value, text){
 	}
 }
 function create_inputlist(id, sub, value, text){
-	var $center = $('<input/>').attr('type', sub);
+	var fn = type_widget(sub.type);
+	var $center = fn('', sub.subtype, null, sub.text);
 	var ret = new $bui.InputList();
 	ret.addClass('inline').attr('name', id).centerWidget($center);
 	if(value){

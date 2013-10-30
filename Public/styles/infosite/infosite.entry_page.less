@@ -1,5 +1,6 @@
 @import '../variables.less';
 @import '../mixins.less';
+@import '../mymixins.less';
 
 @media (min-width: @screen-sm)  and (max-width: @screen-md) {
 	.nav {
@@ -20,7 +21,7 @@
 	#mainInfo {
 		position: relative;
 		@media (min-width: @screen-sm) {
-			padding-left: 172px;
+			margin-left: 172px;
 		}
 		.left {
 			z-index: 8;
@@ -30,16 +31,16 @@
 			@media (min-width: @screen-sm) {
 				width: 170px;
 				float: left;
-				position: absolute;
+				margin-left: -170px;
 				left: 0;
 			}
 
-			>div {
+			> div {
 				@media (max-width: @screen-sm) {
 					display: inline-block;
 				}
 			}
-			>img {
+			> img {
 				width: 150px;
 				height: 200px;
 				vertical-align: top;
@@ -48,7 +49,6 @@
 		}
 		.center {
 			z-index: 9;
-			background: white;
 			padding-left: 10px;
 			@media (min-width: @screen-sm) {
 				right: 0px;
@@ -84,52 +84,63 @@
 		}
 
 		.disp {
-			background: #c400ff;
-			padding: 1px 1px 2px 2px;
-			border-radius: 4px;
-			display: inline-block;
-			margin: auto;
+			display: inline-table;
 			.name {
+				.border-left-radius(4px);
 				color: white;
-				font-size: 18px;
+				background: #c400ff;
 				font-weight: bold;
-				padding: 5px;
-				margin-left: 3px;
-				margin-right: 5px;
+				font-size: 20px;
+				padding: 3px 16px;
 			}
 			.value {
-				padding: 5px;
-				background: white;
 				.border-right-radius(4px);
+				background: white;
+				.box-shadow(inset #c400ff 0px 0px 2px 1px);
+				font-size: 20px;
+				padding: 3px 12px;
 			}
 		}
 	}
 	.vote_large {
-		position: absolute;
-		@transition: opacity 400ms;
-		.transition(@transition);
-		@media (min-width: @screen-sm) {
-			opacity: 0;
-		}
 		@media (max-width: @screen-sm) {
-			opacity: 1;
+			opacity: 1 !important;
 		}
 	}
 	.vote_op {
 		display: none;
 	}
 
-	.center {
-		@transition: margin-left 600ms, opacity 400ms;
+	.vote_large {
+		position: absolute;
+		left: 0;
+		z-index: -1 !important;
+		@transition: opacity 400ms;
 		.transition(@transition);
+		@media (min-width: @screen-sm) {
+			opacity: 0;
+		}
+	}
+	.center {
+		background: #d8d8d8;
+		top: 0;
+		left: 0;
+		@transition: margin-left 600ms ease, opacity 600ms;
+		.transition(@transition);
+		.transition-delay(200ms);
 	}
 	&.vote_show {
 		.center {
+			position: absolute;
 			opacity: 0;
+			z-index: -1 !important;
 			margin-left: -30px;
+			.transition-delay(0ms);
 		}
 		.vote_large {
+			position: static;
 			opacity: 1;
+			.transition-delay(300ms);
 		}
 	}
 }
@@ -184,6 +195,8 @@
 		padding: 0;
 		list-style: none;
 		.weibo {
+			padding: 10px;
+			.hover-tip;
 			background-repeat: no-repeat;
 			margin: 7px;
 			position: relative;
@@ -205,15 +218,62 @@
 				float: right;
 			}
 			.foot {
-				&>a {
-					margin: 0 15px;
-					&:first-child {
+				position: absolute;
+				float: right;
+				right: 0;
+				bottom: 0;
+				& > a {
+					margin: 0 7px;
+					&:last-child {
 						margin-right: 0;
 					}
 				}
 			}
 		}
+		/* end 微博*/
+		ul {
+			list-style: none;
+			padding-left: 30px;
+			
+			.weibo {
+				clear: both;
+				.avatar {
+					margin-top: 3px;
+					height: 24px;
+					width: 24px;
+				}
+				.c {
+					margin-left: 28px;
+					min-height: 0;
+				}
+				.user {
+					font-size: small;
+				}
+				.time {
+					font-size: smaller;
+					float: none;
+				}
+				.content {
+					font-size: small;
+				}
+				.foot {
+					display: none;
+					& > a {
+						margin: 0 5px;
+					}
+				}
+				&:hover {
+					.foot {
+						display: block;
+					}
+				}
+			}
+			/* end 转发评论*/
+		}
+		/* end 微博评论列表*/
 	}
+
+	/* 微博列表*/
 	.Sender {
 		display: none;
 		.forward-tip {
@@ -256,10 +316,10 @@
 		}
 	}
 
-	&.logout {
+	.logout & {
 		.foot {
 			color: black;
-			>a {
+			> a {
 				color: black;
 				&:hover {
 					cursor: default;
