@@ -5,7 +5,7 @@ class InfoEntryEntity extends Entity{
 	public $_url;
 	public $_update;
 	public $_history;
-	public $_changed = false;
+	public $_change = false;
 	//<GEN>
 	public $catalog;
 	public $name;

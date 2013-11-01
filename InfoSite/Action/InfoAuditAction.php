@@ -27,12 +27,18 @@ class InfoAuditAction extends Action{
 		$this->assign('check', $_SESSION['check']);
 
 		if(!isset($_GET['id']) || !$_GET['id']){
-			return $this->error(ERR_INPUT_REQUIRE, 'id');
+			$this->error(ERR_INPUT_REQUIRE, 'id');
+			return;
 		}
 		$mdl         = ThinkInstance::D('InfoEntry');
 		$data        = $mdl->getDocument($_GET['id']);
 		$item        = $mdl->getChangedById($_GET['id']);
 		$item['_id'] = (string)$item['_id'];
+
+		if(!$data->_change){
+			$this->error(ERR_MISCELLANEOUS, '这个ID下没有未提交的更改', UI('index'));
+			return;
+		}
 
 		$this->assign('item', $item);
 		$this->assign('data', $data);
@@ -40,9 +46,9 @@ class InfoAuditAction extends Action{
 	}
 
 	final function loadjson(){
-		$id       = $_GET['id'];
-		$mdl      = ThinkInstance::D('InfoEntry');
-		$data     = $mdl->getDocument($id);
+		$id   = $_GET['id'];
+		$mdl  = ThinkInstance::D('InfoEntry');
+		$data = $mdl->getDocument($id);
 		echo json_encode($data, JSON_PRETTY_PRINT + JSON_UNESCAPED_SLASHES + JSON_UNESCAPED_UNICODE);
 	}
 
@@ -51,19 +57,22 @@ class InfoAuditAction extends Action{
 		unset($_POST['_force']);
 		session_start();
 		if(!$_GET['hash'] || $_SESSION['check'] != $_GET['hash']){
-			return $this->error(ERR_INPUT_DENY, 'hash mismatch');
+			$this->error(ERR_INPUT_DENY, 'hash mismatch');
+			return;
 		}
 		unset($_SESSION['check']);
 
 		$updateUsers = $_POST['_update_users'];
 		unset($_POST['_update_users']);
 		if(empty($updateUsers)){
-			return $this->error(ERR_INPUT_REQUIRE, '_update_users');
+			$this->error(ERR_INPUT_REQUIRE, '_update_users');
+			return;
 		}
 		$id = $_POST['id'];
 		unset($_POST['id']);
 		if(empty($id)){
-			return $this->error(ERR_INPUT_REQUIRE, 'id');
+			$this->error(ERR_INPUT_REQUIRE, 'id');
+			return;
 		}
 
 		$data = $_POST;
@@ -76,7 +85,8 @@ class InfoAuditAction extends Action{
 		$save  = ThinkInstance::D('InfoEntry');
 		$odata = $save->getDocument($id);
 		if($_GET['time'] < $odata['_update']['time'] && !$force){
-			return $this->error(ERR_TIMEOUT, '操作超时，可能其他人修改了本页。点击更新当前状态检查。');
+			$this->error(ERR_TIMEOUT, '操作超时，可能其他人修改了本页。点击更新当前状态检查。');
+			return;
 		}
 		foreach($odata as $k => $v){
 			if($k{0} == '_' && $k != '_id'){
@@ -90,28 +100,43 @@ class InfoAuditAction extends Action{
 		unset($data['_change']);
 		$save->cast_entry($data);
 
-		try{
-			$ret = $save->update(['_id' => new MongoId($id)], $data);
-			if($ret['ok']){
-				unset($data['_update']);
-				$logData = array(
-					'id'    => $id,
-					'time'  => time(),
-					'users' => serialize($updateUsers),
-					'data'  => serialize($data),
-				);
-				$log     = ThinkInstance::D('InfoHistory');
-				$ret     = $log->add($logData);
-				if($ret){
-					$this->success('编辑成功，已经生效，请关闭页面或后退到列表。', ['后退到列表', UI('index')], 0);
-				} else{
-					$this->error('编辑成功，已经生效，但编辑历史保存失败：' . $log->getDbError() . $log->getError());
-				}
+		$ret = $save->update(['_id' => new MongoId($id)], $data);
+		if($ret['ok']){
+			unset($data['_update']);
+			$logData = array(
+				'id'    => $id,
+				'time'  => time(),
+				'users' => serialize($updateUsers),
+				'data'  => serialize($data),
+			);
+			$log     = ThinkInstance::D('InfoHistory');
+			$ret     = $log->add($logData);
+			if($ret){
+				$this->success('编辑成功，已经生效，请关闭页面或后退到列表。', ['后退到列表', UI('index')], 0);
 			} else{
-				$this->error(ERR_NO_SQL, $ret['err']);
+				$this->error('编辑成功，已经生效，但编辑历史保存失败：' . $log->getDbError() . $log->getError());
 			}
-		} catch(MongoException $e){
-			return $this->error(ERR_NO_SQL, $e->getMessage());
+		} else{
+			$this->error(ERR_NO_SQL, $ret['err']);
 		}
+	}
+
+	final function do_delete(){
+		session_start();
+		if(!$_GET['hash'] || $_SESSION['check'] != $_GET['hash']){
+			$this->error(ERR_INPUT_DENY, 'hash mismatch');
+			return;
+		}
+		unset($_SESSION['check']);
+
+		if(empty($_GET['id'])){
+			$this->error(ERR_INPUT_REQUIRE, 'id');
+			return;
+		}
+		$id = $_GET['id'];
+
+		$save  = ThinkInstance::D('InfoEntry');
+		$odata = $save->discardChange($id);
+		$this->mongo_ret($odata, '', UI('index'));
 	}
 }

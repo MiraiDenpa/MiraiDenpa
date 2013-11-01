@@ -194,16 +194,22 @@
 	.WBList {
 		padding: 0;
 		list-style: none;
+		>li.weibo{
+			border-left: 4px solid #a3a3a3 !important;
+			margin: 7px 7px 0 7px;
+		}
+		>li{
+			border-left: 4px solid #e8e8e8 !important;
+			padding: 5px 4px 0px 9px;
+			margin: 0 7px 7px 7px;
+		}
 		.weibo {
-			padding: 10px;
-			.hover-tip;
+			.hover-tip();
 			background-repeat: no-repeat;
-			margin: 7px;
 			position: relative;
+			padding: 5px 4px 0px 5px;
 			.avatar {
-				position: absolute;
-				top: 0;
-				left: 0;
+				float: left;
 				height: 48px;
 				width: 48px;
 			}
@@ -218,10 +224,8 @@
 				float: right;
 			}
 			.foot {
-				position: absolute;
 				float: right;
-				right: 0;
-				bottom: 0;
+				margin-top: -20px;
 				& > a {
 					margin: 0 7px;
 					&:last-child {
@@ -233,8 +237,9 @@
 		/* end 微博*/
 		ul {
 			list-style: none;
-			padding-left: 30px;
-			
+			position: relative;
+			padding-left: 27px;
+
 			.weibo {
 				clear: both;
 				.avatar {
@@ -244,7 +249,7 @@
 				}
 				.c {
 					margin-left: 28px;
-					min-height: 0;
+					min-height: 38px;
 				}
 				.user {
 					font-size: small;
@@ -269,6 +274,15 @@
 				}
 			}
 			/* end 转发评论*/
+		}
+
+		.fw {
+			position: relative;
+			.display_full {
+				position: absolute;
+				bottom: 5px;
+				left: 5px;
+			}
 		}
 		/* end 微博评论列表*/
 	}
@@ -335,3 +349,13 @@
 	}
 }
 
+.hovershow{
+	&:hover{
+		.hovershow-item{
+			visibility: visible;
+		}
+	}
+	.hovershow-item{
+		visibility: hidden;
+	}
+}

@@ -1,4 +1,8 @@
 $.fn.pager = function (page){
+	function replace(text, data){
+		return text.replace('%totalPage%', data['totalPage']).replace('%totalRows%', data['totalRows']).replace('%nowPage%', data['nowPage']).replace('%rollPage%', rollPage);
+	}
+	
 	var $this = $(this);
 	if(!$this.data('_init_gt_pager')){
 		var rollPage = 7;
@@ -139,10 +143,6 @@ $.fn.pager = function (page){
 			last_page = nowPage;
 		};
 		$this.data('_init_gt_pager', $this);
-
-		function replace(text, data){
-			return text.replace('%totalPage%', data['totalPage']).replace('%totalRows%', data['totalRows']).replace('%nowPage%', data['nowPage']).replace('%rollPage%', rollPage);
-		}
 
 		$this.on('click', 'li:not(.disabled,.active)',function (){
 			var li = $(this);

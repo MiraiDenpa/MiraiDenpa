@@ -31,6 +31,9 @@ class InfoUploadAction extends Action{
 		if(!$_POST['origin_name']){
 			return $this->error(ERR_INPUT_REQUIRE, 'origin_name');
 		}
+		if(!$_POST['catalog']){
+			return $this->error(ERR_INPUT_REQUIRE, 'catalog');
+		}
 		// 处理name，吧origin放在第一位
 		$names = isset($_POST['name'])? $_POST['name'] : [];
 		if(isset($_POST['origin_name'])){
@@ -78,9 +81,9 @@ class InfoUploadAction extends Action{
 
 			$ret = $mdl->PreSavePage($data);
 			if($ret['ok']){
-				$this->success('编辑成功，请等待管理员审核。');
+				return $this->success('编辑成功，请等待管理员审核。');
 			} else{
-				$this->error(ERR_NO_SQL, $ret['err']);
+				return $this->error(ERR_NO_SQL, $ret['err']);
 			}
 		} catch(MongoException $e){
 			return $this->error(ERR_NO_SQL, $e->getMessage());

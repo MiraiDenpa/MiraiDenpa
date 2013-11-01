@@ -6,13 +6,13 @@ function TaglibReplaceItem_fields(){
 			'name'    => '类别',
 			'type'    => 'select',
 			'subtype' => [
-				'动画' => TYPE_ANIME,
-				'漫画' => TYPE_COMIC,
-				'游戏' => TYPE_GAME,
-				'小说' => TYPE_NOVEL,
-				'音乐' => TYPE_MUSIC,
-				'剧集' => TYPE_DRAMA,
-				'期刊' => TYPE_PERIO,
+				TYPE_ANIME => '动画',
+				TYPE_COMIC => '漫画',
+				TYPE_GAME  => '游戏',
+				TYPE_NOVEL => '小说',
+				TYPE_MUSIC => '音乐',
+				TYPE_DRAMA => '剧集',
+				TYPE_PERIO => '期刊',
 			],
 			'must'    => true,
 		],
@@ -23,12 +23,12 @@ function TaglibReplaceItem_fields(){
 				'type'    => 'input',
 				'subtype' => 'text',
 			],
-			'must'    => true,
 		],
 		"origin_name"     => [
 			'name'    => '作品名称（原文）',
 			'type'    => 'input',
 			'subtype' => 'text',
+			'must'    => true,
 		],
 		"cover_pic"       => [
 			'name'    => '封面图',
@@ -50,13 +50,13 @@ function TaglibReplaceItem_fields(){
 			'name'    => '放送星期',
 			'type'    => 'select',
 			'subtype' => [
-				'星期五' => '5',
-				'星期六' => '6',
-				'星期日' => '7',
-				'星期一' => '1',
-				'星期二' => '2',
-				'星期三' => '3',
-				'星期四' => '4',
+				'5' => '星期五',
+				'6' => '星期六',
+				'7' => '星期日',
+				'1' => '星期一',
+				'2' => '星期二',
+				'3' => '星期三',
+				'4' => '星期四',
 			]
 		],
 		"official_site"   => [
@@ -84,22 +84,22 @@ function TaglibReplaceItem_fields(){
 			'name'    => '作品地区',
 			'type'    => 'select',
 			'subtype' => [
-				'11区' => 'aria-11',
-				'大陆'  => 'mainland',
-				'特区'  => 'SAR',
-				'西方'  => 'west',
+				'aria-11'  => '11区',
+				'mainland' => '大陆',
+				'SAR'      => '特区',
+				'west'     => '西方',
 			]
 		],
 		"doujin"          => [
 			'name'    => '同人作品',
 			'type'    => 'static',
-			'subtype' => 'on',
+			'subtype' => true,
 			'text'    => '这是一部同人作品',
 		],
 		"robot"           => [
 			'name'    => '萝卜',
 			'type'    => 'static',
-			'subtype' => 'on',
+			'subtype' => true,
 			'text'    => '这是一部萝卜片',
 		],
 		"externalize"     => [
@@ -107,23 +107,28 @@ function TaglibReplaceItem_fields(){
 			'type'    => 'inputlist',
 			'subtype' => [
 				'type'    => 'select',
-				'subtype' => [
-					'日常'     => '日常',
-					'爆笑'     => '爆笑',
-					'催泪'     => '催泪',
-					'深沉'     => '深沉',
-					'猎奇'     => '猎奇',
-					//
-					'基'      => '基',
-					'百合'     => '百合',
-					'卖肉'     => '卖肉',
-					//
-					'未来/硬科幻' => '未来/硬科幻',
-					'魔法/伪科幻' => '魔法/伪科幻',
-					'现实'     => '现实',
+				'subtype' => [ // 需要同步 getVoteCatelog
+					// 感情
+					'almostwwww'  => '日常',
+					'wwww'        => '爆笑',
+					'Q_Q'         => '催泪',
+					'eva'         => '深沉',
+					'saya'        => '猎奇',
+					'terror'      => '恐怖',
+					// 受众
+					'801'         => '基',
+					'gl'          => '百合',
+					'sena'        => '卖肉',
+					'sellmoe'     => '卖萌',
+					'kuso'        => '恶搞',
+					// 题材
+					'sf'          => '科幻',
+					'newton-died' => '魔法/伪科幻',
+					'genji'       => '现实',
+					'school'      => '校园',
+					'battle'      => '战斗',
 				]
 			],
-			'must'    => true,
 		],
 	);
 	foreach($ret as $id => $data){

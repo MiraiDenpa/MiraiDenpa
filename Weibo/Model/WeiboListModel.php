@@ -52,8 +52,13 @@ class WeiboListModel extends Mongoo{
 		if($this->cacheObj->weiboreply($wid, $page, $this->page)){
 			//return $this->cacheObj->data;
 		}
-		$cur = $this->find(['forward.type' => 'mirai/denpa', 'forward.original' => $wid])
+		$itr = $this->find(['forward.type' => 'mirai/denpa', 'forward.original' => $wid])
 				->sort(['time' => -1]);
 		$this->pageCursor($itr, $page);
+
+		$list = iterator_to_array($itr, false);
+		$this->cacheObj->setWeiboreply($wid, $page, $list, $this->page);
+
+		return $list;
 	}
 }

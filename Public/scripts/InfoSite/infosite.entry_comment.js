@@ -3,7 +3,7 @@
 	// 当前文档的信息
 	var current_data = window.doc;
 	var self_forward = ['mirai/info-entry', current_data['_oid']];
-
+	
 	// dao
 	var weibo = window.denpa;
 	var request = weibo.Channel('info' + current_data['_oid']);
@@ -69,7 +69,8 @@
 
 		// 赋值
 		item.user.text(wb.user);
-		item.at.text('@' + wb.user);
+		item.at.text('@' + wb.user).attr('href', 'http://' + window.Think.URL_MAP['home'] + '/@' + wb.user);
+
 		item.time.text(date('m月d日 H:i:s', wb.time));
 		item.content.html(wb.content);
 		item.beforwardcount.text('(' + wb.beforwardcount + ')');
@@ -85,7 +86,7 @@
 
 	function createFwList(wb){
 		var ul = $('<ul class="fw-list"/>').attr('id', 'fowrard' + wb._id['$id']);
-		$('<li/>').append(ul).insertAfter($('#' + wb._id['$id']));
+		$('<li class="fw"/>').append(ul).insertAfter($('#' + wb._id['$id']));
 		return ul;
 	}
 
@@ -103,6 +104,12 @@
 			$(wb.list).each(function (_, wb){
 				onPostWeibo(wb, ul);
 			});
+			if(wb.list.length == 5){
+				$('<span class="display_full btn btn-default btn-sm" style="padding:5px;" title="查看更多"/>')
+						.append($('<span class="glyphicon glyphicon-arrow-down"/>'))
+						.data({id: wb._id['$id']})
+						.insertAfter(ul);
+			}
 		}
 	}
 

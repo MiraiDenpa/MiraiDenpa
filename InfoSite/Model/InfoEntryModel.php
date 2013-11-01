@@ -34,6 +34,7 @@ class InfoEntryModel extends Mongoo{
 	/**
 	 * @param      $id
 	 * @param bool $history
+	 *
 	 * @return InfoEntryEntity
 	 */
 	public function getDocument($id, $history = false){
@@ -45,16 +46,14 @@ class InfoEntryModel extends Mongoo{
 	}
 
 	public function getChangedList(){
-		return $this
-				->find(['_change' => true],
-					   [
-					   '_id'           => true,
-					   '_last_update'  => true,
-					   '_history.user' => true,
-					   'name'          => true,
-					   'origin_name'   => true
-					   ]
-				)
+		return $this->find(['_change' => true],
+						   [
+						   '_id'           => true,
+						   '_last_update'  => true,
+						   '_history.user' => true,
+						   'name'          => true,
+						   'origin_name'   => true
+						   ])
 				->limit(5);
 	}
 
@@ -69,8 +68,7 @@ class InfoEntryModel extends Mongoo{
 							  '_history'     => true,
 							  'name'         => true,
 							  'origin_name'  => true
-							  ]
-		);
+							  ]);
 	}
 
 	public function PreSavePage($data){
@@ -89,8 +87,7 @@ class InfoEntryModel extends Mongoo{
 												  '_history' => [&$update_info],
 												  '_change'  => true,
 												  'name'     => $data['name']
-												  ]
-			);
+												  ]);
 		} else{
 			$update_info['_data'] = & $data;
 			$ret                  = $this->diff($last, $data);
@@ -98,11 +95,14 @@ class InfoEntryModel extends Mongoo{
 				return ['ok' => 0, 'err' => '没有改变'];
 			}
 			$ret = $this->update(['_id' => $id],
-								 array('$push' => ['_history' => $update_info], '$set' => ['_change' => true])
-			);
+								 array('$push' => ['_history' => $update_info], '$set' => ['_change' => true]));
 		}
 
 		return $ret;
+	}
+
+	public function discardChange($id){
+		return $this->update(['_id' => new MongoId($id)], ['$unset' => ['_history' => true, '_change' => true]]);
 	}
 
 	/**

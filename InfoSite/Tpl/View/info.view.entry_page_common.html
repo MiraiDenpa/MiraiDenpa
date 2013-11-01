@@ -8,14 +8,19 @@
 	UI
 	pure
 	weibo
+	scripts/mongolike.js
+	scripts/infosite.entry_vote.js
 	scripts/infosite.entry_page.js
 	scripts/infosite.entry_comment.js
 	styles/infosite.entry_page.less
 	jslib-gt/enhanced_link.js
+	jslib-gt/middle-click.js
 </BrowserLib>
 <AddHeader prepend="true">
 	<script type="text/javascript">
 		var doc = {$doc: json};
+		var fields = {__ITEM_FIELDS__};
+		var vote_catelog = {__VOTE_CATELOG__};
 	</script>
 </AddHeader>
 <div class="container" id="mainContainer">
@@ -23,7 +28,7 @@
 		<div id="mainInfo" class="row row-compact clearfix vote_show">
 			<div class="left">
 				<img src="{$doc->cover_pic}">
-				<div>
+				<div class="text-center">
 					<div class="vote_small">
 						<table class="disp">
 							<tr>
@@ -38,31 +43,23 @@
 				</div>
 			</div>
 			<div class="vote_large">
-				<pre>
-人物	普通 - 俺的嫁
-音乐	无印象 - 想下CD听
-声优	一般 - 华丽
-					
-剧情	一般 - 扣人心弦
-搞笑	不好笑 - 笑尿
-卖肉	把持住了 - 把持不住！
-基	无爱 - 有爱
-萌	一般 - 超萌
-宅	入门 - 专业
-				</pre>
 			</div>
 			<div class="vote_op">评分面板</div>
 			<div class="center">
 				<div id="basic">
-					<h1>{$doc->origin_name}
-						<small>
+					<h1 class="hovershow">{$doc->origin_name}
+						<small class="hovershow-item">
 							<a href="[%url app='info' action='Upload' method='index' param-id='{$doc._id}'/%]" class="text-muted">[修改]</a>
 						</small>
 					</h1>
 					<div>{$doc->intro}</div>
 				</div>
 				<div>
-					<h4>章节列表</h4>
+					<h4 class="hovershow">章节列表
+						<small class="hovershow-item">
+							<a href="[%url app='info' action='Chapter' method='edit' param-id='{$doc._id}'/%]" class="text-muted">[修改]</a>
+						</small>
+					</h4>
 
 					<div class="bui-inputlist inline" name="name">
 						<span class="tip">01</span>
@@ -119,7 +116,7 @@
 									<span class="user">
 									<span class="nickname"></span>
 									（
-									<a href="[%url app='home' action='user' method='id' suffix=''/%]/"></a>
+									<a class="user-link" target="_blank"></a>
 									）
 									</span>
 									<span class="time">xxxx-xx-xx</span>

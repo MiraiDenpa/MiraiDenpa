@@ -13,7 +13,7 @@
 		border: transparent 1px solid;
 	}
 
-	.changed_item .panel-body.diff div.edit> .t {
+	.changed_item .panel-body.diff div.edit > .t {
 		cursor: pointer;
 	}
 
@@ -127,10 +127,6 @@ $(document).on('click', '.changed_item .edit .t',function (){
 			}
 		});
 
-/* DEBUG */
-$('.changed_item .edit .t').first().click();
-$('.toggleOther').first().click();
-
 function initSmallTab(root){
 	if(root.data('initSmallTab')){
 		return;
@@ -197,7 +193,7 @@ function parse_path(json){
 		} else{
 			path = parse_path.path? parse_path.path + '.' + i : i;
 		}
-		if(val===undefined || val===null){
+		if(val === undefined || val === null){
 			//ret.push([path, '']);
 		} else if(/string|number|boolean/.test(type)){
 			ret.push([path, val]);
@@ -321,6 +317,10 @@ function initLine(name, currentval, userval){
 	}
 	return line_cache[name] = ret;
 }
+
+// run
+$('.changed_item .edit .t').first().click();
+$('.toggleOther').first().click();
 </script>
 
 </AddHeader>
@@ -328,7 +328,7 @@ function initLine(name, currentval, userval){
 	<input type="hidden" name="id" class="hidden_id" value="{$item._id}"/>
 	<div id="mainContainer" class="">
 		<div id="{$item._id}" class="changed_item panel panel-[%iif name='item.name' then='default' else='info'/%]">
-			<div class="panel-heading">
+			<div class="panel-heading" style="position:relative;">
 				<span class="text-primary">
 				<empty name="item.name">
 					新条目：{$item['_history'][0]['_data']['name'][0]}
@@ -338,6 +338,7 @@ function initLine(name, currentval, userval){
 				</empty>
 				（追加数量: {:count($item['_history'])} ）
 				</span>
+				<a class="hlink btn btn-danger" style="position:absolute;right:0;top:0;" data-href="[%url method='do_delete' param-hash='{$check}' param-time='{:time()}' param-id='{$item._id}'/%]" data-ask="确定这么做吗">拒绝本次更改，清理数据。</a>
 			</div>
 			<div class="panel-body diff active row">
 				<div class="col-xs-6">
@@ -390,6 +391,5 @@ function initLine(name, currentval, userval){
 				<input type="submit" class="btn btn-primary" value="提交更改"/>
 			</div>
 		</div>
-		<div class="alert alert-success">总共有{$count}个，最多只显示5个。</div>
 	</div>
 </form>

@@ -13,6 +13,8 @@ return array(
 	['NF_ACTION', '地址有误', '请检查url是否正确'],
 	['NF_FILE', '文件未找到', '就是木有找到！'],
 	['NF_USER', '用户不存在', '请检查拼写。', ['注册' => _UC('user', 'register', 'index')]],
+	['NF_WEIBO', '微博不存在', '请检查拼写。', ['微博主页' => _UC('weibo', 'Index', 'index')]],
+	['NF_TARGET', '不存在', '请检查拼写。'],
 	
 	['NALLOW_HTTP_METHOD', '不允许的请求方式', '客户端错误。'],
 	['NALLOW_PATH', '不允许的请求路径', '客户端错误。'],

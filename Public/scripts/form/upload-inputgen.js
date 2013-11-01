@@ -56,9 +56,9 @@ function create_oneof(id, sub, value, text){
 function create_select(id, sub, value, text){
 	var select = new $bui.Select();
 	select.attr('name', id);
-	for(var title in sub){
-		if(sub.hasOwnProperty(title)){
-			select.addOption(title, sub[title]);
+	for(var val in sub){
+		if(sub.hasOwnProperty(val)){
+			select.addOption(sub[val], val);
 		}
 	}
 	select.val(value);
@@ -83,6 +83,9 @@ function create_inputlist(id, sub, value, text){
 	var $center = fn('', sub.subtype, null, sub.text);
 	var ret = new $bui.InputList();
 	ret.addClass('inline').attr('name', id).centerWidget($center);
+	if(sub.type==='select'){
+		ret.mapTitle(sub.subtype);
+	}
 	if(value){
 		ret.val(value);
 	}
