@@ -42,43 +42,39 @@
 					</div>
 				</div>
 			</div>
-			<div class="vote_large">
-			</div>
-			<div class="vote_op">评分面板</div>
-			<div class="center">
-				<div id="basic">
-					<h1 class="hovershow">{$doc->origin_name}
+			<div class="vote_large col-sm-9"></div>
+			<div class="center col-sm-9">
+				<div id="basic" class="panel panel-tab panel-primary">
+					<div class="hovershow trans-opacity panel-heading title">
+						<span class="active">{$doc->origin_name}
+						</span>
 						<small class="hovershow-item">
 							<a href="[%url app='info' action='Upload' method='index' param-id='{$doc._id}'/%]" class="text-muted">[修改]</a>
 						</small>
-					</h1>
-					<div>{$doc->intro}</div>
-				</div>
-				<div>
-					<h4 class="hovershow">章节列表
-						<small class="hovershow-item">
-							<a href="[%url app='info' action='Chapter' method='edit' param-id='{$doc._id}'/%]" class="text-muted">[修改]</a>
-						</small>
-					</h4>
-
-					<div class="bui-inputlist inline" name="name">
-						<span class="tip">01</span>
-						<span class="tip">02</span>
-						<span class="tip">03</span>
-						<div>
-
-						</div>
+						<if condition="count($doc['name']) gt 1">
+							<section class="pull-right">
+								<span style="position: relative;">
+								<a data-toggle="dropdown" role="button">别名</a>
+								<ul class="dropdown-menu" style="left: auto;right: 0;color: black;">
+									<volist name="doc.name" id="content">
+										<li><h3 class="text-center">{$content}</h3></li>
+									</volist>
+								</ul>
+								</span>
+							</section>
+						</if>
 					</div>
+					<div class="panel-body active">xxxxx{$doc->intro}</div>
 				</div>
 			</div>
-			<div class="right">
+			<div class="right col-sm-3">
 				<div class="bui-inputlist inline" name="name">
 					<ul class="list">
 						<li>
 							<span class="bui-label">标签</span>
 						</li>
 						<li>
-							<span class="bui-label">标签</span>
+							<span class="bui-label">标了个签签签签签</span>
 						</li>
 						<li>
 							<span class="bui-label">标签</span>
@@ -91,6 +87,22 @@
 			</div>
 		</div>
 		<div class="clearfix"></div>
+		<div>
+			<h4 class="hovershow trans-opacity">章节列表
+				<small class="hovershow-item">
+					<a href="[%url app='info' action='Chapter' method='edit' param-id='{$doc._id}'/%]" class="text-muted">[修改]</a>
+				</small>
+			</h4>
+
+			<div class="bui-inputlist inline" name="name">
+				<span class="tip">01</span>
+				<span class="tip">02</span>
+				<span class="tip">03</span>
+				<div>
+
+				</div>
+			</div>
+		</div>
 		<div id="extend" class="row row-compact">
 			<div class="info col-sm-3">
 				<div>

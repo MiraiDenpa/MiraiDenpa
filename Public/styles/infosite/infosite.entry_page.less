@@ -23,23 +23,20 @@
 		@media (min-width: @screen-sm) {
 			margin-left: 172px;
 		}
-		.left {
-			z-index: 8;
-			background: white;
-			padding: 10px;
-			margin: 0;
+		> .left {
+			float: left;
 			@media (min-width: @screen-sm) {
+				padding: 10px;
 				width: 170px;
-				float: left;
 				margin-left: -170px;
 				left: 0;
 			}
 
-			> div {
+			/*> div {
 				@media (max-width: @screen-sm) {
 					display: inline-block;
 				}
-			}
+			}*/
 			> img {
 				width: 150px;
 				height: 200px;
@@ -47,23 +44,17 @@
 				outline: #51a297 dashed 1px;
 			}
 		}
-		.center {
+		> .center {
 			z-index: 9;
-			padding-left: 10px;
-			@media (min-width: @screen-sm) {
-				right: 0px;
-				#basic {
-					overflow: hidden;
-					height: 200px;
-				}
+
+			.title {
+				font-weight: 500;
+				line-height: 1;
+				font-size: 25px;
 			}
 		}
-		.right {
-			@media (min-width: @screen-md) {
-				position: absolute;
-				top: 0;
-				right: 0;
-			}
+		> .right {
+			padding-left: 20px;
 		}
 	}
 }
@@ -102,46 +93,87 @@
 			}
 		}
 	}
-	.vote_large {
-		@media (max-width: @screen-sm) {
-			opacity: 1 !important;
-		}
-	}
-	.vote_op {
-		display: none;
-	}
 
-	.vote_large {
-		position: absolute;
-		left: 0;
-		z-index: -1 !important;
-		@transition: opacity 400ms;
-		.transition(@transition);
-		@media (min-width: @screen-sm) {
-			opacity: 0;
-		}
-	}
-	.center {
-		background: #d8d8d8;
+	> .center {
 		top: 0;
 		left: 0;
-		@transition: margin-left 600ms ease, opacity 600ms;
-		.transition(@transition);
-		.transition-delay(200ms);
+
+		@media (max-width: @screen-sm) {
+			clear: both;
+		}
 	}
-	&.vote_show {
-		.center {
-			position: absolute;
-			opacity: 0;
-			z-index: -1 !important;
-			margin-left: -30px;
-			.transition-delay(0ms);
-		}
+	.vote_large {
+		min-height: 200px;
+	}
+	@media (max-width: @screen-sm) {
 		.vote_large {
-			position: static;
-			opacity: 1;
-			.transition-delay(300ms);
+			margin-left: 150px;
 		}
+	}
+	@media (min-width: @screen-sm) {
+		// 用于点击切换评分面板和基础信息
+		.vote_large {
+			position: absolute;
+			z-index: -1 !important;
+			vertical-align: top;
+			opacity: 0;
+			@transition: opacity 400ms;
+			.transition(@transition);
+		}
+
+		> .center {
+			@transition: 600ms ease 200ms, opacity 400ms linear 200ms;
+			.transition-transform(@transition);
+		}
+
+		&.vote_show {
+			> .center {
+				position: absolute;
+				opacity: 0;
+				z-index: -1 !important;
+				.transform(translate(-30px, 0));
+				.transition-delay(0ms);
+			}
+
+			.vote_large {
+				position: static;
+				opacity: 1;
+				.transition-delay(300ms);
+			}
+		}
+	}
+}
+
+.drag_pointer {
+	position: absolute;
+	z-index: 10000;
+
+	// .size(90px, 90px);
+
+	.circle {
+		background: #dedede;
+		padding: 10px;
+		border: 5px solid #a9a9a9;
+		border-radius: 1000px;
+		position: absolute;
+
+		left: 0;
+		top: 0;
+		bottom: 0;
+		right: 0;
+		z-index: 10;
+	}
+	.arrow {
+		background: #a9a9a9;
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 50%;
+		height: 50%;
+		z-index: 9;
+
+		// .transform(rotate(335deg));
+		.transform-origin(bottom right);
 	}
 }
 
@@ -194,11 +226,11 @@
 	.WBList {
 		padding: 0;
 		list-style: none;
-		>li.weibo{
+		> li.weibo {
 			border-left: 4px solid #a3a3a3 !important;
 			margin: 7px 7px 0 7px;
 		}
-		>li{
+		> li {
 			border-left: 4px solid #e8e8e8 !important;
 			padding: 5px 4px 0px 9px;
 			margin: 0 7px 7px 7px;
@@ -346,16 +378,5 @@
 		.Sender {
 			display: block;
 		}
-	}
-}
-
-.hovershow{
-	&:hover{
-		.hovershow-item{
-			visibility: visible;
-		}
-	}
-	.hovershow-item{
-		visibility: hidden;
 	}
 }

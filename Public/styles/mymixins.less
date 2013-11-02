@@ -23,10 +23,42 @@
 	}
 }
 
-.hover-tip (@bg: #E5CFFF; @border: #9222A5){
+.hover-tip (@bg: #E5CFFF; @border: #9222A5) {
 	border: transparent 1px solid;
-	&.active,&:hover {
+	&.active, &:hover {
 		background: @bg;
 		border: @border 1px solid;
 	}
+}
+
+.transform(...) {
+	-webkit-transform: @arguments;
+	transform: @arguments;
+}
+
+.transform-origin(...) {
+	-webkit-transform-origin: @arguments;
+	transform-origin: @arguments;
+}
+
+.columns(@number) {
+	-moz-column-count: @number;
+	-webkit-column-count: @number;
+	column-count: @number;
+	.column-gap(@size) {
+		-moz-column-gap: @size;
+		-webkit-column-gap: @size;
+		column-gap: @size;
+	}
+	.column-rule(@options) {
+		-moz-column-rule: @options;
+		-webkit-column-rule: @options;
+		column-rule: @options;
+	}
+}
+
+.h1font() {
+	font-weight: 500;
+	line-height: 1.1;
+	font-size: 36px;
 }

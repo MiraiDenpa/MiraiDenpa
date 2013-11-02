@@ -27,25 +27,25 @@ a {
 
 .pagination {
 	white-space: nowrap;
-}
-
-.pagination > li > a {
-	.transition(background-color 300ms);
-}
-
-.pagination > .active > a {
-	.transition(none);
+	> li > a {
+		.transition(background-color 300ms);
+	}
+	> .active > a {
+		.transition(none);
+	}
 }
 
 textarea {
 	resize: vertical;
 }
 
-.row-compact {
-	margin: 0;
-	& > [class^='col-'],
-	& > [class*=' col-'] {
-		padding: 0;
+@media (min-width: @screen-sm) {
+	.row-compact {
+		margin: 0;
+		& > [class^='col-'],
+		& > [class*=' col-'] {
+			padding: 0;
+		}
 	}
 }
 
@@ -62,6 +62,40 @@ body {
 	&.login {
 		.login_unvisable {
 			display: none !important;
+		}
+	}
+}
+
+.progress {
+	position: relative;
+	> .progress-bar.revert {
+		@t: margin-left 0.6s ease, width 0.6s ease;
+		.transition(@t);
+	}
+}
+
+.full_cover {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	top: 0;
+}
+
+.hovershow.trans-opacity {
+	&:hover {
+		.hovershow-item {
+			opacity: 1;
+			&.revert {
+				opacity: 0;
+			}
+		}
+	}
+	.hovershow-item {
+		opacity: 0;
+		.transition(opacity 0.4s ease);
+		&.revert {
+			opacity: 1;
 		}
 	}
 }
