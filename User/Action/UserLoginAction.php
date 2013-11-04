@@ -235,7 +235,7 @@ class UserLoginAction extends Action{
 			$this->error(ERR_NO_SQL, $ret['err'] . $ret['errmsg']);
 			exit;
 		} else{
-			$usta = ThinkInstance::D('UserStatistics');
+			$usta = ThinkInstance::D('UserStatistics', $user->uid);
 			$usta->loginOccur($app->public);
 			$this->assign('token', $token);
 			return $token;

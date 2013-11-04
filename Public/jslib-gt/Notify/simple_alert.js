@@ -120,3 +120,19 @@ function SimpleNotify(id){
 	};
 	return this;
 }
+
+function SimpleNotifyAjaxDfd(id, dfd, success){
+	"use strict";
+	dfd.done(function (ret){
+		if(ret.code !== window.Think.ERR_NO_ERROR){
+			SimpleNotify(id).error(ret.message, '载入失败！').autoDestroy(true).hideTimeout(3000);
+		} else if(success && ret.code === window.Think.ERR_NO_ERROR){
+			SimpleNotify(id).success(ret.message, '载入成功').autoDestroy(true).hideTimeout(3000);
+		} else if(success === false){
+			SimpleNotify(id).remove();
+		}
+	});
+	dfd.error(function (error){
+		SimpleNotify(id).error('HTTP错误<br/>' + error, '载入失败！').autoDestroy(true).hideTimeout(3000);
+	});
+}

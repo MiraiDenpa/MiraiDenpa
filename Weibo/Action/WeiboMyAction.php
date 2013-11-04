@@ -31,11 +31,24 @@ class WeiboMyAction extends Action{
 	final public function test(){
 		$this->dispatcher->request_method = 'POST';
 		//
+		$userlist = ThinkInstance::D('UserList');
+		$list     = array_column($userlist->field('uid')
+										 ->select(),
+								 'uid');
+		$users    = function () use ($list){
+			static $i;
+			$i = $i + 1;
+			if($i == count($list)){
+				$i = 0;
+			}
+			return $list[$i];
+		};
+
 		$cache = [];
-		$post  = function ($forward = false) use (&$cache){
+		$post  = function ($forward = false) use (&$cache, $users){
 			$data            = [];
 			$data['sendto']  = 'square';
-			$data['channel'] = 'info';
+			$data['channel'] = 'info526240db7f8b9a891c8b4567';
 			if($forward){
 				static $fId;
 				if(!$fId){
@@ -70,7 +83,10 @@ class WeiboMyAction extends Action{
 			$data            = $this->preprocess($data);
 			$data->_id       = new MongoId();
 			$id              = (string)$data->_id;
-			$ret             = $this->publish->postNewWeibo($data);
+			// 随机选用一个用户
+			$data->user = $users();
+
+			$ret = $this->publish->postNewWeibo($data);
 			echo '发微博 ' . $content;
 			var_dump($ret);
 
@@ -78,24 +94,30 @@ class WeiboMyAction extends Action{
 			return $id;
 		};
 		$this->publish->remove([]);
-		$pid = $post();
-		$post();
+		$pid   = $post(); // 第一条
+		$recid = $post(); // 第二条
 
-		$rid = $post($pid);
+		$rid = $post($pid); // 转1条
 		$i   = 2;
 		while($i--){
-			$post($pid);
+			$post($pid); // 转1条
 		}
 		$i = 5;
 		while($i--){
-			$post($rid);
+			$post($rid); // 转-转1条
 		}
 
-		$post();
-		$post($pid);
+		$post(); // 第三条
+		$post($pid); // 再转第一条
 		$i = 2;
 		while($i--){
 			$post($pid);
+		}
+
+		// 循环转第二条
+		$i = 6;
+		while($i--){
+			$recid = $post($recid);
 		}
 
 		exit;
@@ -131,8 +153,6 @@ class WeiboMyAction extends Action{
 			$this->assign('_id', (string)$data->_id);
 			$this->dispatcher->finish();
 			$new_id = (string)$data->_id;
-			$stati  = ThinkInstance::D('UserStatistics', $this->token_data['user']);
-			$stati->postWeiboOccur();
 			if(!empty($data->at)){
 				$notice = ThinkInstance::D('WeiboNotice');
 				$notice->noticeAll('at', $new_id, $data->at);
@@ -230,7 +250,7 @@ class WeiboMyAction extends Action{
 					$data->forward->original = $forward_weibo->forward->original;
 				}
 				$data->forward->original[] = (string)$forward_weibo->_id;
-				
+
 				$this->publish->forwarded($forward_weibo);
 			} else{
 				// 转发内容不是另一条微博

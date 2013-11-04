@@ -37,7 +37,8 @@ $userlib   = array(
 		'scripts/base-' . APP_NAME . '.js',
 		'styles/global.less',
 		'scripts/global.js',
-		'jslib/debug.js'
+		'jslib/debug.js',
+		'jslib/stacktrace.js'
 	],
 	'validate'  => ['jquery/jquery.validate.js',],
 	'login'     => ['Notify', 'jslib-gt/settings.js',],

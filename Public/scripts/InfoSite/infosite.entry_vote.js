@@ -29,24 +29,15 @@
 				return value;
 			},
 			set: function (set){
-				if(set >= 50){
+				var clim = 50 + $ret.center*10;
+				if(set >= clim){
 					$ret.left = 0;
-					$ret.right = set;
+					$ret.right = 2*(set - clim);
 				} else{
-					$ret.left = -set;
+					$ret.left = 2*(clim - set);
 					$ret.right = 0;
 				}
 				value = set;
-			}
-		});
-
-		var offset = 0;
-		Object.defineProperty($ret, 'offset', {
-			get: function (){
-				return offset/10;
-			},
-			set: function (set){
-				offset = set*10;
 			}
 		});
 
@@ -90,6 +81,17 @@
 			}
 		});
 
+		var center = 0;
+		Object.defineProperty($ret, 'center', {
+			get: function (){
+				return center;
+			},
+			set: function (set){
+				$ret.css('paddingLeft', (set*10 + 50) + '%');
+				center = set;
+			}
+		});
+
 		return $ret;
 	};
 
@@ -108,8 +110,10 @@
 		var x = 0;
 		Object.defineProperty(this, 'x', {
 			set: function (ox){
-				x = ox;
-				recalc();
+				if(ox != x){
+					x = ox;
+					recalc();
+				}
 			},
 			get: function (){
 				return x;
@@ -118,8 +122,10 @@
 		var y = 0;
 		Object.defineProperty(this, 'y', {
 			set: function (oy){
-				y = oy;
-				recalc();
+				if(oy != y){
+					y = oy;
+					recalc();
+				}
 			},
 			get: function (){
 				return y;
@@ -128,9 +134,11 @@
 		var d = size/2;
 		Object.defineProperty(this, 'size', {
 			set: function (osize){
-				size = osize;
-				d = size/2;
-				recalc();
+				if(osize != size){
+					size = osize;
+					d = size/2;
+					recalc();
+				}
 			},
 			get: function (){
 				return size;
@@ -139,9 +147,11 @@
 		var rotate = 0, alpha = (135 - rotate)*Math.PI/180;
 		Object.defineProperty(this, 'rotate', {
 			set: function (orotate){
-				rotate = orotate;
-				alpha = (135 - orotate)*Math.PI/180;
-				recalc();
+				if(orotate != rotate){
+					rotate = orotate;
+					alpha = (135 - orotate)*Math.PI/180;
+					recalc();
+				}
 			},
 			get: function (){
 				return rotate;
@@ -161,7 +171,7 @@
 		var s = this;
 		$(['appendTo', 'prependTo', 'insertAfter', 'insertBefore', 'remove',
 			'data', 'removeData', 'css',
-			'anime', 'queue', 'dequeue', 'trigger', 'delay', 'on', 'off',
+			'anime', 'queue', 'dequeue', 'trigger', 'delay', 'on', 'off', 'stop',
 			'fadeIn', 'fadeTo', 'fadeOut', 'fadeToggle', 'show', 'hide', 'toggle',
 			'class', 'addClass', 'hasClass', 'removeClass', 'toggleClass',
 			'parent', 'closest', 'offset'

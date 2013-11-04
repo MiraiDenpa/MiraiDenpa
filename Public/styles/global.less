@@ -83,7 +83,8 @@ body {
 }
 
 .hovershow.trans-opacity {
-	&:hover {
+	&:hover,
+	&.active {
 		.hovershow-item {
 			opacity: 1;
 			&.revert {
@@ -98,4 +99,13 @@ body {
 			opacity: 1;
 		}
 	}
+}
+
+.noselect {
+	.user-select(none);
+}
+
+.move {
+	cursor: move;
+	.user-select(none);
 }

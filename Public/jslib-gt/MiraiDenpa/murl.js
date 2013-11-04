@@ -16,7 +16,7 @@
 		url.action = tmp.length? '/' + tmp.shift() : '/';
 		url.method = tmp.length? '/' + tmp.shift() : '/';
 		url.path = tmp;
-		url.extension = i[1]? '.' + i[1] : '';
+		url.suffix = i[1]? '.' + i[1] : '';
 		url.param = p.param.query? p.param.query : {};
 		url.fragment = p.attr.fragment? '#' + p.attr.fragment : '';
 		p = tmp = null;
@@ -35,7 +35,7 @@
 			if(cnt_modify.suffix){
 				url.suffix = '.' + cnt_modify.suffix;
 			}else if(cnt_modify.extension){
-				url.extension = '.' + cnt_modify.extension;
+				url.suffix = '.' + cnt_modify.extension;
 			}
 
 			// 修改路径参数
@@ -110,7 +110,7 @@
 			}
 
 			return this.protocol + this.userInfo + this.host + this.port + this.action + this.method + path +
-			       this.extension + param + this.fragment;
+			       this.suffix + param + this.fragment;
 		};
 
 		if(ret_object){

@@ -72,20 +72,14 @@ function call_func_list_until_with(bind, fnlist, arg){
 }
 
 function LogStandardReturn(dfd, title){
-	/*function dispatch_standard_object(obj){
-	 var msg = obj.message + '，' + obj.info;
-	 if(obj.redirect){
-	 msg += '<div style="padding-top:24px;"></div><div style="position:absolute;right:10px;bottom:0px;">';
-	 for(var i in obj.redirect){
-	 if(obj.redirect.hasOwnProperty(i)){
-	 msg += '<a class="btn btn-link" href="' + obj.redirect[i] + '">' + i + '</a>';
-	 }
-	 }
-	 msg += '</div>';
-	 }
-	 return SimpleNotify(time()).error(msg, title + '失败').hideTimeout(1000).autoDestroy();
-	 }*/
-
+	var stack = printStackTrace();
+	var lines = 'LogStandardReturn: ';
+	$(stack).each(function (i, line){
+		if(i > 3){
+			lines += '\n\t' + (i - 3) + ': ' + line;
+		}
+	});
+	
 	dfd.done(function (ret){
 		if(typeof ret === 'string'){
 			try{
@@ -93,32 +87,33 @@ function LogStandardReturn(dfd, title){
 			} catch(e){
 				console.groupCollapsed('△失败：' + title + '，返回内容不是json。');
 				console.dir(e);
+				lines &&console.log(lines);
 				console.groupEnd();
+				return;
 			}
 		}
-		LogStandardReturnObject(ret, title);
+		LogStandardReturnObject(ret, title, lines);
 	});
 	if(JS_DEBUG){
 		dfd.fail(function (xhr, state, error){
 			error = typeof error == 'string'? error : error.message;
 			console.groupCollapsed('△失败:' + title + '，HTTP错误 [' + state + ']: ' + error);
 			console.dir({response: xhr.responseText});
+			lines &&console.log(lines);
 			console.groupEnd();
 		});
 	}
 	return dfd;
 }
-function LogStandardReturnObject(ret, title){
-	if(ret.code != window.Think.ERR_NO_ERROR){
+function LogStandardReturnObject(ret, title, debug){
+	if(ret.code !== window.Think.ERR_NO_ERROR){
 		console.groupCollapsed('△失败： ' + title + '，返回消息： ' + ret.message + '，' + ret.info);
-		console.dir(ret);
-		console.groupEnd();
-		//dispatch_standard_object(ret);
 	} else if(JS_DEBUG){
 		console.groupCollapsed('●成功： ' + title);
-		console.dir(ret);
-		console.groupEnd();
 	}
+	console.dir(ret);
+	debug && console.log(debug);
+	console.groupEnd();
 }
 
 function avatar_url(hash, avatar_size){

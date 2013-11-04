@@ -17,13 +17,18 @@ class WeiboEntity extends Entity{
 
 	public $list;
 
+	public function toArray(){
+		$data = get_object_vars($this);
+		unset($data['list']);
+		return $data;
+	}
+
 	public function buildList($full){
 		static $mdl;
 		if(!$mdl){
 			$mdl = ThinkInstance::D('WeiboList');
 		}
-		$itr = $mdl
-				->find(['forward.type' => 'mirai/denpa', 'forward.original' => (string)$this->_id])
+		$itr        = $mdl->find(['forward.type' => 'mirai/denpa', 'forward.original' => (string)$this->_id])
 				->sort(['time' => -1]);
 		$this->list = [];
 		foreach($itr as $wb){

@@ -24,8 +24,7 @@ class UserStatisticsModel extends Mongoo{
 									  'used_app.' . $app => 1,
 								  ],
 							 ),
-							 ['upsert' => true]
-		);
+							 ['upsert' => true]);
 	}
 
 	/** 当用户发微博的时候 */
@@ -33,12 +32,51 @@ class UserStatisticsModel extends Mongoo{
 		return $this->update(['_id' => $this->uid],
 							 array(
 								  '$inc' => [
-									  'weibo'      => 1,
+									  'weibo' => 1,
 								  ],
 							 ),
-							 ['upsert' => true]
-		);
+							 ['upsert' => true]);
 	}
 
+	/** 当用户发布了微博转发其他人了的时候 */
+	function forwardingOccur($direct, $usermap){
+		$one_of = false;
+		if($direct){
+			$ret = $this->update(['_id' => $direct],
+								 array(
+									  '$inc' => [
+										  'bedirectforward' => 1,
+									  ],
+								 ),
+								 ['upsert' => true]);
+			if($ret){
+				$one_of = true;
+			}
+		}
+		if(!empty($usermap)){
+			$ret = $this->update(['_id' => $direct],
+								 array(
+									  '$inc' => [
+										  'beforward' => 1,
+									  ],
+								 ),
+								 ['upsert' => true]);
+			if($ret){
+				$one_of = true;
+			}
+		}
+		if($one_of){
+			$this->update(['_id' => $this->uid],
+						  array(
+							   '$inc' => [
+								   'forwardother' => 1,
+							   ],
+						  ),
+						  ['upsert' => true]);
+		}
+	}
 
+	public function changeUid($uid){
+		$this->uid = $uid;
+	}
 }

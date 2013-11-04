@@ -34,7 +34,7 @@ $.fn.ajaxSubmit = function (){
 	notify.info('正在请求');
 	var data = this.serialize();
 
-	var controls = this.on('click', 'a,input,button', mute).find('input,button').attr('disabled', 'disabled');
+	var controls = this.on('click', 'a,input,button', mute).find('input,button').filter(':not(.disabled):not([disabled])').attr('disabled', 'disabled');
 	var r = $.ajax({
 		url     : act,
 		dataType: 'json',
@@ -46,7 +46,7 @@ $.fn.ajaxSubmit = function (){
 		var e = new $.Event('submitAjax');
 		that.trigger(e, json);
 		if(e.isDefaultPrevented() || e.isPropagationStopped()){
-			notify.hide('hide',0);
+			notify.hide('hide', 0);
 			return;
 		}
 		if(json.code){
