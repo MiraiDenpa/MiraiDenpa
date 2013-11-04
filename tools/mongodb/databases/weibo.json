@@ -1,0 +1,26 @@
+{
+	"db"     : "localhost:27017",
+	"indexes": {
+		"content": {
+			"channel": {
+				"type": 1
+			},
+			"app"    : {
+				"type": 1
+			},
+			"time"   : {
+				"type": -1
+			},
+			"user"   : {
+				"type": 1
+			}
+		}
+	},
+	"user"   : [
+		{
+			"user" : "api_user",
+			"pwd"  : "api_user",
+			"roles": [ "readWrite"]
+		}
+	]
+}

@@ -17,8 +17,11 @@ class InfoVoteAction extends Action{
 				$this->error(ERR_INPUT_REQUIRE, 'id');
 				return;
 			}
-			$id = $_GET['id'];
-			$this->assign('vote', []);
+
+			$ret = ThinkInstance::D('InfoVote')
+					->getVote($_GET['id'], $this->token_data->user);
+
+			$this->assign('vote', $ret? $ret : []);
 			$this->display('!data');
 		}
 	}
@@ -32,19 +35,11 @@ class InfoVoteAction extends Action{
 			$this->error(ERR_INPUT_REQUIRE, 'vote');
 			return;
 		}
-		$id    = $_POST['id'];
-		$vote  = $_POST['vote'];
-		$allow = TaglibReplaceVote_catelog(true);
-		foreach($vote as $key => $val){
-			if(!in_array($key, $allow) || !is_numeric($val)){
-				unset($vote[$key]);
-			} else{
-				$vote[$key] = floatval($val);
-			}
-		}
-
+		$id  = $_POST['id'];
 		$mdl = ThinkInstance::D('InfoVote');
-		$ret=$mdl->vote($id, $this->token_data->_id, $vote);
-		var_dump($ret);
+
+		//$ret = $mdl->vote($id, $this->token_data->user, []);
+		$ret = $mdl->vote($id, $this->token_data->user, $_POST['vote']);
+		$this->mongo_ret($ret,"保存成功～");
 	}
 }

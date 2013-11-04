@@ -29,15 +29,22 @@
 				return value;
 			},
 			set: function (set){
-				var clim = 50 + $ret.center*10;
-				if(set >= clim){
+				if(set >= 50){
 					$ret.left = 0;
-					$ret.right = 2*(set - clim);
+					$ret.right = 2*(set - 50);
 				} else{
-					$ret.left = 2*(clim - set);
+					$ret.left = 2*(50 - set);
 					$ret.right = 0;
 				}
 				value = set;
+			}
+		});
+		Object.defineProperty($ret, 'scalevalue', {
+			get: function (){
+				return this.value*2 - 100;
+			},
+			set: function (set){
+				this.value = set/2 + 50
 			}
 		});
 
@@ -87,7 +94,7 @@
 				return center;
 			},
 			set: function (set){
-				$ret.css('paddingLeft', (set*10 + 50) + '%');
+				//$ret.css('paddingLeft', (set*10 + 50) + '%');
 				center = set;
 			}
 		});

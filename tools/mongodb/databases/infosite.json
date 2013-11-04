@@ -1,0 +1,29 @@
+{
+	"db"       : "localhost:27017",
+	"indexes"  : {
+		"entry": {
+			"_changed": {
+				"type": 1
+			},
+			"catalog" : {
+				"type": 1
+			},
+			"name"    : {
+				"type": 1
+			}
+		},
+		"vote" : {
+			"user": {
+				"type": 1
+			}
+		}
+	},
+	"user"     : [
+		{
+			"user" : "api_user",
+			"pwd"  : "api_user",
+			"roles": [ "readWrite"]
+		}
+	],
+	"functions": ["updateUserVote"]
+}

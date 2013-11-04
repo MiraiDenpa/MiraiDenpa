@@ -77,6 +77,9 @@ class InfoAuditAction extends Action{
 
 		$data = $_POST;
 		foreach($data as $k => $v){
+			if($k{0} == '_'){
+				continue;
+			}
 			if(is_array($v) && isset($v[0])){
 				$data[$k] = array_values($v);
 			}

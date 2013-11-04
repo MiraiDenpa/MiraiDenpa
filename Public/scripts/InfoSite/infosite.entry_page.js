@@ -43,9 +43,8 @@ $(function (){
 		$(vote_catelog).each(function (_, catelog){
 			if(catelog.when){
 				var ret = new MongoLike(catelog.when).test(current_data);
-				// console.log(catelog.when, ret);
 				if(!ret){
-					delete(vote_catelog[_]);
+					vote_catelog[_] = false;
 					return;
 				}
 			}
@@ -55,16 +54,12 @@ $(function (){
 			switch(catelog.type){
 			case 0:
 				$bar = new window.components.ValueBar('success');
-				// 中央文字 - 评分名字
-				covertext(catelog.name, 'center').addClass('revert').appendTo($bar);
 				// 好评差评
 				covertext(catelog.values[0], 'left').appendTo($bar);
 				covertext(catelog.values[1], 'right').appendTo($bar);
 				break;
 			case 1:
 				$bar = new window.components.CenterBar('warning', 'success');
-				// 中央文字 - 评分名字
-				covertext(catelog.name, 'center').addClass('revert').appendTo($bar);
 				// 好评
 				covertext(catelog.values[0], 'left').appendTo($bar);
 				// 中评
@@ -74,8 +69,6 @@ $(function (){
 				break;
 			case 2:
 				$bar = new window.components.TwoSideBar('danger', 'success');
-				// 中央文字 - 评分名字
-				covertext(catelog.name, 'center').addClass('revert').appendTo($bar);
 				// 好评
 				covertext(catelog.values[0], 'left').appendTo($bar);
 				// 中评
@@ -86,30 +79,80 @@ $(function (){
 			default :
 				throw new Error('未知类型：' + catelog.type);
 			}
+			// 中央文字 - 评分名字
+			covertext(catelog.name, 'center').addClass('revert').appendTo($bar);
 			$bar.center = catelog.offset;
 			$bar.data('catelog', catelog);
 			$bar.addClass('hovershow trans-opacity').appendTo($item);
 
+			if(current_data['_vote'] && current_data['_vote'][catelog.id]){//显示当前值
+				var vote = current_data['_vote'][catelog.id];
+				if(vote['count']){
+					if(!vote['good']){
+						vote['good'] = 0;
+					}
+					if(!vote['bad']){
+						vote['bad'] = 0;
+					}
+					switch(catelog.type){
+					case 0:
+						$bar.value = vote['good']/vote['count'];
+						//console.log(catelog.id, 'ValueBar', $bar.value);
+						break;
+					case 1:
+						$bar.scalevalue = (vote['good'] - vote['bad'])/vote['count'];
+						console.log(catelog.id, 'CenterBar', $bar.value);
+						break;
+					case 2:
+						$bar.left = vote['bad']/vote['count'];
+						$bar.right = vote['good']/vote['count'];
+						//console.log(catelog.id, 'TwoSideBar', $bar.left, $bar.right);
+						break;
+					}
+				}
+			}
 			// 处理、保存用户评价
-			$bar.input = $('<input type="hidden" name="vote[' + catelog.id + ']"/>').appendTo($item);
-			$bar.text = $('<span/>').appendTo($('<span class="full_cover score-item text-center"/>').text('评价：').appendTo($bar));
+			$bar.input = $('<input type="hidden"/>').attr('name', 'vote[' + catelog.id + ']').appendTo($item);
+			$bar.__noname = true;
+			$bar.text = $('<span/>').appendTo($('<span class="full_cover score-item text-center"/>')
+					.text(catelog.name + '：').appendTo($bar));
 			Object.defineProperty($bar, 'user_value', {
 				get: function (){
 					return value;
 				},
 				set: function (v){
-					value = v;
-					this.input.val(v);
 					if(v === undefined || v === null){
 						this.text.text('未评价');
+						this.input.attr('disabled', 'disabled');
+						value = v;
 					} else{
+						if(value === undefined || value === null){
+							this.input.removeAttr('disabled');
+						}
+						value = v;
 						this.text.text(v);
+						switch(catelog.type){
+						case 1:
+							v = parseFloat(v)*2 - 100;
+							break;
+						case 2:
+							v = parseFloat(v)*2 - 100;
+							break;
+						default:
+						}
+						this.input.val(v);
 					}
 				}
 			});
 
 			bars.push($bar);
-		});
+		}); // vote_catelog foreach end
+
+		for(var i = 0; i < vote_catelog.length; i++){
+			if(!vote_catelog[i]){
+				vote_catelog.splice(i--, 1);
+			}
+		}
 	}
 
 	// 用户评分部分
@@ -136,7 +179,24 @@ $(function (){
 			SimpleNotifyAjaxDfd('user_vote_load', dfd, false);
 			dfd.done(function (ret){
 				if(ret.code === window.Think.ERR_NO_ERROR){
-					user_vote = ret['vote'];
+					user_vote = {};
+					// 吧 -100 ～ 100 的分数缩放成 0 ～ 100
+					$(vote_catelog).each(function (_, catelog){
+						var v = ret['vote'][catelog.id];
+						switch(catelog.type){
+						case 0:
+							break;
+						case 1:
+							v = parseFloat(v)/2 + 50;
+							break;
+						case 2:
+							v = parseFloat(v)/2 + 50;
+							break;
+						default:
+						}
+						//console.log('缩放： ' + catelog.id + ': ' + ret['vote'][catelog.id] + ' -> ' + v);
+						user_vote[catelog.id] = v;
+					});
 					initUserVote();
 				}
 			});
@@ -229,7 +289,7 @@ $(function (){
 			$('body').addClass('noselect move');
 		});
 		function handleUp(){
-			handle.bar.user_value = (handle.current_value);
+			handle.bar.user_value = handle.current_value;
 			handle.flip = false;
 			handle.removeClass('positive negative ll rr');
 			//handle.content.css('backgroundColor', '');
