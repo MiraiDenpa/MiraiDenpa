@@ -11,7 +11,7 @@ return array(
 	'TYPE_NOVEL'     => 4,
 	'TYPE_MUSIC'     => 5,
 	'TYPE_DRAMA'     => 6, // 剧集
-	// 'TYPE_PERIO'     => 7,
+	 'TYPE_PERIO'     => 7, // 期刊
 	'TYPE_ONLINE'    => 8,
 	'TYPE_MARKET'    => 9,
 	'TYPE_BANGUMI'   => 10,

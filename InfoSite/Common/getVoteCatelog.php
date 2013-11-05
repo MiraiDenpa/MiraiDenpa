@@ -63,7 +63,7 @@ function TaglibReplaceVote_catelog($idlist = false){
 		[
 			'id'     => '801level',
 			'name'   => '基',
-			'type'   => -1,
+			'type'   => 0,
 			'values' => ['无爱', '无感想', '有爱'],
 			'when'   => [
 				'catalog'     => ['$in' => [TYPE_ANIME, TYPE_GAME, TYPE_DRAMA, TYPE_COMIC, TYPE_NOVEL]],

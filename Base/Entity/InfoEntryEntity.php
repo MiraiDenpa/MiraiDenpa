@@ -11,6 +11,7 @@ class InfoEntryEntity extends Entity{
 	public $name;
 	public $origin_name;
 	public $cover_pic;
+	public $detail;
 	public $episodes;
 	public $broadcast_range;
 	public $day_of_week;

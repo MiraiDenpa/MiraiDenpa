@@ -48,6 +48,7 @@
 					<div class="contain"></div>
 					<div class="clearfix"></div>
 					<div class="foot login_visable text-right col-xs-12">
+						<a class="btn btn-link">查看大家的评分</a>
 						<input id="submitbtn" class="btn btn-info" type="submit" value="保存我的评分"/>
 					</div>
 				</form>
@@ -73,7 +74,7 @@
 							</section>
 						</if>
 					</div>
-					<div class="panel-body active">{$doc->intro}</div>
+					<div class="panel-body active">{$doc->detail|nl2br}</div>
 				</div>
 			</div>
 			<div class="right col-sm-3">
@@ -119,6 +120,11 @@
 					<span>[关联条目]</span>
 				</div>
 				<div>制作信息</div>
+				<div>
+					<oncelist source="field_translate" key="id" id="trans">
+						<div>{$id} --->> {$trans}</div>
+					</oncelist>
+				</div>
 			</div>
 			<div id="WeiboContainer" data-weibo-channel="info{$doc->_oid}" class="col-sm-9">
 				<div class="wrap">

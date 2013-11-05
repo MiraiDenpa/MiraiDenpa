@@ -227,19 +227,36 @@ function initLine(name, currentval, userval){
 	// 初始化dom
 	var ret = $('<tr/>');
 	var td;
-	var title_field = $('<td width=300/>').text(name).appendTo(ret);
-	var user = $('<td/>').appendTo(ret);
-	td = $('<td class="change_buttons" width=60/>').appendTo(ret);
+	var title_field = $('<td width="300" col="1"/>').text(name).appendTo(ret);
+	var user = $('<pre class="reset"/>').appendTo($('<td col="2"/>').appendTo(ret));
+	td = $('<td class="change_buttons" width="60" col="3"/>').appendTo(ret);
 	var send_btn = (new $bui.Button(new $bui.Icon('circle-arrow-right'))).addClass('btn-xs').appendTo(td);
-	var input = $('<input/>').attr({'type': 'text', 'name': input_name});
-	$('<td/>').append(input).appendTo(ret);
+	var input_holder = $('<td col="4"/>').appendTo(ret);
+	var input = $('<input/>').attr({'type': 'text', 'name': input_name}).appendTo(input_holder);
+	var iType = 'text';
+
+	function switchInput(type){
+		if(type == iType){
+			return;
+		}
+		iType = type;
+		if(type == 'text'){
+			input.remove();
+			input = $('<input/>').attr({'type': 'text', 'name': input_name}).appendTo(input_holder);
+		} else{
+			input.remove();
+			input = $('<textarea/>').attr({'name': input_name}).appendTo(input_holder);
+		}
+	}
 
 	// 初始化方法
 	ret.setValue = function (v){
-		userval = v;
 		if(v === undefined){
 			user.text('[已删除]');
+			userval = v;
 		} else{
+			v = ('' + v).replace(/\n\r/g, "\n").replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+			userval = v;
 			user.text(v);
 			ret.hilight(currentval != userval);
 		}
@@ -247,10 +264,18 @@ function initLine(name, currentval, userval){
 	};
 	ret.setCurrent = function (v){
 		if(v === undefined){
+			currentval = v;
 			input.attr('disabled', 'disabled').val('[deleted]');
 			ret.hilight(false);
 		} else{
-			currentval = input.removeAttr('disabled').val(v).val();  // 类新转换
+			v = ('' + v).replace(/\n\r/g, "\n").replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+			currentval = v;
+			if(/\n/.test(v)){
+				switchInput('area');
+			} else{
+				switchInput('text');
+			}
+			input.removeAttr('disabled').val(v);  // 类新转换
 			ret.hilight(currentval != userval);
 		}
 		return ret;
@@ -318,13 +343,12 @@ function initLine(name, currentval, userval){
 	return line_cache[name] = ret;
 }
 
-// run
-$('.changed_item .edit .t').first().click();
-$('.toggleOther').first().click();
+// 启动
+$('.changed_item .edit .t').first().click(); // 默认展开第一个更改
 </script>
 
 </AddHeader>
-<form action="[%url method='do_update' param-hash='{$check}' param-time='{:time()}'/%]" method="post" type="ajax">
+<form action="[%url method='do_update' param-hash='{$check}' param-time='{:time()}'/%]" method="post" type="ajax" data-ask="即将提交，确定没有问题吗？">
 	<input type="hidden" name="id" class="hidden_id" value="{$item._id}"/>
 	<div id="mainContainer" class="">
 		<div id="{$item._id}" class="changed_item panel panel-[%iif name='item.name' then='default' else='info'/%]">

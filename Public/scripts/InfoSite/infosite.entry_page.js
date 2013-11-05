@@ -101,7 +101,7 @@ $(function (){
 						break;
 					case 1:
 						$bar.scalevalue = (vote['good'] - vote['bad'])/vote['count'];
-						console.log(catelog.id, 'CenterBar', $bar.value);
+						//console.log(catelog.id, 'CenterBar', $bar.value);
 						break;
 					case 2:
 						$bar.left = vote['bad']/vote['count'];
@@ -386,8 +386,4 @@ $(function (){
 		});
 		return dg;
 	}
-
-	setTimeout(function (){
-		$('.vote_small').click();
-	}, 0);
 });

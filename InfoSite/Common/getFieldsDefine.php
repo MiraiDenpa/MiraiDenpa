@@ -1,6 +1,9 @@
 <?php
-
 function TaglibReplaceItem_fields(){
+	return json_encode(getItemFields(), JSON_UNESCAPED_SLASHES);
+}
+
+function getItemFields(){
 	$ret = array(
 		"catalog"         => [
 			'name'    => '类别',
@@ -35,6 +38,12 @@ function TaglibReplaceItem_fields(){
 			'type'    => 'upload',
 			'subtype' => 'picture',
 			'text'    => '图片最大不能超过2M',
+		],
+		"detail"          => [
+			'name'    => '简单介绍',
+			'type'    => 'input',
+			'subtype' => 'textarea',
+			'text'    => 'markdown使用可能，剧透、个人观点等禁止。',
 		],
 		"episodes"        => [
 			'name'    => '话数',
@@ -134,5 +143,5 @@ function TaglibReplaceItem_fields(){
 	foreach($ret as $id => $data){
 		$ret[$id]['id'] = $id;
 	}
-	return json_encode($ret, JSON_UNESCAPED_SLASHES);
+	return $ret;
 }
