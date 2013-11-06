@@ -11,6 +11,43 @@ $(function (){
 	var container = $('.vote_large .contain');
 	var bars = [];
 
+	// 最高分始终显示、过滤不需要被显示的东西
+	var max = {good: 0};
+	$(vote_catelog).each(function (_, catelog){
+		if(catelog.when){
+			var ret = new MongoLike(catelog.when).test(current_data);
+			if(!ret){
+				vote_catelog[_] = false;
+				return;
+			}
+		}
+		if(!current_data['_vote'] || !current_data['_vote'][catelog.id]){
+			return;
+		}
+		var v = current_data['_vote'][catelog.id];
+		v.catelog = catelog;
+		if(v.good > max.good){
+			console.log(catelog.name + ': ', v.good, '>', max.good)
+			max = v;
+		} else{
+			console.log(catelog.name + ': ', v.good, '<', max.good)
+		}
+	});
+	for(var i = 0; i < vote_catelog.length; i++){
+		if(!vote_catelog[i]){
+			vote_catelog.splice(i--, 1);
+		}
+	}
+	if(max.good){
+		$('.vote_small .disp .name').text(max.catelog.name)
+				.css('fontSize', (max.catelog.name.length > 3? '15px' : undefined))
+				.next().text(intval(max.good/max.count)/10);
+	} else{
+		$('.vote_small .disp .name').text('なし')
+				.next().text('--');
+	}
+	max = null;
+
 	// 评分面板的 显示与隐藏
 	$('.vote_small').click(function (){
 		if(!vote_instanced){
@@ -41,14 +78,6 @@ $(function (){
 		}
 
 		$(vote_catelog).each(function (_, catelog){
-			if(catelog.when){
-				var ret = new MongoLike(catelog.when).test(current_data);
-				if(!ret){
-					vote_catelog[_] = false;
-					return;
-				}
-			}
-
 			var $item = $('<div class="voteitem col-md-6"/>').appendTo(container);
 			var $bar, value;
 			switch(catelog.type){
@@ -147,12 +176,6 @@ $(function (){
 
 			bars.push($bar);
 		}); // vote_catelog foreach end
-
-		for(var i = 0; i < vote_catelog.length; i++){
-			if(!vote_catelog[i]){
-				vote_catelog.splice(i--, 1);
-			}
-		}
 	}
 
 	// 用户评分部分

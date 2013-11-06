@@ -97,7 +97,7 @@
 	});
 
 	exports.query = function (new_query){
-		// query2modify会改data，所以必须复制一个
+		// query2modify会改new_query，所以必须复制一个
 		var copied_data = $.extend({}, current_query, new_query);
 		var modify = query2modify(copied_data);
 		var new_url = location.current.modify(modify);
@@ -133,11 +133,21 @@
 				LogStandardReturn(dfd, debug_title);
 				dfd.done(function (ret){
 					ret._state_triggers = triggers;
-					History.pushState(ret, $('title').text(), new_url);
+					if(exports._first){
+						History.replaceState(ret);
+						exports._first = true;
+					} else{
+						History.pushState(ret, $('title').text(), new_url);
+					}
 				});
 				dfd.fail(function (){
 					var data = {_state_fail: true, argument: arguments, _state_triggers: triggers};
-					History.pushState(data, $('title').text(), new_url);
+					if(exports._first){
+						History.replaceState(data);
+						exports._first = true;
+					} else{
+						History.pushState(data, $('title').text(), new_url);
+					}
 				});
 			})($.ajax(ajax), triggers, debug_title);
 		}
@@ -205,4 +215,6 @@
 		}
 		return modify;
 	}
+
+	exports._first = true;
 })(window.DenpaHistory = {});
