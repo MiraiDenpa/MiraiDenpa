@@ -12,6 +12,7 @@
 	scripts/infosite.entry_vote.js
 	scripts/infosite.entry_page.js
 	scripts/infosite.entry_comment.js
+	scripts/infosite.entry_detailinfo.js
 	styles/infosite.entry_page.less
 	jslib-gt/enhanced_link.js
 	jslib-gt/middle-click.js
@@ -113,17 +114,17 @@
 				</div>
 			</div>
 		</div>
+		<div class="clearfix"></div>
+		<hr/>
 		<div id="extend" class="row row-compact">
 			<div class="info col-sm-3">
 				<div>
 					<span>[制作信息]</span>
 					<span>[关联条目]</span>
 				</div>
-				<div>制作信息</div>
-				<div>
-					<oncelist source="field_translate" key="id" id="trans">
-						<div>{$id} --->> {$trans}</div>
-					</oncelist>
+				<div class="">
+					<table id="detail_info">
+					</table>
 				</div>
 			</div>
 			<div id="WeiboContainer" data-weibo-channel="info{$doc->_oid}" class="col-sm-9">

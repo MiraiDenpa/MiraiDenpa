@@ -18,7 +18,7 @@ class InfoEntryEntity extends Entity{
 	public $official_site;
 	public $classification;
 	public $come_from;
-	public $doujin;
+	public $originalwork;
 	public $robot;
 	public $externalize;
 	//</GEN>

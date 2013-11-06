@@ -48,6 +48,19 @@ $(function (){
 	}
 	max = null;
 
+	// 处理小屏幕问题
+	var mq = window.matchMedia("(max-width: 768px)"); // bootstrap
+	mq.addListener(_smallwindow_fix);
+	_smallwindow_fix(mq);
+	function _smallwindow_fix(ml){
+		if(!ml.matches){
+			return;
+		}
+		instance_vote();
+		mq.removeListener(_smallwindow_fix);
+		mq = null;
+	}
+
 	// 评分面板的 显示与隐藏
 	$('.vote_small').click(function (){
 		if(!vote_instanced){

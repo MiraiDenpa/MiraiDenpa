@@ -8,18 +8,18 @@ function type_widget(type){
 	return window[ret];
 }
 
-function create_date(id, sub, value, text){
+function create_dateragne(id, sub, value, text){
 	var container = $('<div class="row"/>');
 	var $from = (new $bui.FormControl()).addClass('col-xs-6').attr('name', id + '[start]').appendTo(container);
 	$from.append($bui.Icon('calendar'));
 
-	var dp = $from.centerWidget().datepicker({format: sub});
+	var dp = $from.centerWidget().datepicker({format: sub[0]});
 	if(value){
 		dp.datepicker('setValue', 1000*value['start']);
 	}
 	var $to = (new $bui.FormControl()).addClass('col-xs-6').attr('name', id + '[end]').appendTo(container);
 	$to.append($bui.Icon('calendar'));
-	dp = $to.centerWidget().datepicker({format: sub});
+	dp = $to.centerWidget().datepicker({format: sub[1]});
 	if(value){
 		dp.datepicker('setValue', 1000*value['end']);
 	}
@@ -73,9 +73,9 @@ function create_static(id, sub, value, text){
 }
 function create_input(id, sub, value, text){
 	if(sub == 'textarea'){
-		return $('<textarea class="form-control"/>').attr({ 'name': id, 'title': text}).text(value);
+		return $('<textarea class="form-control"/>').attr({ 'name': id, 'title': text, 'placeholder': text}).text(value);
 	} else{
-		return $('<input class="form-control"/>').attr({'type': sub, 'name': id, 'title': text}).val(value);
+		return $('<input class="form-control"/>').attr({'type': sub, 'name': id, 'title': text, 'placeholder': text}).val(value);
 	}
 }
 function create_inputlist(id, sub, value, text){
@@ -83,7 +83,7 @@ function create_inputlist(id, sub, value, text){
 	var $center = fn('', sub.subtype, null, sub.text);
 	var ret = new $bui.InputList();
 	ret.addClass('inline').attr('name', id).centerWidget($center);
-	if(sub.type==='select'){
+	if(sub.type === 'select'){
 		ret.mapTitle(sub.subtype);
 	}
 	if(value){

@@ -99,7 +99,7 @@
 		contain_ul.append(item);
 
 		// 转发列表
-		if(wb.list){
+		if(wb.list && wb.list.length){
 			var ul = createFwList(wb);
 			$(wb.list).each(function (_, wb){
 				onPostWeibo(wb, ul);

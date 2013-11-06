@@ -87,18 +87,6 @@
 			$PropertyTable.append(form_item(data.name, $obj));
 		});
 
-		$('#btnSubmit').click(function (e){
-			frmMain.attr('action', '<url method="submit"/>');
-			if(e.which == 2){
-				frmMain.submit();
-			} else{
-				$.confirm('确定要保存吗？',function (){
-					frmMain.ajaxSubmit();
-				}, "取消").title('请谨慎操作。');
-			}
-			return false;
-		});
-
 		function form_item(title, obj){
 			var td = $('<td class="text-right field-title col-xs-3"/>')
 					.append($('<label class="control-label value"/>')
@@ -124,7 +112,7 @@
 				<div class="panel-heading">
 					字段们
 					<span class="pull-right">(带
-						<span style="color: red;">*</span>
+					<span style="color: red;">*</span>
 											 的必须有)
 					</span>
 				</div>
@@ -148,7 +136,7 @@
 			</div>
 		</div>
 		<div id="property" class="col-xs-9">
-			<form id="PropertyForm" class="form-horizontal" method="post">
+			<form id="PropertyForm" class="form-horizontal" method="post" type="ajax" action="[%url action='Upload' method='submit'/%]" data-ask="确定要保存吗？">
 				<input type="hidden" name="id" id="IdField"/>
 				<div class="panel panel-primary">
 					<div class="panel-heading">基本信息</div>
@@ -158,8 +146,7 @@
 						</tbody>
 					</table>
 					<div class="panel-footer">
-						<a id="btnSubmit" class="btn-warning btn">确认提交</a>
-						<input type="submit" class="btn-primary btn" value="预览">
+						<input type="submit" class="btn-danger btn" value="确认提交">
 					</div>
 				</div>
 			</form>

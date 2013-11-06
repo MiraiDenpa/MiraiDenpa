@@ -49,11 +49,12 @@ function getItemFields(){
 			'name'    => '话数',
 			'type'    => 'number',
 			'subtype' => '[1,255]',
+			'show_name'=>'长度',
 		],
 		"broadcast_range" => [
 			'name'    => '放送时间',
-			'type'    => 'date',
-			'subtype' => 'yyyy-mm-dd',
+			'type'    => 'dateragne',
+			'subtype' => ['yyyy-mm-dd', 'yyyy-mm-dd'],
 		],
 		"day_of_week"     => [
 			'name'    => '放送星期',
@@ -99,11 +100,12 @@ function getItemFields(){
 				'west'     => '西方',
 			]
 		],
-		"doujin"          => [
-			'name'    => '同人作品',
-			'type'    => 'static',
-			'subtype' => true,
-			'text'    => '这是一部同人作品',
+		"originalwork"    => [
+			'name'      => '同人/改编 原作',
+			'type'      => 'input',
+			'subtype'   => 'text',
+			'text'      => '这是一部同人或改编作品，此处填写其原作名称',
+			'show_name' => '原作',
 		],
 		"robot"           => [
 			'name'    => '萝卜',
@@ -121,7 +123,7 @@ function getItemFields(){
 					'almostwwww'  => '日常',
 					'wwww'        => '爆笑',
 					'Q_Q'         => '催泪',
-					'eva'         => '深沉',
+					'derstand'         => '深沉',
 					'saya'        => '猎奇',
 					'terror'      => '恐怖',
 					// 受众

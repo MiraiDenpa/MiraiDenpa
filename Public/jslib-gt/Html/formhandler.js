@@ -82,24 +82,23 @@ $.fn.ajaxSubmit = function (){
 
 $(function (){
 	var no_ajax_submit = false;
-	var frmCnt = $('form[type=ajax]').each(function (){
-		$(this).removeAttr('type').submit(function (e){
-			if(no_ajax_submit){
-				return true;
-			}
-			var ask = $(this).data('ask');
-			if(ask){
-				var that = $(this);
-				$.dialog.confirm(ask, function (){
-					that.ajaxSubmit();
-				}, function (){
-				});
-			} else{
-				$(this).ajaxSubmit();
-			}
-			return false;
-		});
-	}).length;
+	var frmCnt = $('form[type=ajax]').removeAttr('type')
+			.submit(function (e){
+				if(no_ajax_submit){
+					return true;
+				}
+				var ask = $(this).data('ask');
+				if(ask){
+					var that = $(this);
+					$.dialog.confirm(ask, function (){
+						that.ajaxSubmit();
+					}, function (){
+					});
+				} else{
+					$(this).ajaxSubmit();
+				}
+				return false;
+			}).length;
 	if(frmCnt){
 		window.disableAutoAjax = function (arg){
 			no_ajax_submit = arg !== false;
@@ -109,7 +108,7 @@ $(function (){
 		var that = $(this);
 		var ask = that.data('ask');
 		$.dialog.confirm(ask, function (){
-			that[0].submit(111);
+			that[0].submit();
 		}, function (){
 		});
 		return false;
