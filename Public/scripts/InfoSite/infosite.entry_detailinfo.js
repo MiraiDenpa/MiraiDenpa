@@ -3,6 +3,7 @@
 	var container;
 	var objlist = {};
 	var fields = window.fields;
+	var current_data = window.doc;
 
 	var url = /^http:\/\/\S+$/i;
 
@@ -16,7 +17,11 @@
 				return;
 			}
 			if(!dispatcher['_normal_' + field.type]){
-				console.error('Error : 字段[' + id + '](' + field.type + ')不能被正确显示。')
+				console.error('Error : 字段[' + id + '](' + field.type + ')不能被正确显示。');
+				console.groupCollapsed(id);
+				console.log(current_data[id]);
+				console.log(dispatcher[id]);
+				console.groupEnd();
 				return;
 			}
 			dispatcher['_normal_' + field.type](id, value)
@@ -124,7 +129,6 @@
 			return;
 		}
 		inited = true;
-		var current_data = window.doc;
 		var dir = [
 			'day_of_week',
 			'episodes',
@@ -140,12 +144,6 @@
 		];
 		$(dir).each(function (_, id){
 			dispatcher(id, current_data[id]);
-			if(!objlist[id]){
-				console.groupCollapsed(id);
-				console.log(current_data[id]);
-				console.log(dispatcher[id]);
-				console.groupEnd();
-			}
 		});
 
 		sort(dir);

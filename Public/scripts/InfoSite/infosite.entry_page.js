@@ -12,7 +12,7 @@ $(function (){
 	var bars = [];
 
 	// 最高分始终显示、过滤不需要被显示的东西
-	var max = {good: 0};
+	var max = {good: 0, count: 1};
 	$(vote_catelog).each(function (_, catelog){
 		if(catelog.when){
 			var ret = new MongoLike(catelog.when).test(current_data);
@@ -26,11 +26,12 @@ $(function (){
 		}
 		var v = current_data['_vote'][catelog.id];
 		v.catelog = catelog;
-		if(v.good > max.good){
-			console.log(catelog.name + ': ', v.good, '>', max.good)
-			max = v;
-		} else{
-			console.log(catelog.name + ': ', v.good, '<', max.good)
+		try{
+			//console.log(catelog.id + ':', v.good/v.count + '>' + max.good/v.count + '?');
+			if(v.good/v.count > max.good/max.count){
+				max = v;
+			}
+		} catch(e){ //0除
 		}
 	});
 	for(var i = 0; i < vote_catelog.length; i++){
@@ -163,14 +164,12 @@ $(function (){
 					return value;
 				},
 				set: function (v){
-					if(v === undefined || v === null){
+					if(v === undefined || v === null || isNaN(v) || v === 'NaN'){
 						this.text.text('未评价');
 						this.input.attr('disabled', 'disabled');
 						value = v;
 					} else{
-						if(value === undefined || value === null){
-							this.input.removeAttr('disabled');
-						}
+						this.input.removeAttr('disabled');
 						value = v;
 						this.text.text(v);
 						switch(catelog.type){

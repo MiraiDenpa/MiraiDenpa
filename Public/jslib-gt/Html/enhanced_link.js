@@ -82,7 +82,7 @@
 				for(i = 0; i < items.length; i++){
 					var names = items[i].split(':');
 					var info = names[1].split('->');
-					if(info.length == 1){
+					if(info.length == 2){
 						option.path[names[0]] = (function (info){
 							return function (){
 								return $(info[0])[info[1]]();
@@ -106,38 +106,55 @@
 				option.preview = option.href;
 			}
 
+			option.attr = {
+				'target': self.attr('target'),
+				'href'  : self.attr('href')
+			};
 			self.data('hlink', option);
 		});
 	};
 
-	$(document).on('click', '.hlink', function (e){
-		console.log('点击');
-		var option = $(this).data('hlink');
+	$(document).on('mouseenter', '.hlink:not(.mfix)', function (){
+		$(this).click(defaultHlinkHandler).addClass('mfix');
+	});
+	function defaultHlinkHandler(e){
+		var $this = $(this);
+		var option = $this.data('hlink');
 		if(!option){
-			$(this).hlink();
-			option = $(this).data('hlink');
+			$this.hlink();
+			option = $this.data('hlink');
 		}
 		var cb = function (){
 			if(/^javascript:/.test(option.href)){
 				var src = option.href.replace(/^javascript:/, '');
 				eval(src);
+				return false;
 			} else{
 				var _href = $.modifyUrl(option.href, option);
 				if(!option.ask && e.which == 2){
-					window.open(_href);
+					$this.attr({'target': '_blank', 'href': _href});
 				} else{
-					window.location.href = _href;
+					if(option.attr.target){
+						$this.attr('target', option.attr.target);
+					}else{
+						$this.removeAttr('target')
+					}
+					$this.attr('href', _href);
 				}
-				return false;
+				return true;
 			}
 		};
 		if(option.ask){
-			$.dialog.confirm(option.ask, cb, '取消').title('电波娘如此询问道：');
+			$.dialog.confirm(option.ask,function (){
+				if(cb()){
+					window.location.href = $this.attr('href');
+				}
+			}, '取消').title('电波娘如此询问道：');
+			return false;
 		} else{
-			cb();
+			return cb();
 		}
-		return false;
-	});
+	}
 })();
 $(function (){
 	$('a.hlink,button.hlink').hlink();

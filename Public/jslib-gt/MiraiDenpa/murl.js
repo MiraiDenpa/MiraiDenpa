@@ -2,7 +2,7 @@
 	"use strict";
 	$.modifyUrl = function (href, modify, ret_object){
 		var i, tmp, url = {}, p;
-		if(typeof href === 'string'){
+		if(!href || typeof href === 'string'){
 			p = $.url(href, true).data;
 		} else{
 			p = href;

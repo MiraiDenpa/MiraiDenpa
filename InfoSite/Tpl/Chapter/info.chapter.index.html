@@ -1,0 +1,385 @@
+<comment>
+	<link href="/Public/bootstrap/css/bootstrap.css" rel="text/css"/>
+</comment>
+<layout name=":InfoSiteFrame">
+	$title='修改《'.$name.'》 的章节列表';
+</layout>
+<BrowserLib>
+	UI
+	jslib-gt/enhanced_link.js
+	jslib-gt/formhandler.js
+	jquery-ui/jquery-ui.js
+	bootstrap/bootstrap-datepicker.js
+</BrowserLib>
+<addHeader>
+<style type="text/css">
+	body {
+		overflow-y: scroll;
+		overflow-x: hidden;
+	}
+
+	.panel {
+		width: 100%;
+		z-index: 1;
+		-webkit-transition: 300ms cubic-bezier(0.000, 0.510, 0.000, 0.985);
+		transition: 300ms cubic-bezier(0.000, 0.510, 0.000, 0.985);
+	}
+
+	.panel-heading {
+		padding: 1px 10px;
+	}
+
+	.panel-heading > label {
+		margin: 0;
+	}
+
+	.shadow {
+		/*background: rgb(196, 0, 255);*/
+		margin-bottom: 20px;
+	}
+
+	.dark {
+		/*background: rgb(26, 108, 255);*/
+	}
+
+	.moving {
+		position: absolute;
+		z-index: 99;
+		-webkit-transform: scale(1.2);
+		transform: scale(1.2);
+	}
+
+	#Container > :last-child .moveDown,
+	#Container > :first-child .moveUp {
+		visibility: hidden;
+	}
+
+	#Container.hidedetail :not(.focus) .panel-body {
+		display: none;
+	}
+
+	#Container .panel-heading {
+		padding-left: 260px;
+		padding-right: 135px;
+	}
+	#Container .ctl{
+		margin-right: -135px;
+	}
+	#Container .index{
+		margin-left: -250px;
+	}
+	#Container .key{
+		width: 200px;
+	}
+
+	#Container .title{
+		width: 100%;
+	}
+	
+	#Control {
+		left: 0;
+		z-index: 1000;
+		position: fixed;
+		top: 240px;
+		width: 80px;
+		padding: 20px 0;
+		border-top-right-radius: 5px;
+		border-bottom-right-radius: 5px;
+		background: rgba(0, 0, 0, 0.31);
+		box-shadow: black 0 0 10px 1px;
+	}
+
+	#Control .btn,
+	#Control input {
+		display: block;
+		width: 80px;
+		border-radius: 0;
+	}
+
+	.bui input[type="number"]::-webkit-outer-spin-button,
+	input[type="number"]::-webkit-inner-spin-button {
+		display: inline !important;
+	}
+
+	.bui input[type="number"]::-moz-outer-spin-button,
+	input[type="number"]::-moz-inner-spin-button {
+		display: inline !important;
+	}
+</style>
+<script type="text/javascript" wrap="ready">
+var list = {$clist: json};
+var container = $('#Container');
+var template = $($('#template').remove().html());
+var $items = window.items = [];
+var alock = false;
+var gotoNumber = $('#gotoNumber');
+
+$('#addOne').click(function (){
+	var inp = $('#addMany'), ins;
+	var addMany = intval(inp.val());
+	inp.val('1');
+	if(0 == addMany){
+		ins = new EntryInstance();
+		ins.key = '第' + (ins.index + 1) + '话';
+	} else{
+		for(; addMany > 0; addMany--){
+			ins = new EntryInstance();
+			ins.key = '第' + (ins.index + 1) + '话';
+		}
+	}
+
+	$(document).scrollTop(ins.dom.offset().top);
+});
+
+if(list && list.length){
+	$(list).each(function (_, info){
+		var ins = new EntryInstance();
+		$.extend(ins, info);
+	});
+}
+
+function EntryInstance(){
+	var $obj = template.clone().appendTo(container);
+	var inputs = {};
+	var last_index;
+	var self = this;
+
+	$obj.find('input,textarea').each(function (_, ele){
+		var $ele = $(ele);
+		inputs[$ele.data('name')] = $ele;
+	}).focus(function(){
+				$obj.addClass('focus');
+			}).blur(function(){
+				$obj.removeClass('focus');
+			});
+	for(var name in inputs){
+		(function (name){
+			Object.defineProperty(this, name, {
+				get: function (){
+					return inputs[name].val();
+				},
+				set: function (v){
+					inputs[name].val(v);
+				}
+			});
+		}).call(this, name);
+	}
+
+	Object.defineProperty(this, 'dom', {
+		get: function (){
+			return $obj;
+		}
+	});
+
+	Object.defineProperty(this, 'index', {
+		get: function (){
+			return last_index;
+		},
+		set: function (v){
+			v = intval(v);
+			$obj.find('.index').text(v + 1);
+			$obj.find('input,textarea').each(function (_, ele){
+				var $ele = $(ele);
+				$ele.attr('name', $ele.data('name') + '[' + v + ']');
+			});
+			$obj.attr('id', 'char' + v);
+			last_index = v;
+			insert(this, v);
+		}
+	});
+
+	$obj.on('click', '.moveUp', function (){
+		if(!alock){
+			self.index--;
+		}
+	});
+	$obj.on('click', '.moveDown', function (){
+		if(!alock){
+			self.index++;
+		}
+	});
+	$obj.on('click', '.delete', function (){
+		if(!alock){
+			remove(self);
+		}
+	});
+
+	insert(this, $items.length);
+}
+
+function reindex(start){
+	if(alock){
+		var block = true;
+	}
+	alock = true;
+	for(var itr = start; itr < $items.length; itr++){
+		if($items[itr].index == itr){
+			continue;
+		}
+		$items[itr].index = itr;
+	}
+	gotoNumber.attr('max', $items.length);
+	if(!block){
+		alock = false;
+	}
+}
+
+function remove(item){
+	if(alock){
+		return;
+	}
+	var itr = $items.indexOf(item);
+	if(itr === -1){
+		return;
+	}
+	alock = true;
+	$items.splice(itr, 1);
+	reindex(itr);
+	item.dom.transit({'opacity': 0}, function (){
+		item.dom.slideUp('fast', function (){
+			item.dom.remove();
+		});
+		alock = false;
+	})
+}
+
+function insert(item, index){
+	if(alock){
+		return;
+	}
+	alock = true;
+	var itr = $items.indexOf(item);
+	if(itr === index){
+		alock = false;
+		return;
+	}
+	if(itr >= 0){
+		$items.splice(itr, 1);
+		$items.splice(index, 0, item);
+		reindex(Math.min(index, itr));
+		var s = shadow(item.dom);
+		var h = holder();
+		if(index === 0){
+			item.dom.prependTo(container);
+		} else{
+			item.dom.insertAfter($items[index - 1].dom);
+		}
+		if(index === 0){
+			h.prependTo(container).transit({height: item.dom.height()}, 400);
+		} else{
+			h.insertAfter($items[index - 1].dom).transit({height: item.dom.height()}, 400);
+		}
+		var target = h.position().top;
+		if(index > itr){
+			target -= item.dom.height();
+		}
+		item.dom.transit({top: target}, 400,function (){
+			h.remove();
+			$(this).removeClass('moving');
+			alock = false;
+		}).addClass('moving');
+	} else{
+		$items.splice(index, 0, item);
+		reindex(index);
+		if(index === 0){
+			item.dom.prependTo(container);
+		} else{
+			item.dom.insertAfter($items[index - 1].dom);
+		}
+		alock = false;
+	}
+}
+
+var $shadow = $('<div class="shadow dark"/>');
+function shadow($dom){
+	$shadow.css({'height': $dom.height()}).remove();
+	$dom.css({'top': $dom.position().top});
+	$shadow.insertAfter($dom).transit({height: 0}, 400, function (){
+		$shadow.remove();
+	});
+	return $shadow;
+}
+var $holder = $('<div class="shadow"/>');
+function holder(){
+	$holder.css({ 'height': '0'}).remove();
+	return $holder;
+}
+
+window.goto = function (){
+	var target = $('#char' + (gotoNumber.val() - 1));
+	if(!target.length){
+		return;
+	}
+	$(document).scrollTop(target.offset().top);
+};
+
+$('.goto').click(window.goto);
+</script>
+</addHeader>
+<form action="[%url method='save'/%]" style="position: relative" method="post" data-ask="确定编辑完成了吗？" type="ajax">
+	<input id="IdField" type="hidden" name="id" value="{$id}"/>
+	<div id="Control">
+		<a id="addOne" class="btn-default btn">
+		<span class="glyphicon glyphicon-plus"></span>
+		<span>添加</span>
+		</a>
+		<label>
+		<input id="addMany" value="1" min="1" type="number" class="form-control"/>
+		</label>
+		<br/>
+
+		<label>
+		跳转到第
+		<input id="gotoNumber" class="form-control input-sm" type="number" min="1" value="1">
+		</label>
+		<br/>
+		<a class="goto btn btn-default">
+		<span class="glyphicon glyphicon-forward"></span>
+		go
+		</a>
+		<br/>
+		<a class="btn btn-default" onclick="$('#Container').toggleClass('hidedetail')">
+		收起/展开
+		</a>
+		<br/>
+
+		<input type="submit" value="保存" class="btn-danger btn">
+		<br/>
+		<a data-href="no" class="hlink btn btn-warning" data-action="View" data-method="id" data-path="0:#IdField->val" data-ask="确定放弃吗？"> 返回条目</a>
+	</div>
+
+	<div class="container">
+		<div id="Container" style="position: relative;"></div>
+		<div class="hidden" id="template" type="text/plain">
+			<div class="panel panel-info form-horizontal form-inline">
+				<div class="panel-heading">
+					<span class="index badge badge-success alert-warning"></span>
+					.
+					<label class="key">
+					<input data-name="key" class="form-control" type="text" placeholder="序号" value="">
+					</label>
+					<label class="title">
+					<input data-name="title" class="form-control" type="text" placeholder="标题" value="">
+					</label>
+					<div class="pull-right ctl">
+						<a class="moveUp btn">
+						<span class="glyphicon glyphicon-chevron-up"></span>
+						</a>
+						<a class="moveDown btn">
+						<span class="glyphicon glyphicon-chevron-down"></span>
+						</a>
+						<a class="delete btn text-danger">
+						<span class="glyphicon glyphicon-remove"></span>
+						</a>
+					</div>
+				</div>
+				<div class="panel-body">
+					<label for="info">本集简介:</label>
+					<textarea id="info" data-name="info" placeholder="简介" class="form-control"></textarea>
+					<label for="staff">STAFF信息:</label>
+					<textarea id="staff" data-name="staff" placeholder="STAFF信息" class="form-control"></textarea>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
