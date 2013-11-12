@@ -25,7 +25,10 @@ class InfoViewAction extends Action{
 		} catch(MongoException $e){
 			$doc = null;
 		}
+
 		if($doc){
+			$mdl             = ThinkInstance::D('InfoChapter');
+			$doc['_chapter'] = $mdl->getChapterList($doc->_id);
 			$this->assign('doc', $doc);
 			$this->showpage();
 		} else{

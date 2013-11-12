@@ -1,0 +1,98 @@
+body {
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+.panel {
+	width: 100%;
+	z-index: 1;
+	-webkit-transition: 300ms cubic-bezier(0.000, 0.510, 0.000, 0.985);
+	transition: 300ms cubic-bezier(0.000, 0.510, 0.000, 0.985);
+}
+
+.panel-heading {
+	padding: 1px 10px;
+}
+
+.panel-heading > label {
+	margin: 0;
+}
+
+.shadow {
+	/*background: rgb(196, 0, 255);*/
+	margin-bottom: 20px;
+}
+
+.dark {
+	/*background: rgb(26, 108, 255);*/
+}
+
+.moving {
+	position: absolute;
+	z-index: 99;
+	-webkit-transform: scale(1.2);
+	transform: scale(1.2);
+}
+
+#Control {
+	left: 0;
+	z-index: 1000;
+	position: fixed;
+	top: 240px;
+	width: 80px;
+	padding: 20px 0;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	background: rgba(0, 0, 0, 0.31);
+	box-shadow: black 0 0 10px 1px;
+
+	.btn,
+	input {
+		display: block;
+		width: 80px;
+		border-radius: 0;
+	}
+}
+
+#Container {
+	> :last-child .moveDown,
+	> :first-child .moveUp {
+		visibility: hidden;
+	}
+
+	&.hidedetail :not(.focus) .panel-body {
+		display: none;
+	}
+
+	.panel {
+		.panel-heading {
+			padding-left: 260px;
+			padding-right: 135px;
+		}
+		.ctl {
+			margin-right: -135px;
+		}
+
+		.index {
+			margin-left: -250px;
+		}
+
+		.key {
+			width: 200px;
+		}
+
+		.title {
+			width: 100%;
+		}
+	}
+}
+
+.bui input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+	display: inline !important;
+}
+
+.bui input[type="number"]::-moz-outer-spin-button,
+input[type="number"]::-moz-inner-spin-button {
+	display: inline !important;
+}

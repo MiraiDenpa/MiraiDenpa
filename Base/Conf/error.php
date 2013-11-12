@@ -68,6 +68,7 @@ return array(
 	['PARSE_FORWARD', '转发解析错误', '请确认输入。'],
 
 	['USER_ABORT', '取消操作', '操作已经取消。'],
+	['USER_PERM', '权限不足', '如果需要，请向管理员申请。'],
 	
 	['ERR_HTTP_UPLOAD', '程序错误', '请求有问题，请联系管理员。'],
 

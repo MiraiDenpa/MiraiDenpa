@@ -6,6 +6,10 @@ class UserEntity extends Entity{
 	public $email;
 	public $regdate;
 
+	public $info_edit_entry = 0;
+	public $info_edit_chapter = 0;
+	public $weibo_forward = 0;
+
 	private $_cache_propertys;
 	private $_cache_settings;
 
@@ -22,6 +26,7 @@ class UserEntity extends Entity{
 
 	/**
 	 * @param $app
+	 *
 	 * @return UserSettingEntity
 	 */
 	public function settings($app){

@@ -1,0 +1,199 @@
+@import '../variables.less';
+@import '../mixins.less';
+@import '../mymixins.less';
+
+#WeiboContainer {
+	padding: 10px;
+	.wrap {
+		min-height: 180px;
+		position: relative;
+		.Loader {
+			z-index: 100;
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.22);
+			border-radius: 10px;
+			.center {
+				display: table;
+				width: 100%;
+			}
+			.text {
+				line-height: 100%;
+				text-align: center;
+				vertical-align: middle;
+				margin: 0;
+				width: 100%;
+				display: table-cell;
+			}
+		}
+	}
+	.page_container {
+		float: right;
+		.pagination {
+			margin: 0;
+		}
+	}
+	.send_label {
+		font-size: 24px;
+	}
+
+	.WBList {
+		padding: 0;
+		list-style: none;
+		> li.weibo {
+			border-left: 4px solid #a3a3a3 !important;
+			margin: 7px 7px 0 7px;
+		}
+		> li {
+			border-left: 4px solid #e8e8e8 !important;
+			padding: 5px 4px 0px 9px;
+			margin: 0 7px 7px 7px;
+		}
+		.weibo {
+			.hover-tip();
+			background-repeat: no-repeat;
+			position: relative;
+			padding: 5px 4px 0px 5px;
+			.avatar {
+				float: left;
+				height: 48px;
+				width: 48px;
+			}
+			.c {
+				margin-left: 55px;
+				min-height: 64px;
+			}
+			.user {
+				font-weight: bold;
+			}
+			.time {
+				float: right;
+			}
+			.foot {
+				float: right;
+				margin-top: -20px;
+				& > a {
+					margin: 0 7px;
+					&:last-child {
+						margin-right: 0;
+					}
+				}
+			}
+		}
+		/* end 微博*/
+		ul {
+			list-style: none;
+			position: relative;
+			padding-left: 27px;
+
+			.weibo {
+				clear: both;
+				.avatar {
+					margin-top: 3px;
+					height: 24px;
+					width: 24px;
+				}
+				.c {
+					margin-left: 28px;
+					min-height: 38px;
+				}
+				.user {
+					font-size: small;
+				}
+				.time {
+					font-size: smaller;
+					float: none;
+				}
+				.content {
+					font-size: small;
+				}
+				.foot {
+					display: none;
+					& > a {
+						margin: 0 5px;
+					}
+				}
+				&:hover {
+					.foot {
+						display: block;
+					}
+				}
+			}
+			/* end 转发评论*/
+		}
+
+		.fw {
+			position: relative;
+			.display_full {
+				position: absolute;
+				bottom: 5px;
+				left: 5px;
+			}
+		}
+		/* end 微博评论列表*/
+	}
+
+	/* 微博列表*/
+	.Sender {
+		display: none;
+		.forward-tip {
+			display: none;
+			position: relative;
+			.tip {
+				cursor: pointer;
+			}
+			.text {
+				display: inline;
+			}
+			.content-tip {
+				position: absolute;
+				top: 110%;
+				width: 300px;
+
+				background: #ffffff;
+				padding: 10px;
+				border-radius: 5px;
+				border: black 1px solid;
+
+				clear: both;
+				.avatar {
+					float: left;
+					margin-right: 20px;
+				}
+				.user {
+					font-weight: bold;
+				}
+			}
+		}
+		textarea {
+			margin-bottom: 10px;
+			min-height: 100px;
+		}
+		&.forward {
+			.forward-tip {
+				display: inline-block;
+			}
+		}
+	}
+
+	.logout & {
+		.foot {
+			color: black;
+			> a {
+				color: black;
+				&:hover {
+					cursor: default;
+					text-decoration: none;
+				}
+			}
+		}
+	}
+	&.loaded {
+		.Sender {
+			display: block;
+		}
+	}
+}

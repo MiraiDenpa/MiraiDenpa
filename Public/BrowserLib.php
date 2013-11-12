@@ -15,6 +15,7 @@ $requirements = array(
 	'jquery/jquery.fileupload.js' => ['jquery/jquery.ui.widget.js'],
 	'UI'                          => ['jquery/jquery.mousewheel.js'],
 	'weibo'                       => ['jquery/jquery.indexeddb.js', 'jslib-gt/history.js'],
+	'jquery/jquery.hammer.js'     => ['jslib/hammer.js'],
 );
 
 //定义后引入组件

@@ -10,102 +10,9 @@
 	jslib-gt/formhandler.js
 	jquery-ui/jquery-ui.js
 	bootstrap/bootstrap-datepicker.js
+	styles/infosite.chapter_edit.less
 </BrowserLib>
 <addHeader>
-<style type="text/css">
-	body {
-		overflow-y: scroll;
-		overflow-x: hidden;
-	}
-
-	.panel {
-		width: 100%;
-		z-index: 1;
-		-webkit-transition: 300ms cubic-bezier(0.000, 0.510, 0.000, 0.985);
-		transition: 300ms cubic-bezier(0.000, 0.510, 0.000, 0.985);
-	}
-
-	.panel-heading {
-		padding: 1px 10px;
-	}
-
-	.panel-heading > label {
-		margin: 0;
-	}
-
-	.shadow {
-		/*background: rgb(196, 0, 255);*/
-		margin-bottom: 20px;
-	}
-
-	.dark {
-		/*background: rgb(26, 108, 255);*/
-	}
-
-	.moving {
-		position: absolute;
-		z-index: 99;
-		-webkit-transform: scale(1.2);
-		transform: scale(1.2);
-	}
-
-	#Container > :last-child .moveDown,
-	#Container > :first-child .moveUp {
-		visibility: hidden;
-	}
-
-	#Container.hidedetail :not(.focus) .panel-body {
-		display: none;
-	}
-
-	#Container .panel-heading {
-		padding-left: 260px;
-		padding-right: 135px;
-	}
-	#Container .ctl{
-		margin-right: -135px;
-	}
-	#Container .index{
-		margin-left: -250px;
-	}
-	#Container .key{
-		width: 200px;
-	}
-
-	#Container .title{
-		width: 100%;
-	}
-	
-	#Control {
-		left: 0;
-		z-index: 1000;
-		position: fixed;
-		top: 240px;
-		width: 80px;
-		padding: 20px 0;
-		border-top-right-radius: 5px;
-		border-bottom-right-radius: 5px;
-		background: rgba(0, 0, 0, 0.31);
-		box-shadow: black 0 0 10px 1px;
-	}
-
-	#Control .btn,
-	#Control input {
-		display: block;
-		width: 80px;
-		border-radius: 0;
-	}
-
-	.bui input[type="number"]::-webkit-outer-spin-button,
-	input[type="number"]::-webkit-inner-spin-button {
-		display: inline !important;
-	}
-
-	.bui input[type="number"]::-moz-outer-spin-button,
-	input[type="number"]::-moz-inner-spin-button {
-		display: inline !important;
-	}
-</style>
 <script type="text/javascript" wrap="ready">
 var list = {$clist: json};
 var container = $('#Container');
@@ -120,26 +27,81 @@ $('#addOne').click(function (){
 	inp.val('1');
 	if(0 == addMany){
 		ins = new EntryInstance();
-		ins.key = '第' + (ins.index + 1) + '话';
+		ins.key = (ins.index + 1);
+		ins.title = '第' + (ins.index + 1) + '话';
 	} else{
 		for(; addMany > 0; addMany--){
 			ins = new EntryInstance();
-			ins.key = '第' + (ins.index + 1) + '话';
+			ins.key = (ins.index + 1);
+			ins.title = '第' + (ins.index + 1) + '话';
 		}
 	}
 
 	$(document).scrollTop(ins.dom.offset().top);
 });
 
-if(list && list.length){
-	$(list).each(function (_, info){
+// 拖拽
+var drag_helper = $('<div class="tip"/>');
+var drag_holder = $('<div class="panel"/>');
+container.sortable({
+	appendTo   : container,
+	axis       : 'y',
+	cancel     : '.shadow',
+	containment: 'parent',
+	handle     : '.index',
+	cursor     : 'move',
+	helper     : function (_, self){
+		return drag_helper.css({height: self.height(), width: self.width()})
+	},
+	placeholder: {
+		element: function (self){
+			return drag_holder.css({height: self.height(), width: self.width()});
+		},
+		update : function (){
+		}
+	},
+	deactivate : function (e, ui){
+		var ins = ui.item.data('instance');
+		var new_index = container.children().index(ui.item);
+		var old_index = ins.index;
+		if(new_index !== old_index){
+			immediate_insert(ins, new_index);
+		}
+	}
+});
+
+// 还原现有章节
+if(list && list['chapter'] && list['chapter'].length){
+	$(list['chapter']).each(function (_, info){
 		var ins = new EntryInstance();
 		$.extend(ins, info);
 	});
 }
 
+var hidedetail = false;
+var lastFocus = $();
+function hideFocus(e){
+	if($(e.target).parents('.focus').length == 0){
+		lastFocus.removeClass('focus');
+	}
+}
+window.toggleHideDetail = function (){
+	if(container.hasClass('hidedetail')){
+		container.removeClass('hidedetail');
+		hidedetail = false;
+		lastFocus.removeClass('focus');
+		$(document).off('click', hideFocus);
+	} else{
+		container.addClass('hidedetail');
+		hidedetail = true;
+		$(document).on('click', hideFocus);
+	}
+};
+
 function EntryInstance(){
 	var $obj = template.clone().appendTo(container);
+	$obj.find('.datepick').datepicker();
+
 	var inputs = {};
 	var last_index;
 	var self = this;
@@ -147,11 +109,15 @@ function EntryInstance(){
 	$obj.find('input,textarea').each(function (_, ele){
 		var $ele = $(ele);
 		inputs[$ele.data('name')] = $ele;
-	}).focus(function(){
+	}).focus(function (){
+				if(!hidedetail || $obj.hasClass('focus')){
+					return;
+				}
+				lastFocus.removeClass('focus');
 				$obj.addClass('focus');
-			}).blur(function(){
-				$obj.removeClass('focus');
+				lastFocus = $obj;
 			});
+
 	for(var name in inputs){
 		(function (name){
 			Object.defineProperty(this, name, {
@@ -180,7 +146,7 @@ function EntryInstance(){
 			$obj.find('.index').text(v + 1);
 			$obj.find('input,textarea').each(function (_, ele){
 				var $ele = $(ele);
-				$ele.attr('name', $ele.data('name') + '[' + v + ']');
+				$ele.attr('name', 'list' + '[' + v + '][' + $ele.data('name') + ']');
 			});
 			$obj.attr('id', 'char' + v);
 			last_index = v;
@@ -204,6 +170,7 @@ function EntryInstance(){
 		}
 	});
 
+	$obj.data('instance', this);
 	insert(this, $items.length);
 }
 
@@ -212,12 +179,16 @@ function reindex(start){
 		var block = true;
 	}
 	alock = true;
+	console.groupCollapsed('reindex from ' + start);
+	console.trace()
 	for(var itr = start; itr < $items.length; itr++){
+		console.log(itr);
 		if($items[itr].index == itr){
 			continue;
 		}
 		$items[itr].index = itr;
 	}
+	console.groupEnd();
 	gotoNumber.attr('max', $items.length);
 	if(!block){
 		alock = false;
@@ -235,14 +206,36 @@ function remove(item){
 	alock = true;
 	$items.splice(itr, 1);
 	reindex(itr);
-	item.dom.transit({'opacity': 0}, function (){
-		item.dom.slideUp('fast', function (){
-			item.dom.remove();
-		});
+	item.dom.slideUp('fast', function (){
+		item.dom.remove();
 		alock = false;
-	})
+	});
 }
 
+function immediate_insert(item, index){
+	var itr = $items.indexOf(item);
+	if(itr === index){
+		return;
+	}
+	if(itr >= 0){
+		$items.splice(itr, 1);
+		$items.splice(index, 0, item);
+		reindex(Math.min(index, itr));
+		if(index === 0){
+			item.dom.prependTo(container);
+		} else{
+			item.dom.insertAfter($items[index - 1].dom);
+		}
+	} else{
+		$items.splice(index, 0, item);
+		reindex(index);
+		if(index === 0){
+			item.dom.prependTo(container);
+		} else{
+			item.dom.insertAfter($items[index - 1].dom);
+		}
+	}
+}
 function insert(item, index){
 	if(alock){
 		return;
@@ -338,7 +331,7 @@ $('.goto').click(window.goto);
 		go
 		</a>
 		<br/>
-		<a class="btn btn-default" onclick="$('#Container').toggleClass('hidedetail')">
+		<a class="btn btn-default" onclick="toggleHideDetail()">
 		收起/展开
 		</a>
 		<br/>
@@ -356,10 +349,10 @@ $('.goto').click(window.goto);
 					<span class="index badge badge-success alert-warning"></span>
 					.
 					<label class="key">
-					<input data-name="key" class="form-control" type="text" placeholder="序号" value="">
+					<input data-name="key" class="form-control" type="text" placeholder="序号" value="" required="required">
 					</label>
 					<label class="title">
-					<input data-name="title" class="form-control" type="text" placeholder="标题" value="">
+					<input data-name="title" class="form-control" type="text" placeholder="标题" value="" required="required">
 					</label>
 					<div class="pull-right ctl">
 						<a class="moveUp btn">
@@ -374,6 +367,26 @@ $('.goto').click(window.goto);
 					</div>
 				</div>
 				<div class="panel-body">
+					<label class="col-xs-6">
+					首播时间:
+					</label>
+					<label class="col-xs-6">
+					本集时长:
+					</label>
+					<div class="clearfix"></div>
+					<div class="input-group col-xs-6">
+						<input type="text" id="first" data-name="first_date" data-date-format="yyyy-mm-dd" placeholder="YYYY-MM-DD" class="form-control datepick"/>
+						<span class="input-group-addon">@</span>
+						<input type="text" data-name="first_hour" placeholder="hh" class="form-control"/>
+						<span class="input-group-addon">时</span>
+						<input type="text" data-name="first_minute" placeholder="mm" class="form-control"/>
+						<span class="input-group-addon">分</span>
+					</div>
+					<div class="input-group col-xs-6">
+						<input type="text" id="time" data-name="time" placeholder="mmm" class="form-control"/>
+						<span class="input-group-addon">分钟</span>
+					</div>
+					<div class="clearfix"></div>
 					<label for="info">本集简介:</label>
 					<textarea id="info" data-name="info" placeholder="简介" class="form-control"></textarea>
 					<label for="staff">STAFF信息:</label>

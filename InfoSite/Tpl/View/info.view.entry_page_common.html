@@ -13,7 +13,11 @@
 	scripts/infosite.entry_page.js
 	scripts/infosite.entry_comment.js
 	scripts/infosite.entry_detailinfo.js
-	styles/infosite.entry_page.less
+	scripts/infosite.entry_chapter.js
+	styles/weibo.infosite.less
+	styles/infosite.vote.less
+	styles/infosite.common_struct.less
+	styles/infosite.chapter.less
 	jslib-gt/enhanced_link.js
 	jslib-gt/middle-click.js
 </BrowserLib>
@@ -98,20 +102,39 @@
 			</div>
 		</div>
 		<div class="clearfix"></div>
-		<div>
+		<div id="chapter">
 			<h4 class="hovershow trans-opacity">章节列表
 				<small class="hovershow-item">
 					<a href="[%url app='info' action='Chapter' method='edit' param-id='{$doc._id}'/%]" class="text-muted">[修改]</a>
 				</small>
 			</h4>
 
-			<div class="bui-inputlist inline" name="name">
-				<span class="tip">01</span>
-				<span class="tip">02</span>
-				<span class="tip">03</span>
-				<div>
-
-				</div>
+			<div class="list">
+				<ul class="clearfix">
+					<volist name="doc._chapter" id="content">
+						<li class="tip" data-id="{$key}">
+							<section>
+								<header class="title">{$content.key} - {$content.title}</header>
+								<div class="first">{$content.first_date}&nbsp;{$content.first_hour}:{$content.first_minute}</div>
+								<div class="time">{$content.time}</div>
+								<article class="hide">
+									{$content.info|nl2br}:{$content.staff|nl2br}
+								</article>
+								<footer class="state">...</footer>
+							</section>
+							<div class="border">
+								<span class="corn">
+								<span class="glyphicon glyphicon-ok"></span>
+								</span>
+							</div>
+						</li>
+					</volist>
+				</ul>
+			</div>
+			<div class="expand">
+				<span class="btn btn-default">
+				<span class="glyphicon glyphicon-arrow-down"></span>
+				</span>
 			</div>
 		</div>
 		<div class="clearfix"></div>
@@ -123,8 +146,7 @@
 					<span>[关联条目]</span>
 				</div>
 				<div class="">
-					<table id="detail_info">
-					</table>
+					<table id="detail_info"></table>
 				</div>
 			</div>
 			<div id="WeiboContainer" data-weibo-channel="info{$doc->_oid}" class="col-sm-9">

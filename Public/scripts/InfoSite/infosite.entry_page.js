@@ -86,10 +86,10 @@ $(function (){
 	// 显示评分部分
 	function instance_vote(){
 		"use strict";
-		vote_instanced = true;
-		if(!current_data || !current_data._id){
+		if(vote_instanced || !current_data || !current_data._id){
 			return;
 		}
+		vote_instanced = true;
 
 		$(vote_catelog).each(function (_, catelog){
 			var $item = $('<div class="voteitem col-md-6"/>').appendTo(container);
@@ -248,7 +248,7 @@ $(function (){
 		handle.appendTo(container);
 
 		// 鼠标移出评分区，如果不是拖动状态则隐藏拖柄
-		container.mouseleave(function (){
+		container.parent().mouseleave(function (){
 			if(dragging){
 				tmpv = last;
 				last = false;
