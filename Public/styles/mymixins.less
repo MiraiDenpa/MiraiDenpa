@@ -44,6 +44,14 @@
 	transform-origin: @x @y @z;
 }
 
+.perspective(@det){
+	-webkit-perspective: @det;
+	-moz-perspective: @det;
+	-o-perspective: @det;
+	-ms-perspective: @det;
+	perspective: @det;
+}
+
 .columns(@number) {
 	-moz-column-count: @number;
 	-webkit-column-count: @number;

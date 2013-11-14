@@ -114,7 +114,7 @@
 		});
 	};
 
-	$(document).on('mouseenter', '.hlink:not(.mfix)', function (){
+	$(document).on('mouseenter', 'a.hlink:not(.mfix)', function (){
 		$(this).click(defaultHlinkHandler).addClass('mfix');
 	});
 	function defaultHlinkHandler(e){
