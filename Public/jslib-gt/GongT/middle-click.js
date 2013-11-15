@@ -25,7 +25,7 @@
  ctrlKey                    : false,
  currentTarget              : 'a.user-link',
  data                       : undefined,
- delegateTarget             : 'div#WeiboContainer.col-sm-9 loaded',
+ delegateTarget             : 'div#xxx.yyy',
  eventPhase                 : 3,
  handleObj                  : Object,
  isDefaultPrevented         : 'returnFalse',

@@ -10,6 +10,7 @@
 
 	function ChannelObject(channel){
 		channel_list.push(channel);
+		this.id = channel;
 		var callbackListFn = $.Callbacks('unique');
 		var callbackPageFn = $.Callbacks('unique');
 		var req_name = 'page_of_channel_' + channel + '';

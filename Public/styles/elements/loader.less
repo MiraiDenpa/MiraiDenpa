@@ -1,0 +1,49 @@
+@import '../variables.less';
+@import '../mixins.less';
+@import '../mymixins.less';
+
+@-webkit-keyframes fly {
+	0% {
+		left: -15px;
+		.animation-timing-function(cubic-bezier(0.320, 0.850, 0.000, 0.125));
+	}
+	10% {
+		left: 20%;
+		.animation-timing-function(linear);
+	}
+	90% {
+		left: 80%;
+		.animation-timing-function(linear);
+	}
+	100% {
+		left: 100%;
+		.animation-timing-function(cubic-bezier(0.000, 0.125, 0.320, 0.850));
+	}
+}
+
+@keyframes fly {
+	from {
+		left: -15px;
+	}
+	to {
+		left: 100%;
+	}
+}
+
+.loader.loading-blockfly {
+	position: relative;
+	height: 8px;
+	width: 120%;
+	left: -10%;
+	.block {
+		background: red;
+		position: absolute;
+		top: 0;
+		left: -15px;
+		width: 8px;
+		height: 8px;
+		display: inline-block;
+		.animation-name(fly);
+		.animation-iteration-count(infinite);
+	}
+}

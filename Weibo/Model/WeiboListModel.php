@@ -21,6 +21,7 @@ class WeiboListModel extends Mongoo{
 	 * @return MongoCursor
 	 */
 	public function getChannel($app, $channel, $page){
+		//sleep(2);
 		if($page < 1){
 			$page = 1;
 		}

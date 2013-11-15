@@ -24,45 +24,139 @@ function createitem(id){
 	}, 0);
 }
 $(function (){
-	var containUl = $('<ul id="dummyItemHolder"/>').appendTo('body');
-	$('#chapter_detail').find('.goback').click(function (){
-		$('#chapter_detail').removeClass('showme');
-		$dummyItem.removeClass('clicked');
-		setTimeout(function (){
-			"use strict";
-			containUl.css('left', '-100%');
-			$chapter_item_last.css('visibility', 'visible');
-			$dummyItem.remove();
-		}, 400);
-	});
 });
+
+var detail_pannel = null;
+function showDetailPannel(){
+	if(detail_pannel){
+		return detail_pannel;
+	}
+	detail_pannel = $('#chapter_detail');
+	var lasttab = 0, current_id = null;
+	var tablist = detail_pannel.find('.menu > .item'), bodylist = [], tabmap = {};
+
+	// 基本信息/制作信息...
+	tablist.click(function (){
+		var $this = $(this);
+		var index = $this.data('index');
+		if($this.hasClass('disabled')){
+			return;
+		}
+		if($this.data('tab') == 'weibo'){
+			createWeiboFramework(bodylist[index],detail_pannel.find('.loader'));
+			prepare_weibo_channel.call(detail_pannel, current_id);
+		}
+		if(lasttab == index){
+			return;
+		}
+		bodylist[lasttab].hide();
+		$(tablist[lasttab]).removeClass('active');
+		lasttab = index;
+		bodylist[index].show();
+		$(tablist[index]).addClass('active');
+	}).each(function (i, e){
+				var $e = $(e), tab = $e.data('tab');
+				$e.data('index', i);
+				tabmap[tab] = $e;
+				if($e.data('tab') == 'weibo'){
+					bodylist[i] = detail_pannel.find('section.WB');
+				} else{
+					bodylist[i] = $('<section/>').appendTo(detail_pannel.find('>.main'));
+					tabmap[tab].body = $('<pre class="well"/>').appendTo(bodylist[i]);
+				}
+				if(i > 0){
+					bodylist[i].hide();
+				} else{
+					$e.addClass('active');
+				}
+			});
+
+	// “返回”/“标记为”...
+	var containUl = $('<ul id="dummyItemHolder"/>').appendTo('body');
+	detail_pannel.find('.options').on('click', '.item', function (){
+		if($(this).hasClass('disabled')){
+			return;
+		}
+		switch($(this).data('action')){
+		case 'goback':
+			$('#chapter_detail').removeClass('showme');
+			$dummyItem.removeClass('clicked');
+			setTimeout(function (){
+				containUl.css('left', '-100%');
+				$chapter_item_last.css('visibility', 'visible');
+				$dummyItem.remove();
+			}, 400);
+			setTimeout(function (){
+				$('body').removeClass('model-visable');
+			}, 200);
+			$(tablist[0]).click();
+			break;
+		case 'next-ep':
+			if(ChapterDefine[current_id + 1]){
+				switchContent(current_id + 1);
+			}
+			$(tablist[0]).click();
+			break;
+		case 'prev-ep':
+			if(ChapterDefine[current_id - 1]){
+				switchContent(current_id - 1);
+			}
+			$(tablist[0]).click();
+			break;
+		default :
+			console.log($(this).data('action'));
+		}
+	});
+
+	var static_header = detail_pannel.find('.main > header');
+	var static_repv_btn = detail_pannel.find('.options > .prev');
+	var static_next_btn = detail_pannel.find('.options > .next');
+
+	function switchContent(id){
+		id = parseInt(id);
+		if(isNaN(id)){
+			throw new Error('id 必须是数字');
+		}
+		var chap = ChapterDefine[id];
+		static_repv_btn[ChapterDefine[id - 1]? 'removeClass' : 'addClass']('disabled');
+		static_next_btn[ChapterDefine[id + 1]? 'removeClass' : 'addClass']('disabled');
+
+		tabmap['info'].body.text(chap.info);
+		static_header.text('第' + chap.key + '话 —— ' + chap.title);
+		if(chap['staff']){
+			//basicBox.tab('staff', '制作信息', chap['staff']);
+		}
+		//basicBox.tab('unofficial', '内容简介', chap['unofficial']);
+		current_id = id;
+	}
+
+	detail_pannel.switchContent = switchContent;
+
+	return detail_pannel;
+}
+
+function mark_actions($align){
+	"use strict";
+
+}
 
 function handleChapterClick(){
 	"use strict";
 	var $this = $chapter_item_last = $(this);
 	var id = $this.data('id');
-	var last = handleChapterClick.last;
 
-	var chap = ChapterDefine[id];
+	// 准备数据并显示
+	var chapter_detail = showDetailPannel();
+	chapter_detail.switchContent(id);
 
 	// 动画效果 
 	createitem(id);
 	var offset = $this.offset();
 	$('#dummyItemHolder').css(offset);
 	offset.top -= $(document).scrollTop();
-	$('#chapter_detail').css('transform-origin', offset.left + 'px ' + offset.top + 'px')
-			.addClass('showme');
+	chapter_detail.css('transform-origin', offset.left + 'px ' + offset.top + 'px').addClass('showme');
 	$this.css('visibility', 'hidden');
-	// 动画效果  END
-
-	//basicBox.setTitle(chap.title, chap.info.replace(/\n/g, '<br/>'));
-	if(chap['staff']){
-		//basicBox.tab('staff', '制作信息', chap['staff']);
-	}
-	if(!$this.data('protected') && $this.hasClass('active')){
-		//basicBox.tab('unofficial', '内容简介', chap['unofficial']);
-	}
-	handleChapterClick.last = id;
+	$('body').addClass('model-visable');
 }
 
 function handleChapterSelect(id){
@@ -96,7 +190,6 @@ $(ChapterDefine).each(function (_, chap){
 		chap.actualFirst = actualFirst;
 		if(actualFirst > now){ // 首播时机未到
 			onair.setDate(actualFirst.getDate() - 1);
-			console.log(onair, now);
 			if(onair > now){
 				chap.state = 'comming';
 			} else{

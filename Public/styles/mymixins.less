@@ -12,7 +12,7 @@
 	line-height: 1.8;
 	&.active {
 		color: #ffffff;
-		background: darken(@bg,30%);
+		background: darken(@bg, 30%);
 		border: @border 1px solid;
 	}
 	/*&:hover {
@@ -20,7 +20,7 @@
 	}*/
 	&.disabled {
 		background: #c4c4c4;
-		border: darken(@border,30%) 1px solid;
+		border: darken(@border, 30%) 1px solid;
 	}
 }
 
@@ -44,12 +44,37 @@
 	transform-origin: @x @y @z;
 }
 
-.perspective(@det){
+.perspective(@det) {
 	-webkit-perspective: @det;
 	-moz-perspective: @det;
 	-o-perspective: @det;
 	-ms-perspective: @det;
 	perspective: @det;
+}
+
+.animation(@ani) {
+	-webkit-animation: @ani;
+	-moz-animation: @ani;
+	-ms-animation: @ani;
+	animation: @ani;
+}
+.animation-timing-function(@ani) {
+	-webkit-animation-timing-function: @ani;
+	-moz-animation-timing-function: @ani;
+	-ms-animation-timing-function: @ani;
+	animation-timing-function: @ani;
+}
+.animation-name(@name) {
+	-webkit-animation-name: @name;
+	-moz-animation-name: @name;
+	-ms-animation-name: @name;
+	animation-name: @name;
+}
+.animation-iteration-count(@cnt) {
+	-webkit-animation-iteration-count: @cnt;
+	-moz-animation-iteration-count: @cnt;
+	-ms-animation-iteration-count: @cnt;
+	animation-iteration-count: @cnt;
 }
 
 .columns(@number) {

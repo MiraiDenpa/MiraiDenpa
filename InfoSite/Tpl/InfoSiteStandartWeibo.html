@@ -1,0 +1,67 @@
+<div id="[id]" class="WeiboContainer [class]">
+	<div class="wrap">
+		<div class="Loader">
+			<div class="center">
+				<h1 class="text">
+					<span class="clickStart">点击加载评论</span>
+				</h1>
+			</div>
+		</div>
+		<ul class="WBList">
+			<li id="%id%" class="weibo hide">
+				<img class="avatar" src=""/>
+				<div class="c">
+					<div class="head">
+						<span class="user">
+						<span class="nickname"></span>
+						（
+						<a class="user-link" target="_blank"></a>
+						）
+						</span>
+						<span class="time">xxxx-xx-xx</span>
+					</div>
+					<div class="body">
+						<div class="content"></div>
+						<div class="forward"></div>
+					</div>
+				</div>
+				<div class="foot">
+					&nbsp;
+					<a class="btnForward" data-id="%id%">转
+					<span class="beforwardcount">(0)</span>
+					</a>
+					<a class="">评
+					<span class="">(0)</span>
+					</a>
+					<a class="">赞</a>
+				</div>
+			</li>
+		</ul>
+		<div class="page_container">
+			<include file="!items/page" id="[pager]" class="hide"/>
+		</div>
+	</div>
+	<div class="Sender">
+		<form action="" method="post" class="login_visable" onsubmit="return false;">
+			<label class="send_label" for="unused_id_weibo_content">发表评论：</label>
+			<input type="hidden" name="forward_type" value="mirai/info-entry"/>
+			<input type="hidden" name="forward_content" value="{$doc->_oid}"/>
+			<textarea id="unused_id_weibo_content" name="content" required="required" class="form-control show"></textarea>
+			<input type="submit" class="btn btn-primary pull-right" value="发布"/>
+			<div class="forward-tip">
+				<div class="tip">
+					<span class="text"></span>
+					<span class="glyphicon glyphicon-remove"></span>
+				</div>
+				<div class="content-tip"></div>
+			</div>
+		</form>
+		<div class="login_unvisable">
+			<a href="[%url app='user' action='login' method='index'/%]">登录</a>
+			或
+			<a href="[%url app='user' action='register' method='index'/%]">注册</a>
+			后可以发表评论。
+		</div>
+	</div>
+	<div class="clearfix"></div>
+</div>

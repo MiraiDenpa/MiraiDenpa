@@ -32,8 +32,7 @@ class WeiboMyAction extends Action{
 		$this->dispatcher->request_method = 'POST';
 		//
 		$userlist = ThinkInstance::D('UserList');
-		$list     = array_column($userlist->field('uid')
-										 ->select(),
+		$list     = array_column($userlist->field('uid')->select(),
 								 'uid');
 		$users    = function () use ($list){
 			static $i;
@@ -135,6 +134,13 @@ class WeiboMyAction extends Action{
 
 	/**  */
 	final public function next(){
+		//$str = 'content=asdsadasd' . dechex(rand(0,
+		//										 65535)) . 'asdsad&channel=chap526240db7f8b9a891c8b4567_0&forward%5Btype%5D=mirai%2Fdenpa&forward%5Bcontent%5D=52863f137f8b9aee1f8b456b&forward%5Blist%5D=&forward%5Boriginal%5D=&forward%5Barg1%5D=&forward%5Barg2%5D=';
+		//$str = 'content=asdsadasd' . dechex(rand(0,
+		//										 65535)) . 'asdsad&channel=chap526240db7f8b9a891c8b4567_0&forward%5Btype%5D=mirai%2Finfo-chapter&forward%5Bcontent%5D=0&forward%5Blist%5D=&forward%5Boriginal%5D=&forward%5Barg1%5D=526240db7f8b9a891c8b4567&forward%5Barg2%5D=';
+		//parse_str($str, $_POST);
+		//$this->dispatcher->request_method = 'POST';
+
 		if($this->dispatcher->request_method !== 'POST'){
 			return $this->error(ERR_NALLOW_HTTP_METHOD, 'only POST');
 		}
@@ -255,6 +261,13 @@ class WeiboMyAction extends Action{
 			} else{
 				// 转发内容不是另一条微博
 				$data->level = 0;
+				if(!is_array($data->forward->original)){
+					if(!empty($data->forward->original) || is_numeric($data->forward->original)){
+						$data->forward->original = [$data->forward->original];
+					} else{
+						$data->forward->original = null;
+					}
+				}
 			}
 		} else{
 			// 原创微博

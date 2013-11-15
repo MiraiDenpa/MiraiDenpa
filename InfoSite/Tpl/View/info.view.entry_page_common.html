@@ -12,13 +12,16 @@
 	scripts/infosite.entry_vote.js
 	scripts/infosite.entry_page.js
 	scripts/infosite.entry_comment.js
+	scripts/infosite.entry_comment_support.js
 	scripts/infosite.entry_detailinfo.js
 	scripts/infosite.entry_chapter_program.js
+	scripts/infosite.entry_chapter_comment.js
 	scripts/infosite.entry_chapter_ui.js
 	styles/weibo.infosite.less
 	styles/infosite.vote.less
 	styles/infosite.common_struct.less
 	styles/infosite.chapter.less
+	styles/loader.less
 	jslib-gt/enhanced_link.js
 	jslib-gt/middle-click.js
 </BrowserLib>
@@ -31,226 +34,190 @@
 </AddHeader>
 <div id="chapter_detail" class="full_cover">
 	<nav class="menu">
-		<div><div class="text">基本信息</div></div>
-		<div><div class="text">其他</div></div>
-		<div class="goback"><div class="text">返回</div></div>
+		<div class="item" data-tab="info">
+			<div class="text">基本信息</div>
+		</div>
+		<div class="item disabled" data-tab="staff">
+			<div class="text">制作信息</div>
+		</div>
+		<div class="item disabled" data-tab="unofficial">
+			<div class="text">内容简介</div>
+		</div>
+		<div class="item" data-tab="weibo">
+			<div class="text">评论</div>
+		</div>
+		<div class="item" data-tab="view">
+			<div class="text">在线观看</div>
+		</div>
+		<div class="options">
+			<div class="item" data-action="mark">
+				<div class="text">标记为...</div>
+			</div>
+			<div class="item col-xs-6 text-center prev" data-action="prev-ep">
+				<div class="text glyphicon glyphicon-chevron-left"></div>
+			</div>
+			<div class="item col-xs-6 text-center next" data-action="next-ep">
+				<div class="text glyphicon glyphicon-chevron-right"></div>
+			</div>
+			<div class="clearfix"></div>
+			<div class="item" data-action="goback">
+				<div class="text">返回</div>
+			</div>
+		</div>
 	</nav>
 	<article class="main">
-		<section>asdasdasda<pre>aaaaaa
-			bbbb
-			cccc</pre>
+		<header>第...话 —— ...</header>
+		<div class="loader loading-blockfly hide" data-block-count="5" data-speed="4000"></div>
+		<section class="WB">
+			<include file=":InfoSiteStandartWeibo" id="ChapComment" pager="chappager"/>
+			<div class="message alert"></div>
 		</section>
 	</article>
 </div>
 <div class="container" id="mainContainer">
-<div id="wrap">
-<div id="mainInfo" class="row row-compact clearfix">
-	<div class="left">
-		<img src="{$doc->cover_pic}">
-		<div class="text-center">
-			<div class="vote_small">
-				<table class="disp">
-					<tr>
-						<td class="name">...</td>
-						<td class="value">0.0</td>
-					</tr>
-				</table>
-				<div>
-					<a>查看详情</a>
+	<div id="wrap">
+		<div id="mainInfo" class="row row-compact clearfix">
+			<div class="left">
+				<img src="{$doc->cover_pic}">
+				<div class="text-center">
+					<div class="vote_small">
+						<table class="disp">
+							<tr>
+								<td class="name">...</td>
+								<td class="value">0.0</td>
+							</tr>
+						</table>
+						<div>
+							<a>查看详情</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="vote_large col-sm-9">
+				<form id="user_vote" action="[%url app='info' action='Vote' method='index'/%]" type="ajax" method="post">
+					<input name="id" type="hidden" value="{$doc->_oid}"/>
+					<div class="contain"></div>
+					<div class="clearfix"></div>
+					<div class="foot login_visable text-right col-xs-12">
+						<a class="btn btn-link">查看大家的评分</a>
+						<input id="submitbtn" class="btn btn-info" type="submit" value="保存我的评分"/>
+					</div>
+				</form>
+			</div>
+			<div class="center col-sm-9">
+				<div id="basic" class="panel panel-tab panel-primary">
+					<div class="hovershow trans-opacity panel-heading title">
+						<span class="active switch">{$doc->origin_name}</span>
+						<small class="insert-sign hovershow-item">
+							<a href="[%url app='info' action='Upload' method='index' param-id='{$doc._id}'/%]" class="text-muted">[修改]</a>
+						</small>
+						<if condition="count($doc['name']) gt 1">
+							<section class="pull-right alias">
+								<span style="position: relative;">
+								<a data-toggle="dropdown" role="button">别名</a>
+								<ul class="dropdown-menu" style="left: auto;right: 0;color: black;">
+									<volist name="doc.name" id="content">
+										<li><h3 class="text-center">{$content}</h3></li>
+									</volist>
+								</ul>
+								</span>
+							</section>
+						</if>
+					</div>
+					<div class="panel-body active">{$doc->detail|nl2br}</div>
+					<div class="panel-footer"></div>
+				</div>
+			</div>
+			<div class="right col-sm-3">
+				<div class="bui-inputlist inline" name="name">
+					<ul class="list">
+						<li>
+							<span class="bui-label">标签</span>
+						</li>
+						<li>
+							<span class="bui-label">标了个签签签签签</span>
+						</li>
+						<li>
+							<span class="bui-label">标签</span>
+						</li>
+					</ul>
+					<div class="control">
+						<input type="text" class="form-control input-sm" name="" placeholder="添加标签">
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<div class="vote_large col-sm-9">
-		<form id="user_vote" action="[%url app='info' action='Vote' method='index'/%]" type="ajax" method="post">
-			<input name="id" type="hidden" value="{$doc->_oid}"/>
-			<div class="contain"></div>
-			<div class="clearfix"></div>
-			<div class="foot login_visable text-right col-xs-12">
-				<a class="btn btn-link">查看大家的评分</a>
-				<input id="submitbtn" class="btn btn-info" type="submit" value="保存我的评分"/>
-			</div>
-		</form>
-	</div>
-	<div class="center col-sm-9">
-		<div id="basic" class="panel panel-tab panel-primary">
-			<div class="hovershow trans-opacity panel-heading title">
-				<span class="active switch">{$doc->origin_name}</span>
-				<small class="insert-sign hovershow-item">
-					<a href="[%url app='info' action='Upload' method='index' param-id='{$doc._id}'/%]" class="text-muted">[修改]</a>
+		<div class="clearfix"></div>
+		<div id="chapter">
+			<h4 class="hovershow trans-opacity">章节列表
+				<small class="hovershow-item">
+					<a href="[%url app='info' action='Chapter' method='edit' param-id='{$doc._id}'/%]" class="text-muted">[修改]</a>
 				</small>
-				<if condition="count($doc['name']) gt 1">
-					<section class="pull-right alias">
-						<span style="position: relative;">
-						<a data-toggle="dropdown" role="button">别名</a>
-						<ul class="dropdown-menu" style="left: auto;right: 0;color: black;">
-							<volist name="doc.name" id="content">
-								<li><h3 class="text-center">{$content}</h3></li>
-							</volist>
-						</ul>
-						</span>
-					</section>
-				</if>
+				<div class="pull-right buttons">
+					<a class="btn btn-default btn-sm nsel" data-action="mark-pass">
+					<span class="glyphicon glyphicon-floppy-saved"></span>
+					标为已看
+					</a>
+					<a class="btn btn-default btn-sm nsel" data-action="mark-no">
+					<span class="glyphicon glyphicon-floppy-remove"></span>
+					标为未看
+					</a>
+					<a class="btn btn-default btn-sm nsel" data-action="none">
+					<span class="glyphicon glyphicon-unchecked"></span>
+					取消选择
+					</a>
+					<a class="btn btn-default btn-sm nsel" data-action="revert">
+					<span class="glyphicon glyphicon-adjust"></span>
+					反选
+					</a>
+					<a class="btn btn-default btn-sm" data-action="all">
+					<span class="glyphicon glyphicon-th"></span>
+					全选
+					</a>
+				</div>
+			</h4>
+			<div class="clearfix"></div>
+			<div class="list">
+				<ul class="clearfix">
+					<volist name="doc._chapter" id="content">
+						<li class="tip chapterItem" data-id="{$key}">
+							<section>
+								<header class="title">{$content.key} - {$content.title}</header>
+								<div class="first">{$content.first_date}&nbsp;{$content.first_hour}:{$content.first_minute}</div>
+								<div class="time">{$content.time}</div>
+								<article class="hide">
+									{$content.info|nl2br}:{$content.staff|nl2br}
+								</article>
+								<footer class="state">...</footer>
+							</section>
+							<div class="border">
+								<span class="corn">
+								<span class="glyphicon glyphicon-ok"></span>
+								</span>
+							</div>
+						</li>
+					</volist>
+				</ul>
 			</div>
-			<div class="panel-body active">{$doc->detail|nl2br}</div>
-			<div class="panel-footer"></div>
-		</div>
-	</div>
-	<div class="right col-sm-3">
-		<div class="bui-inputlist inline" name="name">
-			<ul class="list">
-				<li>
-					<span class="bui-label">标签</span>
-				</li>
-				<li>
-					<span class="bui-label">标了个签签签签签</span>
-				</li>
-				<li>
-					<span class="bui-label">标签</span>
-				</li>
-			</ul>
-			<div class="control">
-				<input type="text" class="form-control input-sm" name="" placeholder="添加标签">
+			<div class="expand">
+				<span class="btn btn-default">
+				<span class="glyphicon glyphicon-arrow-down"></span>
+				</span>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="clearfix"></div>
-<div id="chapter">
-	<h4 class="hovershow trans-opacity">章节列表
-		<small class="hovershow-item">
-			<a href="[%url app='info' action='Chapter' method='edit' param-id='{$doc._id}'/%]" class="text-muted">[修改]</a>
-		</small>
-		<div class="pull-right buttons">
-			<a class="btn btn-default btn-sm nsel" data-action="mark-pass">
-			<span class="glyphicon glyphicon-floppy-saved"></span>
-			标为已看
-			</a>
-			<a class="btn btn-default btn-sm nsel" data-action="mark-no">
-			<span class="glyphicon glyphicon-floppy-remove"></span>
-			标为未看
-			</a>
-			<a class="btn btn-default btn-sm nsel" data-action="none">
-			<span class="glyphicon glyphicon-unchecked"></span>
-			取消选择
-			</a>
-			<a class="btn btn-default btn-sm nsel" data-action="revert">
-			<span class="glyphicon glyphicon-adjust"></span>
-			反选
-			</a>
-			<a class="btn btn-default btn-sm" data-action="all">
-			<span class="glyphicon glyphicon-th"></span>
-			全选
-			</a>
-		</div>
-	</h4>
-	<div class="clearfix"></div>
-	<div class="list">
-		<ul class="clearfix">
-			<volist name="doc._chapter" id="content">
-				<li class="tip chapterItem" data-id="{$key}">
-					<section>
-						<header class="title">{$content.key} - {$content.title}</header>
-						<div class="first">{$content.first_date}&nbsp;{$content.first_hour}:{$content.first_minute}</div>
-						<div class="time">{$content.time}</div>
-						<article class="hide">
-							{$content.info|nl2br}:{$content.staff|nl2br}
-						</article>
-						<footer class="state">...</footer>
-					</section>
-					<div class="border">
-						<span class="corn">
-						<span class="glyphicon glyphicon-ok"></span>
-						</span>
-					</div>
-				</li>
-			</volist>
-		</ul>
-	</div>
-	<div class="expand">
-		<span class="btn btn-default">
-		<span class="glyphicon glyphicon-arrow-down"></span>
-		</span>
-	</div>
-</div>
-<div class="clearfix"></div>
-<hr/>
-<div id="extend" class="row row-compact">
-	<div class="info col-sm-3">
-		<div>
-			<span>[制作信息]</span>
-			<span>[关联条目]</span>
-		</div>
-		<div class="">
-			<table id="detail_info"></table>
-		</div>
-	</div>
-	<div id="WeiboContainer" data-weibo-channel="info{$doc->_oid}" class="col-sm-9">
-		<div class="wrap">
-			<div class="Loader">
-				<div class="center">
-					<h1 class="text">
-						<span class="clickStart">点击加载评论</span>
-					</h1>
+		<div class="clearfix"></div>
+		<hr/>
+		<div id="extend" class="row row-compact">
+			<div class="info col-sm-3">
+				<div>
+					<span>[制作信息]</span>
+					<span>[关联条目]</span>
+				</div>
+				<div class="">
+					<table id="detail_info"></table>
 				</div>
 			</div>
-			<ul class="WBList">
-				<li id="%id%" class="weibo hide">
-					<img class="avatar" src=""/>
-					<div class="c">
-						<div class="head">
-							<span class="user">
-							<span class="nickname"></span>
-							（
-							<a class="user-link" target="_blank"></a>
-							）
-							</span>
-							<span class="time">xxxx-xx-xx</span>
-						</div>
-						<div class="body">
-							<div class="content"></div>
-							<div class="forward"></div>
-						</div>
-					</div>
-					<div class="foot">
-						&nbsp;
-						<a class="btnForward" data-id="%id%">转
-						<span class="beforwardcount">(0)</span>
-						</a>
-						<a class="">评
-						<span class="">(0)</span>
-						</a>
-						<a class="">赞</a>
-					</div>
-				</li>
-			</ul>
-			<div class="page_container">
-				<include file="!items/page" id="mainpager" class="hide"/>
-			</div>
-		</div>
-		<div class="Sender">
-			<form action="" method="post" class="login_visable" onsubmit="return false;">
-				<label class="send_label" for="weibo_content">发表评论：</label>
-				<input type="hidden" name="forward_type" value="mirai/info-entry"/>
-				<input type="hidden" name="forward_content" value="{$doc->_oid}"/>
-				<textarea id="weibo_content" name="content" required="required" class="form-control show"></textarea>
-				<input type="submit" class="btn btn-primary pull-right" value="发布"/>
-				<div class="forward-tip">
-					<div class="tip">
-						<span class="text"></span>
-						<span class="glyphicon glyphicon-remove"></span>
-					</div>
-					<div class="content-tip"></div>
-				</div>
-			</form>
-			<div class="login_unvisable">
-				<a href="[%url app='user' action='login' method='index'/%]">登录</a>
-				或
-				<a href="[%url app='user' action='register' method='index'/%]">注册</a>
-				后可以发表评论。
-			</div>
+			<include file=":InfoSiteStandartWeibo" id="WeiboContainer" class="col-sm-9" pager="mainpager"/>
 		</div>
 	</div>
-</div>
-</div>
 </div>

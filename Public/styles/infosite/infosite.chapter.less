@@ -191,40 +191,47 @@ li.chapterItem {
 		position: relative;
 		background: #660094;
 		color: white;
-		> div {
+		.item.disabled{
+			cursor: default;
+			color: #d369f5;
+			.activeFont;
+		}
+		.item:not(.disabled) {
 			cursor: pointer;
-			.h1font;
+			.activeFont;
 			&:hover,
 			&.active,
 			&:active {
 				background: #660033;
 			}
 			&:active {
-				> .text {
+				.text {
 					.transform(scale(0.9));
 				}
 			}
-			> .text {
+			.text {
 				.transform-origin(0, 50%);
 				.transition-transform(100ms);
 			}
 		}
-		.goback {
+		.options {
 			position: absolute;
 		}
 	}
 	> article {
 		background: rgb(65, 65, 69);
+		overflow-x: hidden;
+		overflow-y: scroll;
 	}
 	@media (max-width: @screen-sm) {
 	}
 	@media (min-width: @screen-sm) {
 		> nav {
-			width: 210px; // * 菜单4个汉字
+			width: 280px; // * 菜单5个汉字
 			float: left;
 			height: 100%;
 			padding: 40px 0;
-			> div {
+			.item {
 				display: block;
 				padding: 10px 30px;
 				margin-bottom: 20px;
@@ -232,12 +239,42 @@ li.chapterItem {
 		}
 
 		> article {
-			height: 100%;
+			position: absolute;
+			right: 0;
+			left: 280px;
+			top: 0;
+			bottom: 0;
+			> header {
+				.h1font;
+				padding: 10px 30px;
+				background: #ffffff;
+				margin: 20px 0 0 0;
+			}
+			> section {
+				margin: 20px 0 0 0;
+			}
 		}
 
-		.goback {
+		.options {
 			width: 100%;
 			bottom: 0;
 		}
 	}
+}
+
+body.model-visable{
+	overflow:hidden !important;
+}
+
+.activeFont(){
+	font-weight: 500;
+	line-height: 1.1;
+	font-size: 36px;
+	@media (max-height: 670px) {
+		font-size: 24px;
+	}
+}
+
+#ChapComment{
+	background: floralwhite;
 }

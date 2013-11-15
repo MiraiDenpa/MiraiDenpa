@@ -27,6 +27,7 @@ $component = array(
 		'jquery/json3.js',
 		'jquery/jquery.history.js',
 	],
+	'styles/loader.less'                => ['scripts/loader.js'],
 	'bootstrap/bootstrap-datepicker.js' => ['bootstrap/datepicker.css'],
 	'jquery/jquery.fileupload.js'       => ['jquery/jquery.fileupload.css'],
 );
