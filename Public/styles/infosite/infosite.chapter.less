@@ -187,29 +187,42 @@ li.chapterItem {
 	}
 
 	> nav {
+		z-index: 20;
 		.user-select(none);
 		position: relative;
 		background: #660094;
 		color: white;
-		.item.disabled{
-			cursor: default;
-			color: #d369f5;
-			.activeFont;
-		}
-		.item:not(.disabled) {
+		width: 280px; // * 菜单5个汉字
+		float: left;
+		height: 100%;
+		padding: 40px 0;
+		.item {
+			display: block;
+			padding: 10px 30px;
+			margin-bottom: 20px;
+			position: relative;
 			cursor: pointer;
 			.activeFont;
-			&:hover,
-			&.active,
-			&:active {
-				background: #660033;
+			&.disabled {
+				cursor: default;
+				color: #d369f5;
 			}
-			&:active {
-				.text {
-					.transform(scale(0.9));
+			&:not(.disabled) {
+				&:hover,
+				&.active,
+				&:active {
+					background: #660033;
+				}
+			}
+			&:not(.active) {
+				&:active {
+					.text {
+						.transform(scale(0.9));
+					}
 				}
 			}
 			.text {
+				display: block;
 				.transform-origin(0, 50%);
 				.transition-transform(100ms);
 			}
@@ -218,55 +231,49 @@ li.chapterItem {
 			position: absolute;
 		}
 	}
+
+	> .loader {
+		position: absolute;
+		right: 0;
+		left: 280px;
+		top: 0;
+		height: 4px;
+		display: block !important;
+		z-index: 15;
+	}
+
 	> article {
+		z-index: 10;
 		background: rgb(65, 65, 69);
 		overflow-x: hidden;
 		overflow-y: scroll;
+		position: absolute;
+		right: 0;
+		left: 280px;
+		top: 0;
+		bottom: 0;
+		> header {
+			.h1font;
+			padding: 10px 30px;
+			background: #ffffff;
+			margin: 20px 0 0 0;
+		}
+		> section {
+			margin: 20px 0 0 0;
+		}
 	}
-	@media (max-width: @screen-sm) {
-	}
-	@media (min-width: @screen-sm) {
-		> nav {
-			width: 280px; // * 菜单5个汉字
-			float: left;
-			height: 100%;
-			padding: 40px 0;
-			.item {
-				display: block;
-				padding: 10px 30px;
-				margin-bottom: 20px;
-			}
-		}
 
-		> article {
-			position: absolute;
-			right: 0;
-			left: 280px;
-			top: 0;
-			bottom: 0;
-			> header {
-				.h1font;
-				padding: 10px 30px;
-				background: #ffffff;
-				margin: 20px 0 0 0;
-			}
-			> section {
-				margin: 20px 0 0 0;
-			}
-		}
-
-		.options {
-			width: 100%;
-			bottom: 0;
-		}
+	.options {
+		width: 100%;
+		bottom: 0;
 	}
 }
 
-body.model-visable{
-	overflow:hidden !important;
+body.model-visable {
+	overflow: hidden !important;
 }
 
-.activeFont(){
+.activeFont() {
 	font-weight: 500;
 	line-height: 1.1;
 	font-size: 36px;
@@ -275,6 +282,33 @@ body.model-visable{
 	}
 }
 
-#ChapComment{
+#ChapComment {
 	background: floralwhite;
+}
+
+#chapmarkmenu {
+	list-style: none;
+	position: absolute;
+	padding: 0;
+	margin: 0;
+	background: ghostwhite;
+	border: black 2px solid;
+	bottom: 100%;
+	.transition-transform(100ms);
+	> li {
+		color: black;
+		font-weight: bold;
+		font-size: 27px;
+		padding: 5px 13px;
+		cursor: pointer;
+		&:hover{
+			color: ghostwhite;
+			background-color: black;
+		}
+	}
+
+	display: none;
+	.active &{
+		display: block;
+	}
 }

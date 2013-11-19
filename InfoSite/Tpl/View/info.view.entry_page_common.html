@@ -35,23 +35,28 @@
 <div id="chapter_detail" class="full_cover">
 	<nav class="menu">
 		<div class="item" data-tab="info">
-			<div class="text">基本信息</div>
+			<span class="text">基本信息</span>
 		</div>
 		<div class="item disabled" data-tab="staff">
-			<div class="text">制作信息</div>
+			<span class="text">制作信息</span>
 		</div>
 		<div class="item disabled" data-tab="unofficial">
-			<div class="text">内容简介</div>
+			<span class="text">内容简介</span>
 		</div>
 		<div class="item" data-tab="weibo">
-			<div class="text">评论</div>
+			<span class="text">评论</span>
 		</div>
 		<div class="item" data-tab="view">
-			<div class="text">在线观看</div>
+			<span class="text">在线观看</span>
 		</div>
 		<div class="options">
 			<div class="item" data-action="mark">
 				<div class="text">标记为...</div>
+				<ul id="chapmarkmenu">
+					<li data-type="pass">已看</li>
+					<li data-type="notpass">未看</li>
+					<li data-type="current">在看</li>
+				</ul>
 			</div>
 			<div class="item col-xs-6 text-center prev" data-action="prev-ep">
 				<div class="text glyphicon glyphicon-chevron-left"></div>
@@ -65,9 +70,9 @@
 			</div>
 		</div>
 	</nav>
+	<div class="loader loading-blockfly" data-block-count="5" data-speed="4000"></div>
 	<article class="main">
 		<header>第...话 —— ...</header>
-		<div class="loader loading-blockfly hide" data-block-count="5" data-speed="4000"></div>
 		<section class="WB">
 			<include file=":InfoSiteStandartWeibo" id="ChapComment" pager="chappager"/>
 			<div class="message alert"></div>

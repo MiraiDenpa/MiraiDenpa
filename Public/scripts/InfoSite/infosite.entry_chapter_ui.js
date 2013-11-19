@@ -6,7 +6,7 @@ $(function (){
 	var list = listContainer.find('ul');
 	var $btnList = list.children();
 
-	// 处理左右键点击章节按钮
+	// 大小和宽度
 	var item_coord = list.find('li:first').outerHeight(true);
 	var coord_center = 0.3;
 	var last_clicked = undefined;
@@ -87,10 +87,10 @@ $(function (){
 			refreshButtons();
 			break;
 		case 'mark-pass':
-
+			InfoChapPrograssMark(true);
 			break;
 		case 'mark-no':
-
+			InfoChapPrograssMark(false);
 			break;
 		default :
 		}

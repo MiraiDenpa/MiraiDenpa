@@ -87,7 +87,17 @@ function StandartInfoSiteWeiboList(options){
 				$('<span class="display_full btn btn-default btn-sm" style="padding:5px;" title="查看更多"/>')
 						.append($('<span class="glyphicon glyphicon-arrow-down"/>'))
 						.data({id: wb._id['$id']})
-						.insertAfter(ul);
+						.insertAfter(ul).click(function (e){
+							var id = $(this).data('id');
+							if(!id){
+								return;
+							}
+							if(e.which === 2){
+								window.open('http://' + window.Think.URL_MAP['weibo'] + '/' + id);
+							} else{
+
+							}
+						});
 			}
 		}
 	}
@@ -142,7 +152,6 @@ function StandartInfoSiteWeiboList(options){
 			container.trigger('mirai.denpa.statechange', ['ready']);
 		});
 		channel.pageHandler(function (page){
-			console.log(pager);
 			pager.removeClass('hide').pager(page);
 		});
 	}
@@ -150,23 +159,21 @@ function StandartInfoSiteWeiboList(options){
 	var comment_loaded = false, sender_loaded = false;
 
 	function initWeiboComment(){
-		if(comment_loaded){
-			return;
+		if(!comment_loaded){
+			container.addClass('loaded');
+			pager.on('page', function (e, page){
+				container.trigger('mirai.denpa.statechange', ['ongoing']);
+				request.page(page);
+			});
+
+			// 启动
+			$(document).off('click', initWeiboComment);
+
+			handleChannel(request);
+			comment_loaded = true;
 		}
-		container.addClass('loaded');
-		pager.on('page', function (e, page){
-			container.trigger('mirai.denpa.statechange', ['ongoing']);
-			request.page(page);
-		});
-
-		// 启动
-		$(document).off('click', initWeiboComment);
-		container.trigger('mirai.denpa.statechange', ['ongoing']);
-
-		handleChannel(request);
 		request.page();
-
-		comment_loaded = true;
+		container.trigger('mirai.denpa.statechange', ['ongoing']);
 	}
 
 	var sender;
@@ -253,6 +260,10 @@ function StandartInfoSiteWeiboList(options){
 	} else{
 		window.onlogin(initSenderBox);
 	}
+
+	container.clear = function (){
+		list.empty();
+	};
 
 	container.initWeiboComment = initWeiboComment;
 	container.handleChannel = handleChannel;

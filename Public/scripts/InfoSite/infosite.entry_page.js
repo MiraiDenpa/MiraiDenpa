@@ -71,18 +71,6 @@ $(function (){
 		bootUserVote();
 	});
 
-	$('#WeiboContainer').register_middle_hack('.display_full', function (e){
-		var id = $(this).data('id');
-		if(!id){
-			return;
-		}
-		if(e.which === 2){
-			window.open('http://' + window.Think.URL_MAP['weibo'] + '/' + id);
-		} else{
-
-		}
-	});
-
 	// 显示评分部分
 	function instance_vote(){
 		"use strict";

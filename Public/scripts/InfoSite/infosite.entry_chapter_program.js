@@ -23,8 +23,6 @@ function createitem(id){
 		$dummyItem.addClass('clicked');
 	}, 0);
 }
-$(function (){
-});
 
 var detail_pannel = null;
 function showDetailPannel(){
@@ -43,7 +41,7 @@ function showDetailPannel(){
 			return;
 		}
 		if($this.data('tab') == 'weibo'){
-			createWeiboFramework(bodylist[index],detail_pannel.find('.loader'));
+			createWeiboFramework(bodylist[index], detail_pannel.find('.loader'));
 			prepare_weibo_channel.call(detail_pannel, current_id);
 		}
 		if(lasttab == index){
@@ -103,8 +101,25 @@ function showDetailPannel(){
 			}
 			$(tablist[0]).click();
 			break;
+		case 'mark':
+			$(this).toggleClass('active');
+			break;
 		default :
 			console.log($(this).data('action'));
+		}
+	});
+	// “标记为” 的项目
+	$('#chapmarkmenu').on('click', '>li', function (){
+		switch($(this).data('type')){
+		case 'pass':
+			__PrograssMarkPass([current_id]);
+			break;
+		case 'notpass':
+			__PrograssMarkUnPass([current_id]);
+			break;
+		case 'current':
+		default:
+			console.log($(this).data('type'));
 		}
 	});
 
@@ -123,9 +138,15 @@ function showDetailPannel(){
 
 		tabmap['info'].body.text(chap.info);
 		static_header.text('第' + chap.key + '话 —— ' + chap.title);
-		if(chap['staff']){
-			//basicBox.tab('staff', '制作信息', chap['staff']);
-		}
+
+		$(['staff', 'unofficial']).each(function (_, name){
+			if(chap[name]){
+				tabmap[name].removeClass('disabled');
+				tabmap[name].body.text(chap[name]);
+			} else{
+				tabmap[name].addClass('disabled')
+			}
+		});
 		//basicBox.tab('unofficial', '内容简介', chap['unofficial']);
 		current_id = id;
 	}
@@ -133,11 +154,6 @@ function showDetailPannel(){
 	detail_pannel.switchContent = switchContent;
 
 	return detail_pannel;
-}
-
-function mark_actions($align){
-	"use strict";
-
 }
 
 function handleChapterClick(){
@@ -166,6 +182,7 @@ function handleChapterSelect(id){
 		ChapterSelected.push(id);
 	}
 }
+
 function handleChapterDeselect(id){
 	"use strict";
 	ChapterDefine[id].dom.removeClass('selected');
@@ -173,6 +190,29 @@ function handleChapterDeselect(id){
 	if(i > -1){
 		ChapterSelected.splice(i, 1);
 	}
+}
+
+function InfoChapPrograssMark(passed){
+	"use strict";
+	if(passed){
+		__PrograssMarkPass(ChapterSelected);
+	}else{
+		__PrograssMarkUnPass(ChapterSelected);
+	}
+}
+
+function __PrograssMarkPass(chap_arr){
+	//window.doc._id.$id
+	console.log('__PrograssMarkPass: ',chap_arr);
+}
+
+function __PrograssMarkUnPass(chap_arr){
+	//window.doc._id.$id
+	console.log('__PrograssMarkUnPass: ',chap_arr);
+}
+
+function __PrograssMarkSpecial(chap_arr){
+
 }
 
 // 初始化播放状态
