@@ -28,6 +28,8 @@ trait UserAction{
 	protected function doLogin($allow_public = false){
 		if(isset($_GET['token'])){
 			$this->token = $_GET['token'];
+		} elseif(isset($_POST['token'])){
+			$this->token = $_POST['token'];
 		} elseif(isset($_COOKIE['token'])){
 			$this->token = $_COOKIE['token'];
 		} elseif(!$this->token){
