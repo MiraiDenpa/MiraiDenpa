@@ -26,7 +26,7 @@ class InfoLoginAction extends Action{
 			if(!$addip){
 				$this->error(ERR_SERVER_FAULT_CURL, 'request on MIRAI_AUTHIP_URL');
 			}
-			if($auth['code']){
+			if($addip['code']){
 				$this->assign($auth);
 				$this->display('!user_error');
 			} else{
