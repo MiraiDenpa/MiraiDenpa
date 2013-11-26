@@ -1,18 +1,19 @@
 <?php
-$map                            = & $GLOBALS['URL_MAP'];
-$map['p-user-login-ip']         = _UC('user', 'Token', 'addip', '', ['token' => ''], 'php');
-$map['p-user-login-ip']         = _UC('user', 'Token', 'addip', '', ['token' => ''], 'php');
-$map['u-user-login-token']      = _UC('user', 'Token', 'info', '', [], 'json');
-$map['u-user-login-property']   = _UC('user', 'Property', 'me', '', [], 'json');
-$map['u-user-login-settings']   = _UC('user', 'Setting', '', '', [], 'json');
-$map['u-user-list-uid']      = _UC('user', 'list', 'uidlist', '', [], 'json');
-$map['u-infosite-cover-upload'] = _UC('info', 'Cover', 'uploadimage', '', [], 'json');
-
-$weibo = array(
-	'my'      => _UC('weibo', 'My', '', '', [], 'json'),
-	'channel' => _UC('info', 'Detail', '', '', [], 'json'),
-	'upload'  => _UC('info', 'Upload', '', '', [], 'json'),
-	'list'    => _UC('info', 'List', '', '', [], 'json'),
+$GLOBALS['URL_MAP'] = array(
+	'user'  => 'user.dianbo.me',
+	'home'  => 'u.dianbo.me',
+	'app'   => 'app.dianbo.me',
+	'info'  => 'info.dianbo.me',
+	'www'   => 'www.dianbo.me',
+	'weibo' => 't.dianbo.me',
+	'lafi'  => 'lafi.dianbo.me',
 );
-
-$map['weibo-framwork'] = $weibo;
+$GLOBALS['DOMAIN_MAP'] = array(
+	'user'  => 'dianbo.me',
+	'home'  => 'dianbo.me',
+	'app'   => 'dianbo.me',
+	'info'  => 'dianbo.me',
+	'www'   => 'dianbo.me',
+	'weibo' => 'dianbo.me',
+	'lafi'  => 'dianbo.me',
+);
