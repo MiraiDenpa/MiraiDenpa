@@ -51,7 +51,6 @@ $userlib   = array(
 	'artDialog' => ['artDialog/jquery.artDialog.js', 'artDialog/artDialog.plugins.js', '/artDialog/get_skin.js'],
 	'upload'    => [
 		'jquery/canvas-to-blob.js',
-		'jquery/load-image.min.js',
 		'jquery/jquery.fileupload.js',
 		'jquery/jquery.fileupload-process.js',
 		'jquery/jquery.fileupload-audio.js',

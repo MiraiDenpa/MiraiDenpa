@@ -4,7 +4,7 @@ trait UserAuthedAction{
 
 	/**
 	 * @constructor
-	 * @return null
+	 * @return null`
 	 */
 	protected function __UserAuthedAction(){
 		$error = $this->doLogin($this->allow_public);
