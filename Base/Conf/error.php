@@ -41,6 +41,9 @@ return array(
 	['FAIL_AUTH', '认证失败', '请重新登录。',
 		 ['登录官方应用' => _UC('user', 'login', 'index'), '浏览应用' => _UC('app', 'List', 'index')]
 	],
+	['FAIL_AUTH_PUBLIC', '认证失败', '请登录。',
+	 ['登录官方应用' => _UC('user', 'login', 'index'), '浏览应用' => _UC('app', 'List', 'index')]
+	],
 	['FAIL_PERMISSION', '权限不够', '请更换应用。'],
 	
 	['TIMEOUT', '操作超时', '请重新请求。'],

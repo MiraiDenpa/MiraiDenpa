@@ -13,8 +13,8 @@ function UserLogin($token, $allow_public, &$error = null){
 	case 'public':
 		$user = getPublicUser();
 		if(!$allow_public){
-			$error = ERR_FAIL_AUTH;
-			return null;
+			$error = ERR_FAIL_AUTH_PUBLIC;
+			return "not allow public";
 		}
 		break;
 	default:
@@ -23,7 +23,7 @@ function UserLogin($token, $allow_public, &$error = null){
 
 		if(!$user){
 			$error = ERR_FAIL_AUTH;
-			return null;
+			return "user not found";
 		}
 		if(!in_array(get_client_ip(), $user['ip'])){
 			$error = ERR_NALLOW_IP;

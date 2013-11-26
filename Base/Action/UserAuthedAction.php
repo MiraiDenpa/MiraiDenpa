@@ -9,7 +9,7 @@ trait UserAuthedAction{
 	protected function __UserAuthedAction(){
 		$error = $this->doLogin($this->allow_public);
 		if($error){
-			$this->error($error, 'token');
+			$this->error($error, $this->token_data? $this->token_data : 'token doLogin fail');
 			exit;
 		}
 	}
@@ -22,9 +22,7 @@ trait UserAuthedAction{
 			return $this->current_app;
 		}
 		$mdl = ThinkInstance::D('AppList');
-		return $this->current_app = $mdl
-				->where($this->token_data['app'])
-				->getApp();
+		return $this->current_app = $mdl->where($this->token_data['app'])->getApp();
 	}
 
 	/**
@@ -40,11 +38,6 @@ trait UserAuthedAction{
 	protected function syncLogin(){
 		$this->assign('_sync_login_token_data', json_encode($this->token_data));
 		$this->assign('_sync_login_property',
-					  json_encode($this
-										  ->currentUser()
-										  ->propertys()
-										  ->toArray()
-					  )
-		);
+					  json_encode($this->currentUser()->propertys()->toArray()));
 	}
 }
