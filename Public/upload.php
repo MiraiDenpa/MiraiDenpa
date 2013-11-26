@@ -30,14 +30,13 @@ register_shutdown_function("shutdown");
 pcntl_signal(SIGTERM, "shutdown");
 pcntl_signal(SIGINT, "shutdown");
 
-function shutdown($signal){
+function shutdown($signal = false){
 	global $esc, $hash_table;
 	static $called = false;
 	if($called){
 		return;
 	}
 	$called = true;
-	var_dump($signal);
 	echo $esc . 'c';
 	echo $esc . '[J';
 	file_put_contents('.file_hash', serialize($hash_table));
@@ -136,6 +135,7 @@ function pingFile($path){
 	if(!$path){
 		return false;
 	}
+	$path = str_replace(__DIR__, '', $path);
 	if(!isset($hash_table[$path]) || $hash_table[$path] !== md5_file($path)){
 		return $path;
 	} else{
@@ -149,6 +149,7 @@ function pongFile($path){
 	if(!$path){
 		return;
 	}
+	$path = str_replace(__DIR__, '', $path);
 	$hash_table[$path] = md5_file($path);
 }
 	
