@@ -7,7 +7,7 @@ class BangumiCurl{
 	private $_code;
 
 	/**  */
-	public function __construct(){
+	public function __construct($referer='http://bangumi.tv/'){
 		$this->curl = curl_init();
 		register_shutdown_function('curl_close', $this->curl);
 		curl_setopt_array($this->curl,
@@ -20,7 +20,7 @@ class BangumiCurl{
 							   CURLOPT_RETURNTRANSFER   => true,
 							   CURLOPT_COOKIEFILE       => 'cookie.txt',
 							   CURLOPT_COOKIEJAR        => 'cookie.txt',
-							   CURLOPT_REFERER          => 'http://bangumi.tv/',
+							   CURLOPT_REFERER          =>$referer,
 							   CURLOPT_MAXCONNECTS      => 30,
 							   CURLOPT_PROGRESSFUNCTION => [$this, '__progress'],
 						  ));

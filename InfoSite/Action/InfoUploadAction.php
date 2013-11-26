@@ -11,7 +11,7 @@ class InfoUploadAction extends Action{
 
 	final public function index(){
 		if($_GET['id']){
-			$mdl = ThinkInstance::D('InfoEntry');
+			$mdl  = ThinkInstance::D('InfoEntry');
 			$data = $mdl->getDocument($_GET['id']);
 			if($data){
 				$data->id = $_GET['id'];
@@ -49,8 +49,7 @@ class InfoUploadAction extends Action{
 
 		// 处理OneOf的结果
 		$data['classification'] = array_merge(array_keys($data['classification']),
-											  array_values($data['classification'])
-		);
+											  array_values($data['classification']));
 
 		$data['name'] = array_values($names);
 		if(!isset($data['id']) || !$data['id']){
@@ -59,7 +58,7 @@ class InfoUploadAction extends Action{
 			$data['_id'] = new MongoId($data['id']);
 		}
 		unset($data['id']);
-
+		
 		$data['_update'] = array(
 			'user' => [$this->currentUser()->uid],
 			'time' => time(),

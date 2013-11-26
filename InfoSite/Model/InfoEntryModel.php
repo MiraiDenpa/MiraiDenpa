@@ -78,8 +78,9 @@ class InfoEntryModel extends Mongoo{
 		unset($data['_update']);
 		unset($data['_history']);
 
+
 		$last = $this->findOne(['_id' => $id], ['_history' => false]);
-		ksort($last);
+
 		if(!$last){
 			$update_info['_data'] = & $data;
 			$ret                  = $this->insert([
@@ -89,6 +90,7 @@ class InfoEntryModel extends Mongoo{
 												  'name'     => $data['name']
 												  ]);
 		} else{
+			ksort($last);
 			$update_info['_data'] = & $data;
 			$ret                  = $this->diff($last, $data);
 			if(empty($ret)){

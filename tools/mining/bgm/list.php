@@ -1,6 +1,7 @@
 <?php
 require '../includes/curl.php';
 require '../includes/output.php';
+require '../includes/glob.php';
 
 /**  */
 class MainListIterator{
@@ -18,7 +19,7 @@ class MainListIterator{
 		$this->_curl = new BangumiCurl();
 		/** @noinspection PhpUsageOfSilenceOperatorInspection */
 		@mkdir('raw/' . $listType . '/listing/error', 0777, true);
-		
+
 		$this->listType = $listType;
 		$this->url      = self::$lists[$listType];
 		/** @noinspection PhpUsageOfSilenceOperatorInspection */
@@ -68,10 +69,10 @@ class MainListIterator{
 		$code           = $this->_curl->code;
 
 		$list_found = strpos($ret, 'id="browserItemList"');
-		if($list_found===false){
+		if($list_found === false){
 			$list_found = strpos($ret, 'id="columnCrtBrowserB"');
 		}
-		
+
 		if($code == 200 && $list_found){
 			$save_to = 'raw/' . $this->listType . '/listing/' . $this->current_page . '.html';
 			file_put_contents($save_to, $ret);
@@ -93,14 +94,17 @@ class MainListIterator{
 		'music' => "http://bangumi.tv/music/browser?sort=title&page=",
 		'game'  => "http://bangumi.tv/game/browser?sort=title&page=",
 		'real'  => "http://bangumi.tv/real/browser/platform/all?sort=title&page=",
-		'comic'  => "http://bangumi.tv/book/browser/comic/series?page=",
+		'comic' => "http://bangumi.tv/book/browser/comic/series?page=",
+		'novel' => "http://bangumi.tv/book/browser/novel/series?page=",
 	];
 }
 
 /** @noinspection PhpUsageOfSilenceOperatorInspection */
-@mkdir('raw');
+@mkdir('raw', 0777, true);
 /** @noinspection PhpUsageOfSilenceOperatorInspection */
-@mkdir('log');
+@mkdir('log', 0777, true);
+/** @noinspection PhpUsageOfSilenceOperatorInspection */
+@mkdir('output', 0777, true);
 
 $itr_list = [];
 boot(function ($lname){
@@ -125,21 +129,23 @@ boot(function ($lname){
 		}
 
 		foreach($mats[1] as $i => $url){
-			$title = $mats[4][$i]? $mats[4][$i] : $mats[2][$i];
 			if(isset($url_to_title[$url])){
-				error_and_log('url冲突', ['原始' => $url_to_title[$url], '新的' => $title]);
+				error_and_log('url冲突', ['原始' => $url_to_title[$url][0], '新的' => $mats[2][$i]]);
 				if(strpos($url, '?')){
-					$url .= '&conflict=' . $url_to_title[$url];
+					$url .= '&conflict=' . $url_to_title[$url][0];
 				} else{
-					$url .= '?conflict=' . $url_to_title[$url];
+					$url .= '?conflict=' . $url_to_title[$url][0];
 				}
 			}
-			$url_to_title[$url] = $title;
+			$url_to_title[$url] = [
+				html_entity_decode($mats[4][$i]),
+				html_entity_decode($mats[2][$i])
+			];
 		}
 	}
 	ksort($url_to_title);
 	success("完毕！共计条目：" . count($url_to_title));
 	echo "\n";
-	file_put_contents('raw/' . $lname . '/listing.map',
+	file_put_contents('output/' . $lname . '.json',
 					  json_encode($url_to_title, JSON_PRETTY_PRINT + JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES));
 });

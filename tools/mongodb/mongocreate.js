@@ -4,6 +4,12 @@ var files = ls('databases');
 var map = {};
 var conlist = {};
 
+// 登录管理员
+function auth_admin(db_conn){
+	var db = db_conn.getDB('admin');
+	db.auth('admin', 'admin');
+}
+
 for(var i = 0; i < files.length; i++){
 	var dbname = files[i].match(/^databases\/(.*)\.json$/);
 	if(!dbname || !dbname[1]){
@@ -52,17 +58,18 @@ function fetch_db(name, db_define){
 	} else{
 		conlist[name] = link;
 		link = new Mongo(db_define.db);
+		auth_admin(link);
 	}
 	var db = link.getDB(name);
 
 	// 处理用户名
 	if(db_define.user){
+		var user_collect = db.getCollection("system.users");
 		for(i = 0; i < db_define.user.length; i++){
 			if(db.auth(db_define.user[i].user, db_define.user[i].pwd)){
 				continue; // 存在的跳过
 			}
-			i = db.getCollection("system.users");
-			if(i.find({"user": db_define.user[i].user}).count()){
+			if(user_collect.find({"user": db_define.user[i].user}).count()){
 				print("\t用户密码变更： " + db_define.user[i].user + " -> " + db_define.user[i].pwd);
 				db.changeUserPassword(db_define.user[i].user, db_define.user[i].pwd);
 			} else{

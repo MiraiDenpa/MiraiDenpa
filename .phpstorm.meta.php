@@ -24,6 +24,7 @@ namespace PHPSTORM_META { // we want to avoid the pollution
 			'WeiboNotice' instanceof \WeiboNoticeModel,
 			'WeiboList' instanceof \WeiboListModel,
 			'WeiboCache' instanceof \WeiboCacheModel,
+			'Uploader' instanceof \UploaderModel,
 		],
 		\ThinkInstance::InStream('') => [
 			'Post' instanceof \PostInputStream,

@@ -108,7 +108,19 @@ function create_upload(id, sub, value, text){
 		dropZone          : null,
 		pasteZone         : null,
 		replaceFileInput  : false,
-		previewCrop       : true
+		previewCrop       : true,
+		formData          : function (){
+			var id = $('#IdField').val();
+			if(id){
+				return [
+					{name: 'id', value: id}
+				];
+			} else{
+				return [
+					{name: 'new', value: true}
+				];
+			}
+		}
 	};
 	var $obj = new $bui.UploadSingle(opt);
 	$obj.attr({'name': id, title: text}).val(value);

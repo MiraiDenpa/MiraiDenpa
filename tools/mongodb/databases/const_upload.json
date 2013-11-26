@@ -1,0 +1,16 @@
+{
+	"db"       : "localhost:27017",
+	"indexes"  : {
+		"infosite.files": {
+			"filename": true
+		}
+	},
+	"user"     : [
+		{
+			"user" : "api_user",
+			"pwd"  : "api_user",
+			"roles": [ "readWrite"]
+		}
+	],
+	"functions": []
+}
