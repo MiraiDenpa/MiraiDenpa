@@ -4,67 +4,152 @@ if(!isset($argv[1])){
 	die("参数是文件或者目录\n");
 }
 
-$file = $argv[1];
-$process = 0;
-if(is_dir($file)){
-	function loop($dir){
-		echo("处理文件夹： {$dir}\n");
-		$path = realpath($dir);
-		if(!$path){
-			die("不能把文件名正常化： {$dir}\n");
-		}
-		if(is_file($path)){
-			echo("找到文件： {$path}\n");
-			do_upload($path);
-		} elseif(is_dir($path)){
-			echo("找到目录： {$path}\n");
-			$ext = glob(realpath($dir) . '/*');
-			array_map(__FUNCTION__, $ext);
-		} else{
-			die("既不是文件也不是文件夹： {$dir}\n");
-		}
-	}
-	loop($file);
+$loop_level = 0;
+$hash_table = unserialize(@file_get_contents('.file_hash'));
+if(!$hash_table){
+	$hash_table = [];
+}
+// 初始化curl
+$curl = curl_init();
+curl_setopt($curl, CURLOPT_PUT, 1);
+curl_setopt($curl, CURLOPT_USERPWD, "524702837:W2Awoi33klj434");
+curl_setopt($curl, CURLOPT_HEADER, 1);
+curl_setopt($curl, CURLOPT_TIMEOUT, 60);
+curl_setopt($curl, CURLOPT_NOPROGRESS, false);
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($curl, CURLOPT_PROGRESSFUNCTION, 'print_progress');
 
+// 设置自动创建父级目录
+curl_setopt($curl, CURLOPT_HTTPHEADER, array("Expect:", "mkdir: true"));
+
+// 注册清理函数
+register_shutdown_function('curl_close', $curl);
+$esc = chr(27) . '[';
+echo $esc . '7l';
+register_shutdown_function("shutdown");
+pcntl_signal(SIGTERM, "shutdown");
+pcntl_signal(SIGINT, "shutdown");
+
+function shutdown($signal){
+	global $esc, $hash_table;
+	static $called = false;
+	if($called){
+		return;
+	}
+	$called = true;
+	var_dump($signal);
+	echo $esc . 'c';
+	echo $esc . '[J';
+	file_put_contents('.file_hash', serialize($hash_table));
 	exit;
-} elseif(is_file($file)){
-	do_upload($file);
-}else{
-	die("找不到文件： {$file}\n");
+}
+
+$file = $argv[1];
+loop($file);
+// Program End 
+
+function loop($path){
+	static $level = -1;
+	global $esc;
+	$level++;
+	$path = realpath($path);
+	if(!$path){
+		throw new Exception("\n找不到文件： {$path}\n");
+	}
+	if($level){
+		echo "{$esc}2K" . str_repeat("\t", $level - 1);
+	}
+	if(is_dir($path)){
+		echo "\t[+] {$path}\n";
+		$d = dir($path);
+		while($file = $d->read()){
+			if($file == '.' || $file == '..'){
+				continue;
+			}
+			loop($path . '/' . $file);
+		}
+		$d->close();
+	} elseif(is_file($path)){
+		echo " |\t{$path}";
+		do_upload($path);
+	}
+	$level--;
 }
 
 function do_upload($file){
-	$base = str_replace(__DIR__, '', $file);
+	global $curl, $esc;
+	$file = pingFile($file);
+	if(!$file){
+		echo " -- SKIP\n";
+		return;
+	}
 
 	// 保存文件到 demobucket 空间的根目录下
-	$curl = curl_init('http://v0.api.upyun.com/public-dianbo/' . $base);
+	$base = str_replace(__DIR__, '', $file);
 
-	echo "正在将文件 $base 上传到又拍云。\n";
-
+	$url = 'http://v0.api.upyun.com/public-dianbo/' . $base;
 	// 上传操作
-	curl_setopt($curl, CURLOPT_PUT, 1);
-	curl_setopt($curl, CURLOPT_USERPWD, "524702837:W2Awoi33klj434");
-	curl_setopt($curl, CURLOPT_HEADER, 1);
-	curl_setopt($curl, CURLOPT_TIMEOUT, 60);
-	curl_setopt($curl, CURLOPT_NOPROGRESS, false);
-
+	curl_setopt($curl, CURLOPT_URL, $url);
 	// 本地待上传的文件
 	$fp = fopen($file, 'r');
-
 	// 设置待上传的内容
 	curl_setopt($curl, CURLOPT_INFILE, $fp);
-
 	// 设置待上传的长度
 	curl_setopt($curl, CURLOPT_INFILESIZE, filesize($file));
 
-	// 设置自动创建父级目录
-	curl_setopt($curl, CURLOPT_HTTPHEADER, array("Expect:", "mkdir: true"));
-	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-
-	var_dump(curl_exec($curl));
-
-	curl_close($curl);
+	$code   = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+	$result = curl_exec($curl);
 	fclose($fp);
 
+	echo " -- ";
+	result($result);
+
+	if($code == 200){
+		pongFile($file);
+	}
+}
+
+function result($message){
+	global $esc;
+	$message = str_replace("\r", "\n", $message);
+	$message = str_replace("\n\n", "\n", $message);
+	echo str_replace("\n", "{$esc}K\n", $message);
+	$mover = count_chars($message, 1);
+	moveup(@$mover[10]);
 	echo "\n";
 }
+
+function moveup($n = 1){
+	global $esc;
+	echo "{$esc}{$n}A";
+}
+
+/**  */
+function print_progress($ch, $download_size, $downloaded, $upload_size, $uploaded){
+	global $esc;
+	echo "{$esc}s 正在上传[CURL]: $downloaded/$download_size{$esc}K{$esc}u";
+}
+
+function pingFile($path){
+	global $hash_table;
+	$path = realpath($path);
+	if(!$path){
+		return false;
+	}
+	if(!isset($hash_table[$path]) || $hash_table[$path] !== md5_file($path)){
+		return $path;
+	} else{
+		return false;
+	}
+}
+
+function pongFile($path){
+	global $hash_table;
+	$path = realpath($path);
+	if(!$path){
+		return;
+	}
+	$hash_table[$path] = md5_file($path);
+}
+	
+
